@@ -21,8 +21,8 @@ const {
   canonicalURL = Astro.url.href,
 } = Astro.props;
 
-const siteName = 'Chiaia Boutique';
-const siteURL = Astro.site ?? 'https://chiaiboutique.com';
+const siteName = 'Santopaolo Boutique Apartments';
+const siteURL = (Astro.site?.href ?? 'https://chiaiboutique.com/').replace(/\/$/, '');
 const alternateLang = lang === 'it' ? 'en' : 'it';
 const alternatePath = lang === 'en'
   ? Astro.url.pathname.replace(/^\/en/, '') || '/'

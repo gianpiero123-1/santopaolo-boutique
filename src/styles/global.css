@@ -6,7 +6,7 @@
   --color-brand-bg2: #1C1C1C;
   --color-brand-text: #F5F2EC;
   --color-brand-muted: #8A8580;
-  --color-brand-accent: #C8553D;
+  --color-brand-accent: #6B1F1F;
   --color-brand-border: #2A2A2A;
 
   /* Typography */
@@ -65,7 +65,7 @@
   }
 
   ::selection {
-    background-color: #C8553D;
+    background-color: #6B1F1F;
     color: #F5F2EC;
   }
 }
@@ -104,8 +104,8 @@
 
   .btn-outline {
     display: inline-block;
-    border: 1px solid #C8553D;
-    color: #C8553D;
+    border: 1px solid #6B1F1F;
+    color: #6B1F1F;
     padding: 0.75rem 2rem;
     font-family: 'Inter', sans-serif;
     font-weight: 500;
@@ -118,13 +118,13 @@
   }
 
   .btn-outline:hover {
-    background-color: #C8553D;
+    background-color: #6B1F1F;
     color: #F5F2EC;
   }
 
   .btn-solid {
     display: inline-block;
-    background-color: #C8553D;
+    background-color: #6B1F1F;
     color: #F5F2EC;
     padding: 0.75rem 2rem;
     font-family: 'Inter', sans-serif;
@@ -134,7 +134,7 @@
     font-size: 0.75rem;
     transition: opacity 0.2s ease;
     cursor: pointer;
-    border: 1px solid #C8553D;
+    border: 1px solid #6B1F1F;
   }
 
   .btn-solid:hover {

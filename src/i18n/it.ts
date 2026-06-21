@@ -22,13 +22,13 @@ const it = {
     concierge: {
       eyebrow: 'Concierge',
       title: 'Il tuo soggiorno, curato in ogni dettaglio',
-      body: 'Dal transfer aeroportuale allo chef privato, dai tour esclusivi al noleggio barca: ogni servizio pensato per rendere il vostro soggiorno a Napoli indimenticabile.',
+      body: 'Dal transfer aeroportuale ai tour in barca su Capri e la Costiera, dalle prenotazioni nei migliori ristoranti al noleggio auto: ogni servizio pensato per rendere il vostro soggiorno a Napoli indimenticabile.',
       cta: 'Scopri i servizi',
     },
     chiaia: {
       eyebrow: 'Il Quartiere',
       title: 'Chiaia — eleganza napoletana',
-      body: 'Gallerie d\'arte, boutique indipendenti, ristoranti stellati e il lungomare più bello d\'Italia. Chiaia è Napoli al suo meglio.',
+      body: 'Piazza dei Martiri, il lungomare di Caracciolo, ristoranti di eccellenza e boutique di lusso. Chiaia è Napoli al suo meglio.',
       cta: 'Scopri il quartiere',
     },
     cta: {
@@ -51,6 +51,8 @@ const it = {
     book: 'Prenota',
     amenities: 'Dotazioni',
     backToList: '← Tutti gli appartamenti',
+    houseRules: 'Regole della casa',
+    goodToKnow: 'Good to know',
   },
   concierge: {
     hero: {
@@ -69,12 +71,24 @@ const it = {
     eyebrow: 'Il Quartiere',
     title: 'Chiaia',
     subtitle: 'Il salotto di Napoli',
-    intro: 'Chiaia è il quartiere più elegante di Napoli: affacciato sul Golfo, ricco di storia, arte e vita mondana. È qui che Napoli si esprime nel suo volto più sofisticato.',
+    intro: 'Chiaia è il quartiere più elegante di Napoli: affacciato sul Golfo, ricco di storia, arte e vita di quartiere. Da Vico Santa Maria a Cappella Vecchia siete a pochi passi da tutto ciò che rende Napoli irresistibile.',
     sections: {
-      art: { title: 'Arte & Cultura', body: 'Gallerie contemporanee, musei privati e palazzi storici costellano le strade di Chiaia. Un\'immersione nella cultura napoletana autentica.' },
-      food: { title: 'Gastronomia', body: 'Dai classici bar storici ai ristoranti stellati, Chiaia è il centro culinario d\'eccellenza di Napoli. Ogni pasto è un\'esperienza.' },
-      sea: { title: 'Il Mare', body: 'A pochi passi il lungomare di Via Caracciolo e Villa Comunale, polmone verde con vista sul Vesuvio e sul Golfo di Napoli.' },
-      shopping: { title: 'Shopping', body: 'Via dei Mille e Via Filangieri ospitano le migliori boutique italiane e internazionali, accanto a concept store e artigiani selezionati.' },
+      art: {
+        title: 'Intorno a voi',
+        body: 'Piazza dei Martiri è a 2 minuti a piedi. Il lungomare di Caracciolo a 5. Castel dell\'Ovo a 10. Via dei Mille e Via Filangieri — lo shopping di lusso di Napoli — sono dietro l\'angolo.',
+      },
+      food: {
+        title: 'Dove mangiare',
+        body: 'Pizza da Mattozzi, Salvo e 1000 Gourmet. Cucina di territorio da Amici Miei, Signora Bettola e Cocoloco. Street food alla Prosciutteria TDV e all\'Officina del Mare. Caffè al Gran Caffè Cimmino o al Dream Café.',
+      },
+      sea: {
+        title: 'Come spostarsi',
+        body: 'Metro Linea 6 (fermata Chiaia) a pochi passi. Funicolare Centrale da Augusteo. Funicolare di Chiaia da Parco Margherita. Alibus per l\'aeroporto da Piazza Garibaldi.',
+      },
+      shopping: {
+        title: 'Arte e Cultura',
+        body: 'Il PAN — Palazzo delle Arti Napoli — ospita mostre contemporanee a rotazione. Il Tunnel Borbonico svela il sottosuolo della città. Il Museo Darwin-Dohrn racconta il mare di Napoli.',
+      },
     },
   },
   contact: {
@@ -90,10 +104,10 @@ const it = {
       note: 'Risponderemo entro 24 ore.',
     },
     info: {
-      email: 'info@chiaiboutique.com',
+      email: 'info@santopaoloapartments.com',
       phone: '+39 081 000 0000',
       whatsapp: 'WhatsApp',
-      address: 'Chiaia, Napoli',
+      address: 'Vico Santa Maria a Cappella Vecchia, 8b — Chiaia, Napoli',
     },
   },
   book: {
@@ -111,7 +125,7 @@ const it = {
     updated: 'Ultimo aggiornamento',
   },
   footer: {
-    tagline: 'Ospitalità boutique a Chiaia, Napoli.',
+    tagline: '5 appartamenti boutique nel cuore di Chiaia, Napoli.',
     links: {
       apartments: 'Appartamenti',
       concierge: 'Concierge',
@@ -121,7 +135,7 @@ const it = {
       privacy: 'Privacy',
       terms: 'Termini',
     },
-    copy: '© {year} Chiaia Boutique. Tutti i diritti riservati.',
+    copy: '© {year} Santopaolo Boutique Apartments. Tutti i diritti riservati.',
     social: {
       instagram: 'Instagram',
       facebook: 'Facebook',
@@ -132,9 +146,9 @@ const it = {
     current: 'IT',
   },
   meta: {
-    siteName: 'Chiaia Boutique',
-    defaultTitle: 'Chiaia Boutique — Appartamenti di Lusso a Napoli',
-    defaultDescription: 'Cinque appartamenti boutique nel quartiere Chiaia di Napoli. Servizi concierge esclusivi, design contemporaneo, posizione privilegiata.',
+    siteName: 'Santopaolo Boutique Apartments',
+    defaultTitle: 'Santopaolo Boutique Apartments — Chiaia, Napoli',
+    defaultDescription: '5 appartamenti boutique nel cuore di Chiaia, Napoli. Servizi concierge esclusivi, design contemporaneo, posizione privilegiata.',
   },
 };
 

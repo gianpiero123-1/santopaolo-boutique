@@ -4,7 +4,7 @@ interface Props {
   message?: string;
 }
 
-const { phone, message = 'Ciao! Vorrei informazioni sugli appartamenti Chiaia Boutique.' } = Astro.props;
+const { phone, message = 'Ciao! Vorrei informazioni sugli appartamenti Santopaolo Boutique.' } = Astro.props;
 const href = `https://wa.me/${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
 ---
 

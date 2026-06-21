@@ -96,6 +96,28 @@ const bedroomsLabel = apartment.bedrooms === 0
             <div class="photo-placeholder bg-brand-bg2"></div>
           </div>
         </div>
+
+        <!-- House rules -->
+        <hr class="divider" />
+        <div class="space-y-5">
+          <h2 class="font-display text-2xl text-brand-text tracking-tight">
+            {t.apartments.goodToKnow}
+          </h2>
+          <ul class="space-y-3">
+            {[
+              { icon: '🚭', rule: 'Vietato fumare (penale €100)' },
+              { icon: '🎉', rule: 'No feste o eventi' },
+              { icon: '🐾', rule: 'Animali non ammessi' },
+              { icon: '🕙', rule: 'Check-out entro le 10:00' },
+              { icon: '♻️', rule: 'Raccolta differenziata obbligatoria' },
+            ].map(({ icon, rule }) => (
+              <li class="flex items-center gap-3 text-brand-muted text-sm">
+                <span aria-hidden="true">{icon}</span>
+                {rule}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <!-- Sidebar: booking widget -->

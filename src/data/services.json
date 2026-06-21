@@ -1,74 +1,74 @@
 [
   {
-    "id": "airport-transfer",
+    "id": "transfer",
     "icon": "✈",
-    "name": { "it": "Transfer Aeroporto", "en": "Airport Transfer" },
+    "name": { "it": "Transfer Aeroporto / Porto / Stazione", "en": "Airport / Port / Station Transfer" },
     "description": {
-      "it": "Autista privato per arrivi e partenze da Napoli Capodichino. Puntuale, discreto, incluso il benvenuto a bordo.",
-      "en": "Private chauffeur for arrivals and departures from Naples Capodichino. Punctual, discreet, with an on-board welcome."
+      "it": "Autista privato per arrivi e partenze da Capodichino, dal Porto di Napoli o da Piazza Garibaldi.",
+      "en": "Private chauffeur for arrivals and departures from Capodichino Airport, Naples Port or Piazza Garibaldi station."
     }
   },
   {
-    "id": "private-chef",
-    "icon": "🍽",
-    "name": { "it": "Chef Privato", "en": "Private Chef" },
-    "description": {
-      "it": "Un cuoco napoletano d'eccellenza prepara per voi una cena autentica nel vostro appartamento. Menu su misura, ingredienti a km zero.",
-      "en": "An exceptional Neapolitan chef prepares an authentic dinner in your apartment. Custom menu, locally sourced ingredients."
-    }
-  },
-  {
-    "id": "boat-rental",
+    "id": "boat-tour",
     "icon": "⛵",
-    "name": { "it": "Noleggio Barca", "en": "Boat Rental" },
+    "name": { "it": "Tour in Barca (Capri, Procida, Costiera)", "en": "Boat Tour (Capri, Procida, Amalfi Coast)" },
     "description": {
-      "it": "Esplorate il Golfo di Napoli, Capri e la Costiera a bordo di un'imbarcazione riservata. Con o senza skipper.",
-      "en": "Explore the Gulf of Naples, Capri and the Amalfi Coast on a private boat. With or without skipper."
+      "it": "Esplorate il Golfo a bordo di un'imbarcazione riservata: Capri, Procida e la Costiera Amalfitana a portata di mare.",
+      "en": "Explore the Gulf on a private boat: Capri, Procida and the Amalfi Coast within easy reach."
     }
   },
   {
-    "id": "wine-tour",
-    "icon": "🍷",
-    "name": { "it": "Wine & Food Tour", "en": "Wine & Food Tour" },
+    "id": "car-rental",
+    "icon": "🚗",
+    "name": { "it": "Noleggio Auto / Scooter", "en": "Car / Scooter Rental" },
     "description": {
-      "it": "Un percorso tra i migliori produttori campani, degustazioni private e mercati storici guidati da un esperto locale.",
-      "en": "A journey through the finest Campanian producers, private tastings and historic markets guided by a local expert."
+      "it": "Auto o scooter consegnati direttamente in appartamento per esplorare Napoli e dintorni in libertà.",
+      "en": "Car or scooter delivered directly to your apartment so you can explore Naples and surroundings on your own terms."
     }
   },
   {
-    "id": "city-guide",
+    "id": "restaurants",
+    "icon": "🍽",
+    "name": { "it": "Prenotazioni Ristoranti", "en": "Restaurant Reservations" },
+    "description": {
+      "it": "Accesso privilegiato a una selezione curata dei migliori ristoranti di Chiaia e di tutta Napoli.",
+      "en": "Priority access to a curated selection of the best restaurants in Chiaia and across Naples."
+    }
+  },
+  {
+    "id": "food-experience",
+    "icon": "🧑‍🍳",
+    "name": { "it": "Esperienze Gastronomiche", "en": "Gastronomic Experiences" },
+    "description": {
+      "it": "Cooking class napoletana, food tour nei mercati storici e degustazioni private con produttori locali.",
+      "en": "Neapolitan cooking classes, food tours through historic markets and private tastings with local producers."
+    }
+  },
+  {
+    "id": "private-tours",
     "icon": "🗺",
-    "name": { "it": "Guida Privata", "en": "Private City Guide" },
+    "name": { "it": "Tour Privati (Pompei, Ercolano, Vesuvio)", "en": "Private Tours (Pompeii, Herculaneum, Vesuvius)" },
     "description": {
-      "it": "Scoprite Napoli con gli occhi di chi la conosce davvero. Itinerari nascosti, musei privati, accessi esclusivi.",
-      "en": "Discover Naples through the eyes of those who truly know it. Hidden itineraries, private museums, exclusive access."
+      "it": "Guida privata dedicata per i siti archeologici e il Vesuvio, senza code e con accesso prioritario.",
+      "en": "Dedicated private guide for the archaeological sites and Vesuvius — no queues, priority access."
     }
   },
   {
-    "id": "grocery",
-    "icon": "🛒",
-    "name": { "it": "Spesa a Domicilio", "en": "Grocery Delivery" },
+    "id": "personal-shopping",
+    "icon": "🛍",
+    "name": { "it": "Personal Shopping (Chiaia)", "en": "Personal Shopping (Chiaia)" },
     "description": {
-      "it": "L'appartamento vi aspetta rifornito con i prodotti che avete scelto: freschi, biologici, rigorosamente napoletani.",
-      "en": "Your apartment awaits stocked with products you have chosen: fresh, organic, strictly Neapolitan."
+      "it": "Un consulente di stile tra le boutique di Via dei Mille, Via Filangieri e i concept store di Chiaia.",
+      "en": "A personal stylist through the boutiques of Via dei Mille, Via Filangieri and Chiaia's concept stores."
     }
   },
   {
-    "id": "wellness",
-    "icon": "🧘",
-    "name": { "it": "Wellness & Spa", "en": "Wellness & Spa" },
+    "id": "concierge-247",
+    "icon": "📞",
+    "name": { "it": "Concierge 24/7", "en": "24/7 Concierge" },
     "description": {
-      "it": "Massaggi in appartamento, sessioni di yoga al tramonto e accesso riservato ai migliori centri benessere di Chiaia.",
-      "en": "In-apartment massages, sunset yoga sessions and reserved access to the best wellness centres in Chiaia."
-    }
-  },
-  {
-    "id": "laundry",
-    "icon": "👔",
-    "name": { "it": "Lavanderia Express", "en": "Express Laundry" },
-    "description": {
-      "it": "Ritiro, lavaggio a secco e restituzione entro 24 ore. Pensate solo a godervi Napoli.",
-      "en": "Pick-up, dry cleaning and return within 24 hours. Focus on enjoying Naples."
+      "it": "Assistenza continua per ogni esigenza, dal check-in all'ultimo minuto di soggiorno.",
+      "en": "Round-the-clock assistance for any need, from check-in to the very last moment of your stay."
     }
   }
 ]

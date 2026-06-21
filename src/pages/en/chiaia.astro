@@ -6,10 +6,49 @@ const lang = 'en';
 const t = useTranslations(lang);
 
 const sections = [
-  t.chiaia.sections.art,
-  t.chiaia.sections.food,
-  t.chiaia.sections.sea,
-  t.chiaia.sections.shopping,
+  {
+    key: 'around',
+    title: 'Around you',
+    body: 'Everything that makes Chiaia irresistible is within walking distance of your door.',
+    places: [
+      'Piazza dei Martiri — 2 min walk',
+      'Caracciolo seafront promenade — 5 min walk',
+      'Castel dell\'Ovo — 10 min walk',
+      'Via dei Mille & Via Filangieri — luxury shopping',
+    ],
+  },
+  {
+    key: 'food',
+    title: 'Where to eat',
+    body: 'An editorial selection, not a tourist checklist.',
+    categories: [
+      { label: 'Pizza', items: ['Mattozzi', 'Salvo', '1000 Gourmet'] },
+      { label: 'Restaurants', items: ['Amici Miei', 'Signora Bettola', 'Cocoloco'] },
+      { label: 'Street food', items: ['Prosciutteria TDV', 'Officina del Mare', 'L\'Oca Nera Burger'] },
+      { label: 'Bar & Coffee', items: ['Gran Caffè Cimmino', 'Dream Café', 'Bar Guida'] },
+    ],
+  },
+  {
+    key: 'transport',
+    title: 'Getting around',
+    body: 'Naples is well connected. From Chiaia, even more so.',
+    places: [
+      'Metro Line 6 — Chiaia stop',
+      'Funicolare Centrale — from Augusteo',
+      'Funicolare di Chiaia — from Parco Margherita',
+      'Alibus to Airport — from Piazza Garibaldi',
+    ],
+  },
+  {
+    key: 'culture',
+    title: 'Art & Culture',
+    body: 'The neighbourhood has a dense cultural life, often off the tourist circuit.',
+    places: [
+      'PAN — Palazzo delle Arti Napoli',
+      'Bourbon Tunnel',
+      'Darwin-Dohrn Museum',
+    ],
+  },
 ];
 ---
 
@@ -39,10 +78,32 @@ const sections = [
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-brand-border">
         {sections.map(section => (
-          <div class="bg-brand-bg p-8 lg:p-12 space-y-4">
+          <div class="bg-brand-bg p-8 lg:p-12 space-y-5">
             <div class="photo-placeholder bg-brand-bg2 mb-6" style="aspect-ratio: 4/3;"></div>
             <h2 class="font-display text-2xl lg:text-3xl text-brand-text tracking-tight">{section.title}</h2>
-            <p class="text-brand-muted leading-relaxed">{section.body}</p>
+            <p class="text-brand-muted leading-relaxed text-sm">{section.body}</p>
+
+            {'places' in section && section.places && (
+              <ul class="space-y-2 pt-1">
+                {section.places.map(place => (
+                  <li class="flex items-start gap-2 text-brand-muted text-sm">
+                    <span class="mt-1.5 w-1 h-1 bg-brand-accent rounded-full flex-shrink-0" aria-hidden="true"></span>
+                    {place}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {'categories' in section && section.categories && (
+              <div class="space-y-3 pt-1">
+                {section.categories.map(cat => (
+                  <div>
+                    <p class="nav-link text-brand-accent text-xs mb-1">{cat.label}</p>
+                    <p class="text-brand-muted text-sm">{cat.items.join(' — ')}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -52,7 +113,7 @@ const sections = [
   <section class="section-padding bg-brand-bg2 border-t border-brand-border">
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center space-y-5">
       <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">Explore Chiaia from here</h2>
-      <p class="text-brand-muted max-w-md mx-auto">Our apartments are in the heart of the neighbourhood. Steps from everything.</p>
+      <p class="text-brand-muted max-w-md mx-auto">Our apartments are at Vico Santa Maria a Cappella Vecchia 8b. Steps from everything.</p>
       <div class="flex flex-col sm:flex-row gap-3 justify-center">
         <a href={getLocalePath(lang, '/apartments')} class="btn-solid">{t.nav.apartments}</a>
         <a href={getLocalePath(lang, '/book')} class="btn-outline">{t.nav.book}</a>
