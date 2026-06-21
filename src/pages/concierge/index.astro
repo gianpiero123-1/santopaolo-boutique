@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, getLocalePath } from '../../i18n/index';
+import servicesData from '../../data/services.json';
+
+const lang = 'it';
+const t = useTranslations(lang);
+const previewServices = servicesData.slice(0, 4);
+---
+
+<BaseLayout
+  title={`${t.concierge.hero.eyebrow} — ${t.meta.siteName}`}
+  description={t.concierge.hero.body}
+  lang={lang}
+>
+  <!-- Hero -->
+  <section class="relative min-h-[75vh] flex items-end bg-brand-bg overflow-hidden">
+    <div class="absolute inset-0 bg-brand-bg2" aria-hidden="true">
+      <div class="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/50 to-transparent"></div>
+    </div>
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 pb-16 lg:pb-24 w-full">
+      <div class="max-w-xl space-y-6">
+        <p class="nav-link text-brand-accent">{t.concierge.hero.eyebrow}</p>
+        <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight leading-none">
+          {t.concierge.hero.title}
+        </h1>
+        <p class="text-brand-muted text-lg leading-relaxed">
+          {t.concierge.hero.body}
+        </p>
+        <a href={getLocalePath(lang, '/concierge/services')} class="btn-solid inline-block">
+          {t.concierge.hero.cta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Preview services -->
+  <section class="section-padding bg-brand-bg">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-brand-border mb-8">
+        {previewServices.map(service => (
+          <div class="bg-brand-bg p-7 lg:p-8 space-y-3 border-r border-brand-border last:border-r-0">
+            <span class="text-2xl" aria-hidden="true">{service.icon}</span>
+            <h3 class="font-display text-brand-text text-lg">{service.name.it}</h3>
+            <p class="text-brand-muted text-sm leading-relaxed">{service.description.it}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="text-center">
+        <a href={getLocalePath(lang, '/concierge/services')} class="btn-outline inline-block">
+          {t.concierge.hero.cta}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA -->
+  <section class="section-padding bg-brand-bg2 border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center space-y-5">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+        Pianifica il tuo soggiorno
+      </h2>
+      <p class="text-brand-muted max-w-md mx-auto">
+        Contattateci prima del vostro arrivo per organizzare ogni dettaglio.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href={getLocalePath(lang, '/contact')} class="btn-solid">
+          {t.contact.title}
+        </a>
+        <a href={getLocalePath(lang, '/book')} class="btn-outline">
+          {t.nav.book}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

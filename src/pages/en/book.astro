@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookingWidget from '../../components/BookingWidget.astro';
+import { useTranslations } from '../../i18n/index';
+import apartmentsData from '../../data/apartments.json';
+
+const lang = 'en';
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t.book.title} — ${t.meta.siteName}`}
+  description={t.book.subtitle}
+  lang={lang}
+>
+  <section class="section-padding border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-accent mb-3">Chiaia Boutique</p>
+      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">{t.book.title}</h1>
+      <p class="text-brand-muted text-lg">{t.book.subtitle}</p>
+    </div>
+  </section>
+
+  <section class="section-padding bg-brand-bg">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex flex-wrap gap-2 mb-10" id="apt-tabs-en" role="tablist">
+        {apartmentsData.map((apt, i) => (
+          <button
+            role="tab"
+            data-apt={apt.slug}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            class:list={[
+              'nav-link px-4 py-2 border transition-colors text-xs',
+              i === 0 ? 'border-brand-accent text-brand-accent' : 'border-brand-border text-brand-muted hover:border-brand-text hover:text-brand-text',
+            ]}
+          >
+            {apt.name}
+          </button>
+        ))}
+      </div>
+
+      {apartmentsData.map((apt, i) => (
+        <div id={`panel-en-${apt.slug}`} role="tabpanel" class:list={['grid grid-cols-1 lg:grid-cols-2 gap-10', { 'hidden': i !== 0 }]} data-panel={apt.slug}>
+          <div class="space-y-4">
+            <h2 class="font-display text-2xl lg:text-3xl text-brand-text tracking-tight">{apt.name}</h2>
+            <div class="flex flex-wrap gap-4 text-brand-muted text-xs nav-link">
+              <span>{apt.sqm} {t.apartments.sqm}</span>
+              <span>·</span>
+              <span>{apt.guests} {t.apartments.guests}</span>
+            </div>
+            <p class="text-brand-muted text-sm leading-relaxed">{apt.description.en}</p>
+            <p class="font-display text-2xl text-brand-text">€{apt.priceFrom}<span class="text-brand-muted text-sm font-sans">{t.apartments.night}</span></p>
+          </div>
+          <BookingWidget smoobuPropertyId={apt.smoobuPropertyId} lang={lang} />
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const tabs = document.querySelectorAll('#apt-tabs-en [role="tab"]');
+  const panels = document.querySelectorAll('[data-panel]');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = (tab as HTMLElement).dataset.apt;
+      tabs.forEach(t => {
+        t.setAttribute('aria-selected', 'false');
+        t.classList.remove('border-brand-accent', 'text-brand-accent');
+        t.classList.add('border-brand-border', 'text-brand-muted');
+      });
+      tab.setAttribute('aria-selected', 'true');
+      tab.classList.add('border-brand-accent', 'text-brand-accent');
+      tab.classList.remove('border-brand-border', 'text-brand-muted');
+      panels.forEach(panel => {
+        const el = panel as HTMLElement;
+        el.classList.toggle('hidden', el.dataset.panel !== target);
+      });
+    });
+  });
+</script>

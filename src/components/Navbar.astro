@@ -1,0 +1,145 @@
+---
+import type { Lang } from '../i18n/index';
+import { useTranslations, getLocalePath, getAlternatePath } from '../i18n/index';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const currentPath = Astro.url.pathname;
+
+const navLinks = [
+  { href: getLocalePath(lang, '/apartments'), label: t.nav.apartments },
+  { href: getLocalePath(lang, '/concierge'), label: t.nav.concierge },
+  { href: getLocalePath(lang, '/chiaia'), label: t.nav.chiaia },
+  { href: getLocalePath(lang, '/contact'), label: t.nav.contact },
+];
+
+function isActive(href: string): boolean {
+  return currentPath === href || currentPath.startsWith(href + '/');
+}
+---
+
+<header
+  id="navbar"
+  class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+  data-navbar
+>
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <nav class="flex items-center justify-between h-16 lg:h-20">
+      <!-- Logo -->
+      <a
+        href={getLocalePath(lang, '/')}
+        class="font-display text-brand-text tracking-tight text-lg font-medium leading-none"
+        aria-label="Chiaia Boutique — Home"
+      >
+        Chiaia<br class="hidden" /><span class="text-brand-accent"> Boutique</span>
+      </a>
+
+      <!-- Desktop nav -->
+      <ul class="hidden lg:flex items-center gap-8">
+        {navLinks.map(({ href, label }) => (
+          <li>
+            <a
+              href={href}
+              class:list={['nav-link', { active: isActive(href) }]}
+            >
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Right: lang switcher + CTA -->
+      <div class="flex items-center gap-4 lg:gap-6">
+        <LanguageSwitcher
+          currentLang={lang}
+          currentPath={currentPath}
+        />
+        <a
+          href={getLocalePath(lang, '/book')}
+          class="btn-solid hidden sm:inline-block text-xs py-2.5 px-5"
+        >
+          {t.nav.book}
+        </a>
+        <!-- Mobile hamburger -->
+        <button
+          id="menu-toggle"
+          class="lg:hidden flex flex-col gap-1.5 p-1"
+          aria-label="Toggle menu"
+          aria-expanded="false"
+        >
+          <span class="block w-5 h-px bg-brand-text transition-all duration-200" id="bar1"></span>
+          <span class="block w-5 h-px bg-brand-text transition-all duration-200" id="bar2"></span>
+          <span class="block w-5 h-px bg-brand-text transition-all duration-200" id="bar3"></span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Mobile menu -->
+  <div
+    id="mobile-menu"
+    class="lg:hidden hidden bg-brand-bg2 border-t border-brand-border"
+  >
+    <div class="max-w-7xl mx-auto px-6 py-6 flex flex-col gap-5">
+      {navLinks.map(({ href, label }) => (
+        <a href={href} class:list={['nav-link text-sm', { active: isActive(href) }]}>
+          {label}
+        </a>
+      ))}
+      <a href={getLocalePath(lang, '/book')} class="btn-solid mt-2 text-center text-xs py-3">
+        {t.nav.book}
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- Spacer for fixed navbar -->
+<div class="h-16 lg:h-20" aria-hidden="true"></div>
+
+<script>
+  const navbar = document.querySelector('[data-navbar]') as HTMLElement;
+  const menuToggle = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const bar1 = document.getElementById('bar1');
+  const bar2 = document.getElementById('bar2');
+  const bar3 = document.getElementById('bar3');
+
+  let menuOpen = false;
+
+  // Scroll effect: add bg on scroll
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 20) {
+      navbar.style.backgroundColor = 'rgba(14, 14, 14, 0.95)';
+      navbar.style.backdropFilter = 'blur(8px)';
+      navbar.style.borderBottom = '1px solid #2A2A2A';
+    } else {
+      navbar.style.backgroundColor = 'transparent';
+      navbar.style.backdropFilter = 'none';
+      navbar.style.borderBottom = 'none';
+    }
+  });
+
+  // Mobile menu toggle
+  menuToggle?.addEventListener('click', () => {
+    menuOpen = !menuOpen;
+    mobileMenu?.classList.toggle('hidden', !menuOpen);
+    menuToggle.setAttribute('aria-expanded', String(menuOpen));
+    if (bar1 && bar2 && bar3) {
+      if (menuOpen) {
+        bar1.style.transform = 'translateY(6px) rotate(45deg)';
+        bar2.style.opacity = '0';
+        bar3.style.transform = 'translateY(-6px) rotate(-45deg)';
+      } else {
+        bar1.style.transform = '';
+        bar2.style.opacity = '';
+        bar3.style.transform = '';
+      }
+    }
+  });
+</script>

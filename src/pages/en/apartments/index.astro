@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ApartmentCard from '../../../components/ApartmentCard.astro';
+import { useTranslations } from '../../../i18n/index';
+import apartmentsData from '../../../data/apartments.json';
+
+const lang = 'en';
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t.apartments.title} — ${t.meta.siteName}`}
+  description={t.apartments.subtitle}
+  lang={lang}
+>
+  <section class="section-padding border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-accent mb-3">Chiaia, Naples</p>
+      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">{t.apartments.title}</h1>
+      <p class="text-brand-muted text-lg max-w-xl">{t.apartments.subtitle}</p>
+    </div>
+  </section>
+
+  <section class="section-padding bg-brand-bg">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-px bg-brand-border">
+        {apartmentsData.map((apt, i) => (
+          <div class:list={['bg-brand-bg', { 'lg:col-span-2': i === 4 }]}>
+            <ApartmentCard apartment={apt} lang={lang} featured={i === 4} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

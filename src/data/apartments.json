@@ -1,0 +1,87 @@
+[
+  {
+    "id": 1,
+    "slug": "suite-posillipo",
+    "name": "Suite Posillipo",
+    "guests": 2,
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "sqm": 55,
+    "priceFrom": 150,
+    "amenities": ["WiFi", "Aria condizionata", "Cucina attrezzata", "Lavatrice", "Smart TV", "Cassaforte"],
+    "photos": ["/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg"],
+    "description": {
+      "it": "Un appartamento raffinato al cuore di Chiaia, con vista sul quartiere più elegante di Napoli. Arredi selezionati, materiali pregiati e un'attenzione al dettaglio che trasforma ogni soggiorno in un'esperienza memorabile.",
+      "en": "A refined apartment at the heart of Chiaia, overlooking Naples' most elegant neighbourhood. Curated furnishings, premium materials and an attention to detail that transforms every stay into a memorable experience."
+    },
+    "smoobuPropertyId": "PLACEHOLDER_1"
+  },
+  {
+    "id": 2,
+    "slug": "penthouse-chiaia",
+    "name": "Penthouse Chiaia",
+    "guests": 4,
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "sqm": 95,
+    "priceFrom": 280,
+    "amenities": ["WiFi", "Aria condizionata", "Cucina attrezzata", "Lavatrice", "Smart TV", "Terrazza privata", "Cassaforte", "Macchina espresso"],
+    "photos": ["/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg"],
+    "description": {
+      "it": "L'apice del lusso boutique a Napoli. Questo attico esclusivo offre una terrazza privata con vista panoramica sul Golfo, interni dal design contemporaneo e ogni comfort per un soggiorno di eccellenza.",
+      "en": "The pinnacle of boutique luxury in Naples. This exclusive penthouse features a private terrace with panoramic Gulf views, contemporary interiors and every comfort for an exceptional stay."
+    },
+    "smoobuPropertyId": "PLACEHOLDER_2"
+  },
+  {
+    "id": 3,
+    "slug": "studio-mergellina",
+    "name": "Studio Mergellina",
+    "guests": 2,
+    "bedrooms": 0,
+    "bathrooms": 1,
+    "sqm": 42,
+    "priceFrom": 120,
+    "amenities": ["WiFi", "Aria condizionata", "Angolo cottura", "Smart TV", "Cassaforte"],
+    "photos": ["/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg"],
+    "description": {
+      "it": "Compatto e sofisticato, lo Studio Mergellina è la scelta ideale per coppie o viaggiatori solitari alla ricerca di un rifugio urbano. A pochi passi dal lungomare, combina praticità e stile senza compromessi.",
+      "en": "Compact and sophisticated, Studio Mergellina is the ideal choice for couples or solo travellers seeking an urban retreat. A short walk from the seafront, it combines practicality and style without compromise."
+    },
+    "smoobuPropertyId": "PLACEHOLDER_3"
+  },
+  {
+    "id": 4,
+    "slug": "attico-pedigrotta",
+    "name": "Attico Pedigrotta",
+    "guests": 4,
+    "bedrooms": 2,
+    "bathrooms": 1,
+    "sqm": 82,
+    "priceFrom": 240,
+    "amenities": ["WiFi", "Aria condizionata", "Cucina attrezzata", "Lavatrice", "Smart TV", "Terrazza", "Cassaforte", "Macchina espresso"],
+    "photos": ["/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg"],
+    "description": {
+      "it": "Un piano alto con affaccio sulla città, interni curati nei minimi dettagli e una terrazza dove iniziare le mattine napoletane con un caffè e uno skyline unico. La scelta ideale per chi cerca spazio e design.",
+      "en": "A high-floor retreat with city views, interiors curated to the last detail and a terrace for starting Neapolitan mornings with coffee and a unique skyline. The ideal choice for those seeking space and design."
+    },
+    "smoobuPropertyId": "PLACEHOLDER_4"
+  },
+  {
+    "id": 5,
+    "slug": "loft-caracciolo",
+    "name": "Loft Via Caracciolo",
+    "guests": 3,
+    "bedrooms": 1,
+    "bathrooms": 1,
+    "sqm": 68,
+    "priceFrom": 180,
+    "amenities": ["WiFi", "Aria condizionata", "Cucina attrezzata", "Lavatrice", "Smart TV", "Cassaforte", "Bici a disposizione"],
+    "photos": ["/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg"],
+    "description": {
+      "it": "A due passi dal lungomare di Caracciolo, questo loft dall'estetica industrial-minimal fonde soffitti alti, mattoni a vista e arredi contemporanei. Spazioso, luminoso e a portata di Chiaia.",
+      "en": "Steps from the Caracciolo seafront promenade, this industrial-minimal loft blends high ceilings, exposed brick and contemporary furnishings. Spacious, bright and within easy reach of Chiaia."
+    },
+    "smoobuPropertyId": "PLACEHOLDER_5"
+  }
+]

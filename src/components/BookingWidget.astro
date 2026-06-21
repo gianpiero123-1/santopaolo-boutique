@@ -1,0 +1,39 @@
+---
+import type { Lang } from '../i18n/index';
+import { useTranslations } from '../i18n/index';
+
+interface Props {
+  smoobuPropertyId: string;
+  lang?: Lang;
+}
+
+const { smoobuPropertyId, lang = 'it' } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<div class="border border-brand-border bg-brand-bg2 p-6 lg:p-8 space-y-4">
+  <p class="text-brand-muted text-xs nav-link mb-2">{t.book.smoobuNote}</p>
+
+  <!-- TODO: embed Smoobu booking widget -->
+  <!-- Replace the placeholder below with the actual Smoobu embed code.
+       Property ID: {smoobuPropertyId}
+       Docs: https://help.smoobu.com/en/articles/booking-widget -->
+  <div
+    class="w-full min-h-48 bg-brand-bg border border-dashed border-brand-border flex items-center justify-center"
+    aria-label="Booking widget placeholder"
+  >
+    <div class="text-center space-y-2 px-6">
+      <p class="text-brand-muted text-sm">Booking Widget</p>
+      <p class="text-brand-border text-xs font-mono">Smoobu ID: {smoobuPropertyId}</p>
+    </div>
+  </div>
+
+  <a
+    href={`https://wa.me/390810000000?text=${encodeURIComponent('Vorrei prenotare ' + smoobuPropertyId)}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="btn-outline w-full text-center text-xs py-3 block"
+  >
+    {lang === 'it' ? 'Prenota via WhatsApp' : 'Book via WhatsApp'}
+  </a>
+</div>

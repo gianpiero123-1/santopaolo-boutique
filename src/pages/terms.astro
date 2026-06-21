@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useTranslations } from '../i18n/index';
+
+const lang = 'it';
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t.terms.title} — ${t.meta.siteName}`}
+  description={`${t.terms.title} di ${t.meta.siteName}`}
+  lang={lang}
+>
+  <section class="section-padding">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-muted text-xs mb-3">
+        {t.terms.updated}: 01 Giugno 2025
+      </p>
+      <h1 class="font-display text-4xl lg:text-5xl text-brand-text tracking-tight mb-10">
+        {t.terms.title}
+      </h1>
+
+      <div class="space-y-8 text-brand-muted leading-relaxed">
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">1. Oggetto</h2>
+          <p>
+            I presenti Termini regolano l'utilizzo del sito web e dei servizi di prenotazione offerti
+            da Chiaia Boutique. Utilizzando il sito, accettate integralmente le condizioni qui descritte.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">2. Prenotazioni</h2>
+          <p>
+            Le prenotazioni si perfezionano al momento della conferma scritta da parte di Chiaia Boutique
+            e del versamento dell'acconto richiesto. L'acconto non è rimborsabile salvo diverso accordo scritto.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">3. Check-in / Check-out</h2>
+          <p>
+            Check-in: dalle ore 15:00. Check-out: entro le ore 11:00. Orari differenti sono soggetti a
+            disponibilità e possono comportare costi aggiuntivi.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">4. Cancellazioni</h2>
+          <p>
+            La politica di cancellazione specifica per ciascun appartamento è indicata in fase di prenotazione.
+            In assenza di indicazioni diverse: cancellazione gratuita fino a 7 giorni prima del check-in;
+            cancellazione tardiva comporta addebito del 100% del soggiorno.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">5. Utilizzo degli appartamenti</h2>
+          <p>
+            Gli appartamenti sono destinati esclusivamente all'uso abitativo temporaneo. Non sono consentiti
+            eventi, feste o attività commerciali. Il numero massimo di ospiti è quello indicato nella scheda
+            di ciascun appartamento.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">6. Responsabilità</h2>
+          <p>
+            Chiaia Boutique declina ogni responsabilità per danni a beni personali degli ospiti durante
+            il soggiorno. Gli ospiti sono responsabili dei danni causati agli appartamenti e alle pertinenze.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">7. Foro competente</h2>
+          <p>
+            Per qualsiasi controversia è competente in via esclusiva il Foro di Napoli.
+            Si applica la legge italiana.
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

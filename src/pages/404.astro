@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getLocalePath } from '../i18n/index';
+
+const lang = 'it';
+---
+
+<BaseLayout
+  title="404 — Pagina non trovata | Chiaia Boutique"
+  description="La pagina che cercate non esiste."
+  lang={lang}
+>
+  <section class="min-h-[70vh] flex items-center justify-center section-padding">
+    <div class="text-center space-y-6 max-w-md px-6">
+      <p class="font-display text-8xl lg:text-9xl text-brand-border leading-none">404</p>
+      <h1 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+        Pagina non trovata
+      </h1>
+      <p class="text-brand-muted leading-relaxed">
+        La pagina che cercate non esiste o è stata spostata.
+        Tornate alla home o esplorate i nostri appartamenti.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+        <a href={getLocalePath(lang, '/')} class="btn-solid">
+          Torna alla home
+        </a>
+        <a href={getLocalePath(lang, '/apartments')} class="btn-outline">
+          Gli appartamenti
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../i18n/index';
+
+const lang = 'en';
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t.contact.title} — ${t.meta.siteName}`}
+  description={t.contact.subtitle}
+  lang={lang}
+>
+  <section class="section-padding border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-accent mb-3">Chiaia Boutique</p>
+      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">{t.contact.title}</h1>
+      <p class="text-brand-muted text-lg max-w-xl">{t.contact.subtitle}</p>
+    </div>
+  </section>
+
+  <section class="section-padding bg-brand-bg">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+        <form class="space-y-5" novalidate>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div class="space-y-2">
+              <label for="name-en" class="nav-link text-brand-muted text-xs block">{t.contact.form.name}</label>
+              <input type="text" id="name-en" name="name" autocomplete="name" class="w-full bg-brand-bg2 border border-brand-border text-brand-text px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors" placeholder="John Smith" />
+            </div>
+            <div class="space-y-2">
+              <label for="email-en" class="nav-link text-brand-muted text-xs block">{t.contact.form.email}</label>
+              <input type="email" id="email-en" name="email" autocomplete="email" class="w-full bg-brand-bg2 border border-brand-border text-brand-text px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors" placeholder="john@email.com" />
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label for="subject-en" class="nav-link text-brand-muted text-xs block">{t.contact.form.subject}</label>
+            <input type="text" id="subject-en" name="subject" class="w-full bg-brand-bg2 border border-brand-border text-brand-text px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors" />
+          </div>
+          <div class="space-y-2">
+            <label for="message-en" class="nav-link text-brand-muted text-xs block">{t.contact.form.message}</label>
+            <textarea id="message-en" name="message" rows="5" class="w-full bg-brand-bg2 border border-brand-border text-brand-text px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors resize-none" placeholder="Your message..."></textarea>
+          </div>
+          <div class="flex items-center justify-between">
+            <p class="text-brand-muted text-xs">{t.contact.form.note}</p>
+            <button type="submit" class="btn-solid">{t.contact.form.send}</button>
+          </div>
+        </form>
+
+        <div class="space-y-8 lg:pt-4">
+          <div class="space-y-5">
+            <div class="space-y-1">
+              <p class="nav-link text-brand-muted text-xs">Email</p>
+              <a href={`mailto:${t.contact.info.email}`} class="text-brand-text hover:text-brand-accent transition-colors">{t.contact.info.email}</a>
+            </div>
+            <div class="space-y-1">
+              <p class="nav-link text-brand-muted text-xs">Phone</p>
+              <a href={`tel:${t.contact.info.phone.replace(/\s/g, '')}`} class="text-brand-text hover:text-brand-accent transition-colors">{t.contact.info.phone}</a>
+            </div>
+            <div class="space-y-1">
+              <p class="nav-link text-brand-muted text-xs">WhatsApp</p>
+              <a href="https://wa.me/390810000000" target="_blank" rel="noopener noreferrer" class="text-brand-accent hover:opacity-80 transition-opacity">Chat on WhatsApp →</a>
+            </div>
+            <div class="space-y-1">
+              <p class="nav-link text-brand-muted text-xs">Address</p>
+              <p class="text-brand-text">{t.contact.info.address}</p>
+            </div>
+          </div>
+          <hr class="divider" />
+          <div class="bg-brand-bg2 border border-brand-border flex items-center justify-center" style="height: 240px;">
+            <p class="text-brand-muted text-sm">Map — Chiaia, Naples</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

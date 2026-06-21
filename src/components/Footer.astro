@@ -1,0 +1,92 @@
+---
+import type { Lang } from '../i18n/index';
+import { useTranslations, getLocalePath } from '../i18n/index';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+const copy = t.footer.copy.replace('{year}', String(year));
+---
+
+<footer class="bg-brand-bg2 border-t border-brand-border mt-auto">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-16">
+      <!-- Brand -->
+      <div class="space-y-4">
+        <a
+          href={getLocalePath(lang, '/')}
+          class="font-display text-brand-text text-xl font-medium tracking-tight"
+        >
+          Chiaia<span class="text-brand-accent"> Boutique</span>
+        </a>
+        <p class="text-brand-muted text-sm leading-relaxed max-w-xs">
+          {t.footer.tagline}
+        </p>
+        <div class="flex gap-4 pt-1">
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-link hover:text-brand-text"
+            aria-label="Instagram"
+          >
+            {t.footer.social.instagram}
+          </a>
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="nav-link hover:text-brand-text"
+            aria-label="Facebook"
+          >
+            {t.footer.social.facebook}
+          </a>
+        </div>
+      </div>
+
+      <!-- Nav links -->
+      <div class="space-y-3">
+        <p class="nav-link text-brand-text mb-4 text-xs">Navigation</p>
+        <ul class="space-y-2.5">
+          <li><a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.apartments}</a></li>
+          <li><a href={getLocalePath(lang, '/concierge')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.concierge}</a></li>
+          <li><a href={getLocalePath(lang, '/chiaia')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.chiaia}</a></li>
+          <li><a href={getLocalePath(lang, '/contact')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.contact}</a></li>
+          <li><a href={getLocalePath(lang, '/book')} class="text-brand-accent text-sm hover:opacity-80 transition-opacity">{t.footer.links.book}</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact info -->
+      <div class="space-y-3">
+        <p class="nav-link text-brand-text mb-4 text-xs">Contatti</p>
+        <ul class="space-y-2.5">
+          <li>
+            <a href="mailto:info@chiaiboutique.com" class="text-brand-muted text-sm hover:text-brand-text transition-colors">
+              {t.contact.info.email}
+            </a>
+          </li>
+          <li>
+            <a href="tel:+390810000000" class="text-brand-muted text-sm hover:text-brand-text transition-colors">
+              {t.contact.info.phone}
+            </a>
+          </li>
+          <li class="text-brand-muted text-sm">{t.contact.info.address}</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="divider my-8" />
+
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+      <p class="text-brand-muted text-xs">{copy}</p>
+      <div class="flex gap-5">
+        <a href={getLocalePath(lang, '/privacy')} class="text-brand-muted text-xs hover:text-brand-text transition-colors">{t.footer.links.privacy}</a>
+        <a href={getLocalePath(lang, '/terms')} class="text-brand-muted text-xs hover:text-brand-text transition-colors">{t.footer.links.terms}</a>
+      </div>
+    </div>
+  </div>
+</footer>

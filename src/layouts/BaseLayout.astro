@@ -1,0 +1,87 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import type { Lang } from '../i18n/index';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: Lang;
+  ogImage?: string;
+  canonicalURL?: string;
+}
+
+const {
+  title,
+  description,
+  lang = 'it',
+  ogImage = '/og-default.jpg',
+  canonicalURL = Astro.url.href,
+} = Astro.props;
+
+const siteName = 'Chiaia Boutique';
+const siteURL = Astro.site ?? 'https://chiaiboutique.com';
+const alternateLang = lang === 'it' ? 'en' : 'it';
+const alternatePath = lang === 'en'
+  ? Astro.url.pathname.replace(/^\/en/, '') || '/'
+  : `/en${Astro.url.pathname}`;
+const alternateURL = `${siteURL}${alternatePath}`;
+---
+
+<!doctype html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Hreflang -->
+    <link rel="alternate" hreflang="it" href={lang === 'it' ? canonicalURL : alternateURL} />
+    <link rel="alternate" hreflang="en" href={lang === 'en' ? canonicalURL : alternateURL} />
+    <link rel="alternate" hreflang="x-default" href={lang === 'it' ? canonicalURL : alternateURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={`${siteURL}${ogImage}`} />
+    <meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_GB'} />
+    <meta property="og:locale:alternate" content={alternateLang === 'it' ? 'it_IT' : 'en_GB'} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteURL}${ogImage}`} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Google Fonts preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400;1,9..144,500&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <slot name="head" />
+  </head>
+  <body class="bg-brand-bg text-brand-text min-h-screen flex flex-col">
+    <Navbar lang={lang} />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+    <WhatsAppFloat phone="+390810000000" />
+  </body>
+</html>

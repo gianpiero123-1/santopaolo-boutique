@@ -1,0 +1,23 @@
+---
+import type { Lang } from '../i18n/index';
+import { getAlternatePath } from '../i18n/index';
+
+interface Props {
+  currentLang: Lang;
+  currentPath: string;
+}
+
+const { currentLang, currentPath } = Astro.props;
+const alternateLang: Lang = currentLang === 'it' ? 'en' : 'it';
+const alternatePath = getAlternatePath(currentLang, currentPath);
+const label = currentLang === 'it' ? 'EN' : 'IT';
+---
+
+<a
+  href={alternatePath}
+  class="nav-link text-xs border border-brand-border px-2 py-1 hover:border-brand-text transition-colors"
+  hreflang={alternateLang}
+  aria-label={`Switch to ${alternateLang === 'en' ? 'English' : 'Italiano'}`}
+>
+  {label}
+</a>

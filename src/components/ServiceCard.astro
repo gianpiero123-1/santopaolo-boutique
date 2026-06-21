@@ -1,0 +1,27 @@
+---
+import type { Lang } from '../i18n/index';
+
+interface Service {
+  id: string;
+  icon: string;
+  name: { it: string; en: string };
+  description: { it: string; en: string };
+}
+
+interface Props {
+  service: Service;
+  lang: Lang;
+}
+
+const { service, lang } = Astro.props;
+---
+
+<div class="border border-brand-border bg-brand-bg2 p-7 lg:p-8 space-y-4 hover:border-brand-accent transition-colors duration-200 group">
+  <span class="text-2xl" aria-hidden="true">{service.icon}</span>
+  <h3 class="font-display text-brand-text text-lg group-hover:text-brand-accent transition-colors duration-200">
+    {service.name[lang]}
+  </h3>
+  <p class="text-brand-muted text-sm leading-relaxed">
+    {service.description[lang]}
+  </p>
+</div>

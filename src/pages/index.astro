@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ApartmentCard from '../components/ApartmentCard.astro';
+import { useTranslations, getLocalePath } from '../i18n/index';
+import apartmentsData from '../data/apartments.json';
+
+const lang = 'it';
+const t = useTranslations(lang);
+const featured = apartmentsData.slice(0, 3);
+---
+
+<BaseLayout
+  title={t.meta.defaultTitle}
+  description={t.meta.defaultDescription}
+  lang={lang}
+>
+  <!-- Hero -->
+  <section class="relative min-h-[92vh] flex items-end bg-brand-bg overflow-hidden">
+    <div class="absolute inset-0 bg-brand-bg2" aria-hidden="true">
+      <div class="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/60 to-transparent"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 pb-16 lg:pb-24 w-full">
+      <div class="max-w-2xl space-y-6">
+        <p class="nav-link text-brand-accent">{t.home.hero.eyebrow}</p>
+        <h1 class="font-display text-5xl lg:text-7xl text-brand-text leading-none tracking-tight whitespace-pre-line">
+          {t.home.hero.headline}
+        </h1>
+        <p class="text-brand-muted text-lg leading-relaxed max-w-md">
+          {t.home.hero.sub}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <a href={getLocalePath(lang, '/apartments')} class="btn-solid text-center">
+            {t.home.hero.cta}
+          </a>
+          <a href={getLocalePath(lang, '/concierge')} class="btn-outline text-center">
+            {t.home.hero.ctaSecondary}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Apartments -->
+  <section class="section-padding bg-brand-bg">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="flex items-end justify-between mb-10">
+        <div class="space-y-2">
+          <p class="nav-link text-brand-accent">{t.home.featured.label}</p>
+          <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+            {t.home.featured.title}
+          </h2>
+        </div>
+        <a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors hidden sm:block">
+          {t.home.featured.viewAll}
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-brand-border">
+        {featured.map(apt => (
+          <div class="bg-brand-bg">
+            <ApartmentCard apartment={apt} lang={lang} />
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-6 sm:hidden">
+        <a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">
+          {t.home.featured.viewAll}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Concierge teaser -->
+  <section class="section-padding bg-brand-bg">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+        <div class="photo-placeholder-wide bg-brand-bg2 order-last lg:order-first"></div>
+        <div class="space-y-6">
+          <p class="nav-link text-brand-accent">{t.home.concierge.eyebrow}</p>
+          <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+            {t.home.concierge.title}
+          </h2>
+          <p class="text-brand-muted leading-relaxed">
+            {t.home.concierge.body}
+          </p>
+          <a href={getLocalePath(lang, '/concierge')} class="btn-outline inline-block">
+            {t.home.concierge.cta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Chiaia teaser -->
+  <section class="section-padding bg-brand-bg2">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
+        <div class="space-y-6">
+          <p class="nav-link text-brand-accent">{t.home.chiaia.eyebrow}</p>
+          <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+            {t.home.chiaia.title}
+          </h2>
+          <p class="text-brand-muted leading-relaxed">
+            {t.home.chiaia.body}
+          </p>
+          <a href={getLocalePath(lang, '/chiaia')} class="btn-outline inline-block">
+            {t.home.chiaia.cta}
+          </a>
+        </div>
+        <div class="photo-placeholder-wide bg-brand-bg"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA -->
+  <section class="section-padding bg-brand-bg border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center space-y-6">
+      <h2 class="font-display text-3xl lg:text-5xl text-brand-text tracking-tight">
+        {t.home.cta.title}
+      </h2>
+      <p class="text-brand-muted max-w-md mx-auto leading-relaxed">
+        {t.home.cta.body}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+        <a href={getLocalePath(lang, '/book')} class="btn-solid">
+          {t.home.cta.cta}
+        </a>
+        <a href={getLocalePath(lang, '/contact')} class="btn-outline">
+          {t.home.cta.secondary}
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

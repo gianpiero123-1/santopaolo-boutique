@@ -1,0 +1,112 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookingWidget from '../../components/BookingWidget.astro';
+import { useTranslations, getLocalePath } from '../../i18n/index';
+import apartmentsData from '../../data/apartments.json';
+
+export async function getStaticPaths() {
+  return apartmentsData.map(apt => ({
+    params: { slug: apt.slug },
+    props: { apartment: apt },
+  }));
+}
+
+const { apartment } = Astro.props;
+const lang = 'it';
+const t = useTranslations(lang);
+
+const bedroomsLabel = apartment.bedrooms === 0
+  ? 'Studio'
+  : `${apartment.bedrooms} ${t.apartments.bedrooms}`;
+---
+
+<BaseLayout
+  title={`${apartment.name} — ${t.meta.siteName}`}
+  description={apartment.description.it}
+  lang={lang}
+>
+  <!-- Hero image -->
+  <section class="w-full bg-brand-bg2" style="aspect-ratio: 16/7; min-height: 320px;">
+    <div class="w-full h-full photo-placeholder-wide flex items-center justify-center">
+      <span class="font-display text-brand-border text-6xl">{apartment.name[0]}</span>
+    </div>
+  </section>
+
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+      <!-- Main content -->
+      <div class="lg:col-span-2 space-y-10">
+        <!-- Back link -->
+        <a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">
+          {t.apartments.backToList}
+        </a>
+
+        <!-- Title + meta -->
+        <div class="space-y-4">
+          <div class="flex flex-wrap gap-4 text-brand-muted text-xs nav-link">
+            <span>{apartment.sqm} {t.apartments.sqm}</span>
+            <span aria-hidden="true">·</span>
+            <span>{apartment.guests} {t.apartments.guests}</span>
+            <span aria-hidden="true">·</span>
+            <span>{bedroomsLabel}</span>
+            <span aria-hidden="true">·</span>
+            <span>{apartment.bathrooms} {t.apartments.bathrooms}</span>
+          </div>
+          <h1 class="font-display text-4xl lg:text-5xl text-brand-text tracking-tight">
+            {apartment.name}
+          </h1>
+          <div class="flex items-baseline gap-1">
+            <span class="text-brand-muted text-sm">{t.apartments.from}</span>
+            <span class="font-display text-3xl text-brand-text">€{apartment.priceFrom}</span>
+            <span class="text-brand-muted text-sm">{t.apartments.night}</span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div>
+          <p class="text-brand-text leading-relaxed text-lg">
+            {apartment.description.it}
+          </p>
+        </div>
+
+        <hr class="divider" />
+
+        <!-- Amenities -->
+        <div class="space-y-5">
+          <h2 class="font-display text-2xl text-brand-text tracking-tight">
+            {t.apartments.amenities}
+          </h2>
+          <ul class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {apartment.amenities.map(amenity => (
+              <li class="flex items-center gap-2 text-brand-muted text-sm">
+                <span class="w-1 h-1 bg-brand-accent rounded-full flex-shrink-0" aria-hidden="true"></span>
+                {amenity}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Photo gallery placeholder -->
+        <hr class="divider" />
+        <div class="space-y-4">
+          <h2 class="font-display text-2xl text-brand-text tracking-tight">Galleria</h2>
+          <div class="grid grid-cols-2 gap-2">
+            <div class="photo-placeholder bg-brand-bg2 col-span-2"></div>
+            <div class="photo-placeholder bg-brand-bg2"></div>
+            <div class="photo-placeholder bg-brand-bg2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar: booking widget -->
+      <aside class="lg:col-span-1">
+        <div class="sticky top-24">
+          <BookingWidget
+            smoobuPropertyId={apartment.smoobuPropertyId}
+            lang={lang}
+          />
+        </div>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
