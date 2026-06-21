@@ -27,7 +27,7 @@ const it = {
     },
     chiaia: {
       eyebrow: 'Il Quartiere',
-      title: 'Chiaia — eleganza napoletana',
+      title: 'Chiaia, eleganza napoletana',
       body: 'Piazza dei Martiri, il lungomare di Caracciolo, ristoranti di eccellenza e boutique di lusso. Chiaia è Napoli al suo meglio.',
       cta: 'Scopri il quartiere',
     },
@@ -75,7 +75,7 @@ const it = {
     sections: {
       art: {
         title: 'Intorno a voi',
-        body: 'Piazza dei Martiri è a 2 minuti a piedi. Il lungomare di Caracciolo a 5. Castel dell\'Ovo a 10. Via dei Mille e Via Filangieri — lo shopping di lusso di Napoli — sono dietro l\'angolo.',
+        body: 'Piazza dei Martiri è a 2 minuti a piedi. Il lungomare di Caracciolo a 5. Castel dell\'Ovo a 10. Via dei Mille e Via Filangieri, lo shopping di lusso di Napoli, sono dietro l\'angolo.',
       },
       food: {
         title: 'Dove mangiare',
@@ -87,7 +87,7 @@ const it = {
       },
       shopping: {
         title: 'Arte e Cultura',
-        body: 'Il PAN — Palazzo delle Arti Napoli — ospita mostre contemporanee a rotazione. Il Tunnel Borbonico svela il sottosuolo della città. Il Museo Darwin-Dohrn racconta il mare di Napoli.',
+        body: 'Il PAN, Palazzo delle Arti Napoli, ospita mostre contemporanee a rotazione. Il Tunnel Borbonico svela il sottosuolo della città. Il Museo Darwin Dohrn racconta il mare di Napoli.',
       },
     },
   },
@@ -107,7 +107,7 @@ const it = {
       email: 'info@santopaoloapartments.com',
       phone: '+39 081 000 0000',
       whatsapp: 'WhatsApp',
-      address: 'Vico Santa Maria a Cappella Vecchia, 8b — Chiaia, Napoli',
+      address: 'Vico Santa Maria a Cappella Vecchia 8b, Chiaia, Napoli',
     },
   },
   book: {
@@ -147,7 +147,7 @@ const it = {
   },
   meta: {
     siteName: 'Santopaolo Boutique Apartments',
-    defaultTitle: 'Santopaolo Boutique Apartments — Chiaia, Napoli',
+    defaultTitle: 'Santopaolo Boutique Apartments, Chiaia, Napoli',
     defaultDescription: '5 appartamenti boutique nel cuore di Chiaia, Napoli. Servizi concierge esclusivi, design contemporaneo, posizione privilegiata.',
   },
 };

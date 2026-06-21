@@ -3,7 +3,7 @@
     "id": 1,
     "slug": "santopaolo-1",
     "name": "Santopaolo 1",
-    "address": "Vico Santa Maria a Cappella Vecchia, 8b — Napoli",
+    "address": "Vico Santa Maria a Cappella Vecchia 8b, Napoli",
     "neighborhood": "Chiaia",
     "sqm": 90,
     "bedrooms": 2,
@@ -26,7 +26,7 @@
     "photos": ["/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg", "/images/placeholder-apt.jpg"],
     "description": {
       "it": "Un elegante appartamento di circa 90 mq nel cuore di Chiaia, a pochi passi da Piazza dei Martiri. Ambienti ampi e luminosi, finiture di pregio, spazi pensati per soggiorni leisure e business. Parte di un complesso esclusivo di 5 unità completamente ristrutturate, tra boutique, ristoranti e a breve distanza dal lungomare.",
-      "en": "An elegant 90 sqm apartment in the heart of Chiaia, just steps from Piazza dei Martiri. Spacious, light-filled rooms with high-end finishes — designed for both leisure and business stays. Part of an exclusive complex of 5 fully renovated units, between boutiques, restaurants, and a short walk from the seafront."
+      "en": "An elegant 90 sqm apartment in the heart of Chiaia, just steps from Piazza dei Martiri. Spacious, luminous rooms with refined finishes, designed for both leisure and business stays. Part of an exclusive complex of five fully renovated units, between boutiques, restaurants, and a short walk from the seafront."
     },
     "smoobuPropertyId": "TBD"
   },
@@ -34,7 +34,7 @@
     "id": 2,
     "slug": "santopaolo-2",
     "name": "Santopaolo 2",
-    "address": "Vico Santa Maria a Cappella Vecchia, 8b — Napoli",
+    "address": "Vico Santa Maria a Cappella Vecchia 8b, Napoli",
     "neighborhood": "Chiaia",
     "sqm": 0,
     "bedrooms": 0,
@@ -65,7 +65,7 @@
     "id": 3,
     "slug": "santopaolo-3",
     "name": "Santopaolo 3",
-    "address": "Vico Santa Maria a Cappella Vecchia, 8b — Napoli",
+    "address": "Vico Santa Maria a Cappella Vecchia 8b, Napoli",
     "neighborhood": "Chiaia",
     "sqm": 0,
     "bedrooms": 0,
@@ -96,7 +96,7 @@
     "id": 4,
     "slug": "santopaolo-4",
     "name": "Santopaolo 4",
-    "address": "Vico Santa Maria a Cappella Vecchia, 8b — Napoli",
+    "address": "Vico Santa Maria a Cappella Vecchia 8b, Napoli",
     "neighborhood": "Chiaia",
     "sqm": 0,
     "bedrooms": 0,
@@ -127,7 +127,7 @@
     "id": 5,
     "slug": "santopaolo-5",
     "name": "Santopaolo 5",
-    "address": "Vico Santa Maria a Cappella Vecchia, 8b — Napoli",
+    "address": "Vico Santa Maria a Cappella Vecchia 8b, Napoli",
     "neighborhood": "Chiaia",
     "sqm": 0,
     "bedrooms": 0,

@@ -29,7 +29,7 @@ const en: Translations = {
     },
     chiaia: {
       eyebrow: 'The Neighbourhood',
-      title: 'Chiaia — Neapolitan elegance',
+      title: 'Chiaia, Neapolitan elegance',
       body: 'Piazza dei Martiri, the Caracciolo seafront promenade, outstanding restaurants and luxury boutiques. Chiaia is Naples at its best.',
       cta: 'Discover the neighbourhood',
     },
@@ -77,7 +77,7 @@ const en: Translations = {
     sections: {
       art: {
         title: 'Around you',
-        body: 'Piazza dei Martiri is a 2-minute walk. The Caracciolo seafront promenade is 5 minutes away. Castel dell\'Ovo, 10 minutes. Via dei Mille and Via Filangieri — Naples\' luxury shopping strip — are just around the corner.',
+        body: 'Piazza dei Martiri is 2 minutes away on foot. The Caracciolo seafront promenade is 5 minutes away. Castel dell\'Ovo, 10 minutes. Via dei Mille and Via Filangieri, Naples\' luxury shopping strip, are just around the corner.',
       },
       food: {
         title: 'Where to eat',
@@ -89,7 +89,7 @@ const en: Translations = {
       },
       shopping: {
         title: 'Art & Culture',
-        body: 'PAN — Palazzo delle Arti Napoli — hosts rotating contemporary exhibitions. The Bourbon Tunnel reveals the city\'s hidden underground. The Darwin-Dohrn Museum tells the story of Naples\' sea.',
+        body: 'PAN, Palazzo delle Arti Napoli, hosts rotating contemporary exhibitions. The Bourbon Tunnel reveals the city\'s hidden underground. The Darwin Dohrn Museum tells the story of Naples\' sea.',
       },
     },
   },
@@ -109,7 +109,7 @@ const en: Translations = {
       email: 'info@santopaoloapartments.com',
       phone: '+39 081 000 0000',
       whatsapp: 'WhatsApp',
-      address: 'Vico Santa Maria a Cappella Vecchia, 8b — Chiaia, Naples',
+      address: 'Vico Santa Maria a Cappella Vecchia 8b, Chiaia, Naples',
     },
   },
   book: {
@@ -149,7 +149,7 @@ const en: Translations = {
   },
   meta: {
     siteName: 'Santopaolo Boutique Apartments',
-    defaultTitle: 'Santopaolo Boutique Apartments — Chiaia, Naples',
+    defaultTitle: 'Santopaolo Boutique Apartments, Chiaia, Naples',
     defaultDescription: '5 boutique apartments at the heart of Chiaia, Naples. Exclusive concierge services, contemporary design, privileged location.',
   },
 };

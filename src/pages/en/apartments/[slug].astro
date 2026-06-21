@@ -90,14 +90,14 @@ const bedroomsLabel = apartment.bedrooms === 0
           </h2>
           <ul class="space-y-3">
             {[
-              { icon: '🚭', rule: 'No smoking (€100 penalty)' },
-              { icon: '🎉', rule: 'No parties or events' },
-              { icon: '🐾', rule: 'No pets' },
-              { icon: '🕙', rule: 'Check-out by 10:00' },
-              { icon: '♻️', rule: 'Waste sorting required' },
-            ].map(({ icon, rule }) => (
+              'No smoking (€100 penalty)',
+              'No parties or events',
+              'No pets',
+              'Check-out by 10:00',
+              'Waste sorting required',
+            ].map(rule => (
               <li class="flex items-center gap-3 text-brand-muted text-sm">
-                <span aria-hidden="true">{icon}</span>
+                <span class="w-1 h-1 bg-brand-muted rounded-full flex-shrink-0" aria-hidden="true"></span>
                 {rule}
               </li>
             ))}

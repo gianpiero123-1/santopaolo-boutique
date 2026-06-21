@@ -11,10 +11,10 @@ const sections = [
     title: 'Around you',
     body: 'Everything that makes Chiaia irresistible is within walking distance of your door.',
     places: [
-      'Piazza dei Martiri — 2 min walk',
-      'Caracciolo seafront promenade — 5 min walk',
-      'Castel dell\'Ovo — 10 min walk',
-      'Via dei Mille & Via Filangieri — luxury shopping',
+      'Piazza dei Martiri, 2 min walk',
+      'Caracciolo seafront promenade, 5 min walk',
+      'Castel dell\'Ovo, 10 min walk',
+      'Via dei Mille and Via Filangieri, luxury shopping',
     ],
   },
   {
@@ -33,10 +33,10 @@ const sections = [
     title: 'Getting around',
     body: 'Naples is well connected. From Chiaia, even more so.',
     places: [
-      'Metro Line 6 — Chiaia stop',
-      'Funicolare Centrale — from Augusteo',
-      'Funicolare di Chiaia — from Parco Margherita',
-      'Alibus to Airport — from Piazza Garibaldi',
+      'Metro Line 6, Chiaia stop',
+      'Funicolare Centrale, from Augusteo',
+      'Funicolare di Chiaia, from Parco Margherita',
+      'Alibus to Airport, from Piazza Garibaldi',
     ],
   },
   {
@@ -44,9 +44,9 @@ const sections = [
     title: 'Art & Culture',
     body: 'The neighbourhood has a dense cultural life, often off the tourist circuit.',
     places: [
-      'PAN — Palazzo delle Arti Napoli',
+      'PAN, Palazzo delle Arti Napoli',
       'Bourbon Tunnel',
-      'Darwin-Dohrn Museum',
+      'Darwin Dohrn Museum',
     ],
   },
 ];
@@ -99,7 +99,7 @@ const sections = [
                 {section.categories.map(cat => (
                   <div>
                     <p class="nav-link text-brand-accent text-xs mb-1">{cat.label}</p>
-                    <p class="text-brand-muted text-sm">{cat.items.join(' — ')}</p>
+                    <p class="text-brand-muted text-sm">{cat.items.join(', ')}</p>
                   </div>
                 ))}
               </div>

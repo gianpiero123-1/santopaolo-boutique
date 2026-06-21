@@ -1,74 +1,66 @@
 [
   {
     "id": "transfer",
-    "icon": "✈",
-    "name": { "it": "Transfer Aeroporto / Porto / Stazione", "en": "Airport / Port / Station Transfer" },
+    "name": { "it": "Transfer Aeroporto, Porto, Stazione", "en": "Airport, Port and Station Transfer" },
     "description": {
-      "it": "Autista privato per arrivi e partenze da Capodichino, dal Porto di Napoli o da Piazza Garibaldi.",
-      "en": "Private chauffeur for arrivals and departures from Capodichino Airport, Naples Port or Piazza Garibaldi station."
+      "it": "Autista privato per arrivi e partenze da Capodichino, dal Porto di Napoli e da Piazza Garibaldi. Puntuale, discreto, a vostra completa disposizione.",
+      "en": "Private chauffeur service for arrivals and departures from Capodichino Airport, Naples Port and Piazza Garibaldi station. Punctual, discreet, entirely at your disposal."
     }
   },
   {
     "id": "boat-tour",
-    "icon": "⛵",
-    "name": { "it": "Tour in Barca (Capri, Procida, Costiera)", "en": "Boat Tour (Capri, Procida, Amalfi Coast)" },
+    "name": { "it": "Tour in Barca Privata", "en": "Private Boat Tour" },
     "description": {
-      "it": "Esplorate il Golfo a bordo di un'imbarcazione riservata: Capri, Procida e la Costiera Amalfitana a portata di mare.",
-      "en": "Explore the Gulf on a private boat: Capri, Procida and the Amalfi Coast within easy reach."
+      "it": "Capri, Procida e la Costiera Amalfitana, raggiunte a bordo di un'imbarcazione privata con skipper dedicato. Il Golfo di Napoli come non avete mai visto.",
+      "en": "Capri, Procida and the Amalfi Coast, reached aboard a private vessel with a dedicated skipper. The Gulf of Naples as you have never seen it."
     }
   },
   {
     "id": "car-rental",
-    "icon": "🚗",
-    "name": { "it": "Noleggio Auto / Scooter", "en": "Car / Scooter Rental" },
+    "name": { "it": "Noleggio Auto e Scooter", "en": "Car and Scooter Rental" },
     "description": {
-      "it": "Auto o scooter consegnati direttamente in appartamento per esplorare Napoli e dintorni in libertà.",
-      "en": "Car or scooter delivered directly to your apartment so you can explore Naples and surroundings on your own terms."
+      "it": "Auto o scooter consegnati direttamente in appartamento per esplorare Napoli e dintorni in piena autonomia. Flessibilità e libertà di movimento, senza pensieri.",
+      "en": "Car or scooter delivered to your door to explore Naples and its surroundings at your own pace. Freedom and flexibility, without compromise."
     }
   },
   {
     "id": "restaurants",
-    "icon": "🍽",
     "name": { "it": "Prenotazioni Ristoranti", "en": "Restaurant Reservations" },
     "description": {
-      "it": "Accesso privilegiato a una selezione curata dei migliori ristoranti di Chiaia e di tutta Napoli.",
-      "en": "Priority access to a curated selection of the best restaurants in Chiaia and across Naples."
+      "it": "Accesso privilegiato a una selezione curata tra i migliori ristoranti di Chiaia e di tutta Napoli. Prenotazioni garantite, anche nei locali più esclusivi.",
+      "en": "Priority access to a curated selection of the finest restaurants in Chiaia and across Naples. Reservations guaranteed, even at the most sought-after addresses."
     }
   },
   {
     "id": "food-experience",
-    "icon": "🧑‍🍳",
     "name": { "it": "Esperienze Gastronomiche", "en": "Gastronomic Experiences" },
     "description": {
-      "it": "Cooking class napoletana, food tour nei mercati storici e degustazioni private con produttori locali.",
-      "en": "Neapolitan cooking classes, food tours through historic markets and private tastings with local producers."
+      "it": "Cooking class napoletana, food tour nei mercati storici e degustazioni private con produttori locali. Un'immersione nel gusto autentico della città.",
+      "en": "Neapolitan cooking classes, food tours through the historic markets and private tastings with local producers. An immersion in the authentic taste of the city."
     }
   },
   {
     "id": "private-tours",
-    "icon": "🗺",
-    "name": { "it": "Tour Privati (Pompei, Ercolano, Vesuvio)", "en": "Private Tours (Pompeii, Herculaneum, Vesuvius)" },
+    "name": { "it": "Tour Privati Pompei, Ercolano, Vesuvio", "en": "Private Tours: Pompeii, Herculaneum, Vesuvius" },
     "description": {
-      "it": "Guida privata dedicata per i siti archeologici e il Vesuvio, senza code e con accesso prioritario.",
-      "en": "Dedicated private guide for the archaeological sites and Vesuvius — no queues, priority access."
+      "it": "Guida privata dedicata per i siti archeologici di Pompei, Ercolano e il Vesuvio. Accesso prioritario, nessuna coda, solo voi e la storia.",
+      "en": "Dedicated private guide for the archaeological sites of Pompeii, Herculaneum and Vesuvius. Priority access, no queues, just you and history."
     }
   },
   {
     "id": "personal-shopping",
-    "icon": "🛍",
-    "name": { "it": "Personal Shopping (Chiaia)", "en": "Personal Shopping (Chiaia)" },
+    "name": { "it": "Personal Shopping Chiaia", "en": "Personal Shopping Chiaia" },
     "description": {
-      "it": "Un consulente di stile tra le boutique di Via dei Mille, Via Filangieri e i concept store di Chiaia.",
-      "en": "A personal stylist through the boutiques of Via dei Mille, Via Filangieri and Chiaia's concept stores."
+      "it": "Un consulente di stile tra le boutique di Via dei Mille, Via Filangieri e i concept store di Chiaia. Napoli è una delle capitali europee della sartoria e del lusso.",
+      "en": "A personal stylist through the boutiques of Via dei Mille, Via Filangieri and the concept stores of Chiaia. Naples is one of Europe's capitals of tailoring and luxury."
     }
   },
   {
     "id": "concierge-247",
-    "icon": "📞",
     "name": { "it": "Concierge 24/7", "en": "24/7 Concierge" },
     "description": {
-      "it": "Assistenza continua per ogni esigenza, dal check-in all'ultimo minuto di soggiorno.",
-      "en": "Round-the-clock assistance for any need, from check-in to the very last moment of your stay."
+      "it": "Assistenza continua per ogni esigenza, dal momento del check-in all'ultimo istante del soggiorno. Un solo numero, risposte immediate.",
+      "en": "Continuous assistance for any need, from the moment of check-in to the very last instant of your stay. A single number, immediate responses."
     }
   }
 ]

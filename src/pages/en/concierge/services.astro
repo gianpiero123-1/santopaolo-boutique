@@ -23,9 +23,9 @@ const t = useTranslations(lang);
 
   <section class="section-padding bg-brand-bg">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-brand-border">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {servicesData.map(service => (
-          <div class="bg-brand-bg"><ServiceCard service={service} lang={lang} /></div>
+          <ServiceCard service={service} lang={lang} />
         ))}
       </div>
     </div>
