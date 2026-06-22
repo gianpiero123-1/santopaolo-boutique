@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://chiaiboutique.com',
+  site: 'https://santopaoloapartments.com',
   i18n: {
     defaultLocale: 'it',
     locales: ['it', 'en'],
