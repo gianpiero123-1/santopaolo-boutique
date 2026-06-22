@@ -1,0 +1,296 @@
+---
+interface Props {
+  images?: string[];
+  eyebrow?: string;
+  titleHtml?: string;
+  sub?: string;
+  btnPrimary?: string;
+  btnPrimaryHref?: string;
+  btnGhost?: string;
+  btnGhostHref?: string;
+}
+
+const {
+  images = [
+    '/images/apartments/1.jpg',
+    '/images/apartments/2.jpg',
+    '/images/apartments/3.jpg',
+    '/images/apartments/4.jpg',
+    '/images/apartments/5.jpg',
+    '/images/apartments/1b.jpg',
+    '/images/apartments/3b.jpg',
+    '/wellness/gym/gym-01.jpg',
+    '/wellness/steam/steam-01.jpg',
+  ],
+  eyebrow = 'Chiaia, Napoli',
+  titleHtml = 'Cinque boutique<br />apartments nel cuore<br />di Chiaia',
+  sub = 'Ospitalità privata, design contemporaneo, un quartiere unico.',
+  btnPrimary = 'Scopri gli appartamenti',
+  btnPrimaryHref = '/apartments',
+  btnGhost = 'Servizi concierge',
+  btnGhostHref = '/concierge',
+} = Astro.props;
+---
+
+<section class="hero">
+
+  <!-- Mobile full-bleed background, visible only on small screens -->
+  <div class="hero__mobile-img" style={`background-image: url('${images[0]}')`} aria-hidden="true">
+    <div class="hero__mobile-overlay"></div>
+  </div>
+
+  <!-- Layer A (z-10): polaroid crown -->
+  <div class="hero__cards" aria-hidden="true">
+    {images.map((src, i) => (
+      <div class={`photo-card photo-card--${i + 1}`}>
+        <img
+          src={src}
+          alt=""
+          loading={i === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+          onerror="this.parentElement.style.display='none'"
+        />
+      </div>
+    ))}
+  </div>
+
+  <!-- Layer vignette (z-15): radial dark gradient for text legibility -->
+  <div class="hero__vignette" aria-hidden="true"></div>
+
+  <!-- Layer B (z-20): centered text -->
+  <div class="hero__content">
+    <span class="hero__eyebrow">{eyebrow}</span>
+    <h1 class="hero__title" set:html={titleHtml} />
+    <p class="hero__sub">{sub}</p>
+    <div class="hero__ctas">
+      <a href={btnPrimaryHref} class="btn btn--primary">{btnPrimary}</a>
+      <a href={btnGhostHref} class="btn btn--ghost">{btnGhost}</a>
+    </div>
+  </div>
+
+</section>
+
+<style>
+  /* ===== SECTION ===== */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: max(100vh, 800px);
+    background: #0E0E0E;
+    overflow: hidden;
+  }
+
+  /* ===== MOBILE FULL-BLEED IMAGE (hidden on desktop) ===== */
+  .hero__mobile-img {
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .hero__mobile-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(14, 14, 14, 0.7);
+  }
+
+  /* ===== LAYER A (z-10): polaroid crown ===== */
+  .hero__cards {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+  }
+
+  .photo-card {
+    position: absolute;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 8px 20px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(245, 242, 236, 0.06);
+    opacity: 0.55;
+    filter: brightness(0.9) saturate(0.95);
+    width: 220px;
+    aspect-ratio: 3 / 4;
+    transition: opacity 0.4s ease;
+    animation: cardEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+    will-change: opacity;
+  }
+
+  .photo-card:hover {
+    opacity: 0.85;
+  }
+
+  .photo-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* TOP ROW (3 cards) */
+  .photo-card--1 { top: 8%;    left: 6%;   rotate: -6deg; animation-delay: 0ms;   }
+  .photo-card--2 { top: 4%;    left: 38%;  rotate:  4deg; animation-delay: 80ms;  }
+  .photo-card--3 { top: 8%;    right: 6%;  rotate:  7deg; animation-delay: 160ms; }
+
+  /* MIDDLE SIDES (2 cards) */
+  .photo-card--4 { top: 38%;   left: 2%;   rotate: -4deg; animation-delay: 240ms; }
+  .photo-card--5 { top: 38%;   right: 2%;  rotate:  5deg; animation-delay: 320ms; }
+
+  /* BOTTOM ROW (4 cards) */
+  .photo-card--6 { bottom: 6%; left: 6%;   rotate:  6deg; animation-delay: 400ms; }
+  .photo-card--7 { bottom: 4%; left: 32%;  rotate: -5deg; animation-delay: 480ms; }
+  .photo-card--8 { bottom: 4%; right: 32%; rotate:  4deg; animation-delay: 560ms; }
+  .photo-card--9 { bottom: 6%; right: 6%;  rotate: -7deg; animation-delay: 640ms; }
+
+  @keyframes cardEnter {
+    from {
+      opacity: 0;
+      translate: 0 24px;
+      scale: 0.95;
+    }
+    to {
+      opacity: 0.55;
+      translate: 0 0;
+      scale: 1;
+    }
+  }
+
+  /* ===== LAYER VIGNETTE (z-15): radial dark center for text legibility ===== */
+  .hero__vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 15;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(14, 14, 14, 0.85) 0%,
+      rgba(14, 14, 14, 0) 70%
+    );
+  }
+
+  /* ===== LAYER B (z-20): perfectly centered text ===== */
+  .hero__content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    width: min(900px, calc(100% - 3rem));
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  .hero__eyebrow {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #8A8580;
+    margin-bottom: 24px;
+    animation: textEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 600ms backwards;
+  }
+
+  .hero__title {
+    font-family: 'Fraunces', serif;
+    font-weight: 400;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1.05;
+    color: #F5F2EC;
+    letter-spacing: -0.01em;
+    margin: 0 0 32px;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    animation: textEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 650ms backwards;
+  }
+
+  .hero__sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    color: #8A8580;
+    max-width: 520px;
+    margin: 0 auto 48px;
+    animation: textEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 700ms backwards;
+  }
+
+  .hero__ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: textEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 750ms backwards;
+  }
+
+  @keyframes textEnter {
+    from { opacity: 0; translate: 0 20px; }
+    to   { opacity: 1; translate: 0 0; }
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn {
+    display: inline-block;
+    padding: 1rem 1.75rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn--primary { background: #6B1F1F; color: #F5F2EC; }
+  .btn--primary:hover { background: #8A2A2A; }
+  .btn--ghost {
+    background: transparent;
+    color: #F5F2EC;
+    border-color: rgba(245, 242, 236, 0.5);
+  }
+  .btn--ghost:hover {
+    background: rgba(245, 242, 236, 0.1);
+    border-color: #F5F2EC;
+  }
+
+  /* ===== TABLET (≤1024px): 6 cards at 140px ===== */
+  @media (max-width: 1024px) {
+    .photo-card { width: 140px; }
+    .photo-card--2,
+    .photo-card--7,
+    .photo-card--8 { display: none; }
+  }
+
+  /* ===== MOBILE (≤640px): full-bleed image, no cards ===== */
+  @media (max-width: 640px) {
+    .hero__mobile-img { display: block; }
+    .hero__cards { display: none; }
+    .hero__vignette { display: none; }
+
+    .hero__title {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      margin-bottom: 24px;
+    }
+
+    .hero__sub {
+      font-size: 1rem;
+      margin-bottom: 36px;
+    }
+  }
+
+  /* ===== REDUCED MOTION ===== */
+  @media (prefers-reduced-motion: reduce) {
+    .photo-card {
+      animation: none;
+      opacity: 0.55;
+    }
+    .hero__eyebrow,
+    .hero__title,
+    .hero__sub,
+    .hero__ctas {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,110 @@
+---
+interface ImageItem {
+  src: string;
+  alt: string;
+}
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  images: ImageItem[];
+  columns?: number;
+}
+
+const { title, subtitle, images, columns = 3 } = Astro.props;
+const gridCols = columns === 2
+  ? 'grid-cols-1 sm:grid-cols-2'
+  : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+---
+
+<section class="space-y-5" data-photo-gallery>
+  <div class="space-y-1">
+    <h2 class="font-display text-2xl text-brand-text tracking-tight">{title}</h2>
+    {subtitle && <p class="text-brand-muted text-sm">{subtitle}</p>}
+  </div>
+
+  <div class:list={['grid gap-2', gridCols]}>
+    {images.map((img, i) => (
+      <button
+        type="button"
+        class="group relative overflow-hidden cursor-zoom-in focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        data-lightbox-trigger
+        data-src={img.src}
+        data-alt={img.alt}
+        aria-label={`Ingrandisci: ${img.alt}`}
+      >
+        <div class="aspect-[4/3] overflow-hidden bg-brand-bg2">
+          <img
+            src={img.src}
+            alt={img.alt}
+            width="1200"
+            height="900"
+            loading={i === 0 ? 'eager' : 'lazy'}
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        </div>
+      </button>
+    ))}
+  </div>
+</section>
+
+<script>
+  function initLightbox(): void {
+    if (document.getElementById('pg-lightbox')) return;
+
+    const lb = document.createElement('div');
+    lb.id = 'pg-lightbox';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', 'Foto ingrandita');
+    lb.style.cssText =
+      'display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.92);' +
+      'align-items:center;justify-content:center;';
+
+    lb.innerHTML =
+      '<button id="pg-lb-close" aria-label="Chiudi" style="position:absolute;top:1.25rem;right:1.5rem;' +
+      'color:#F5F2EC;background:none;border:none;cursor:pointer;padding:0.5rem;line-height:1;">' +
+      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ' +
+      'stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
+      '</button>' +
+      '<img id="pg-lb-img" src="" alt="" ' +
+      'style="max-width:90vw;max-height:90vh;object-fit:contain;display:block;" />';
+
+    document.body.appendChild(lb);
+
+    document.getElementById('pg-lb-close')?.addEventListener('click', closeLightbox);
+    lb.addEventListener('click', (e: MouseEvent) => {
+      if (e.target === lb) closeLightbox();
+    });
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  }
+
+  function openLightbox(src: string, alt: string): void {
+    const lb = document.getElementById('pg-lightbox') as HTMLElement | null;
+    const img = document.getElementById('pg-lb-img') as HTMLImageElement | null;
+    if (!lb || !img) return;
+    img.src = src;
+    img.alt = alt;
+    lb.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox(): void {
+    const lb = document.getElementById('pg-lightbox') as HTMLElement | null;
+    if (!lb) return;
+    lb.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  initLightbox();
+
+  document.addEventListener('click', (e: MouseEvent) => {
+    const btn = (e.target as Element).closest('[data-lightbox-trigger]') as HTMLElement | null;
+    if (!btn) return;
+    const src = btn.dataset.src;
+    const alt = btn.dataset.alt;
+    if (src && alt !== undefined) openLightbox(src, alt);
+  });
+</script>

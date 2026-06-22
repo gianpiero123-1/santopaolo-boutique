@@ -14,6 +14,7 @@ const currentPath = Astro.url.pathname;
 
 const navLinks = [
   { href: getLocalePath(lang, '/apartments'), label: t.nav.apartments },
+  { href: getLocalePath(lang, '/wellness'), label: t.nav.wellness },
   { href: getLocalePath(lang, '/concierge'), label: t.nav.concierge },
   { href: getLocalePath(lang, '/chiaia'), label: t.nav.chiaia },
   { href: getLocalePath(lang, '/contact'), label: t.nav.contact },
@@ -34,10 +35,25 @@ function isActive(href: string): boolean {
       <!-- Logo -->
       <a
         href={getLocalePath(lang, '/')}
-        class="font-display text-brand-text tracking-tight text-lg font-medium leading-none"
+        class="flex items-center gap-3 flex-shrink-0"
         aria-label="Santopaolo Boutique Apartments — Home"
       >
-        Santopaolo<br /><span class="text-brand-accent text-sm"> Boutique Apartments</span>
+        <img
+          src="/logo.svg"
+          alt=""
+          class="hidden lg:block h-11 w-auto"
+          aria-hidden="true"
+        />
+        <img
+          src="/logo-mark.svg"
+          alt=""
+          class="block lg:hidden h-8 w-auto"
+          aria-hidden="true"
+        />
+        <span class="hidden lg:flex flex-col leading-none">
+          <span class="font-display text-brand-text text-[20px] tracking-[0.01em] leading-tight">Santopaolo</span>
+          <span class="font-sans text-brand-muted text-[9px] tracking-[0.4em] uppercase mt-0.5">Boutique Apartments</span>
+        </span>
       </a>
 
       <!-- Desktop nav -->

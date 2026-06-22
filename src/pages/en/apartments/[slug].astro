@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import BookingWidget from '../../../components/BookingWidget.astro';
 import { useTranslations, getLocalePath } from '../../../i18n/index';
 import apartmentsData from '../../../data/apartments.json';
+import PhotoGallery from '../../../components/PhotoGallery.astro';
 
 export async function getStaticPaths() {
   return apartmentsData.map(apt => ({
@@ -15,20 +16,53 @@ const { apartment } = Astro.props;
 const lang = 'en';
 const t = useTranslations(lang);
 
-const bedroomsLabel = apartment.bedrooms === 0
-  ? 'Studio'
-  : `${apartment.bedrooms} ${t.apartments.bedrooms}`;
+const bedroomsLabel = apartment.bedrooms === 0 ? 'Studio' : `${apartment.bedrooms} ${t.apartments.bedrooms}`;
+
+const commonAmenities = [
+  'Air conditioning',
+  'Fibre WiFi',
+  'Smart TV',
+  'Washing machine (shared laundry)',
+  'Equipped kitchen: induction, oven, dishwasher',
+  'Lift',
+  'Bed linen and towels included',
+  'Safe',
+  'Work desk',
+];
+
+const houseRules = [
+  'No smoking (€100 penalty)',
+  'No parties or events',
+  'No pets',
+  'Check-out by 10:00',
+  'Waste sorting required',
+  'City tax €6 per person per night, max 14 nights (payment at check-in)',
+];
+
+const buildingImages = [
+  { src: '/wellness/building/building-01.jpg', alt: 'Santopaolo building facade with green marble frame, entrance at Via Santa Maria a Cappella Vecchia' },
+  { src: '/wellness/building/building-02.jpg', alt: 'Staircase B marble corridor, Santopaolo building, Chiaia Naples' },
+  { src: '/wellness/building/building-03.jpg', alt: 'Lift and frosted glass Santopaolo Wellness door, building wellness floor' },
+  { src: '/wellness/building/building-04.jpg', alt: 'Santopaolo Fitness & SPA entrance with branded glass door, Chiaia Naples' },
+  { src: '/wellness/building/building-05.jpg', alt: 'SANTOPAOLO exterior facade with signage and covered parking, Chiaia' },
+  { src: '/wellness/building/building-06.jpg', alt: 'Santopaolo Apartments building exterior from different angle, parking area' },
+  { src: '/wellness/building/building-07.jpg', alt: 'Internal wellness floor corridor with decorative plant and Santopaolo logo door' },
+  { src: '/wellness/building/building-08.jpg', alt: 'Santopaolo intercom panel, Via Santa Maria a Cappella Vecchia 8/B, Chiaia Naples' },
+];
 ---
 
 <BaseLayout
   title={`${apartment.name} — ${t.meta.siteName}`}
-  description={apartment.description.en}
+  description={apartment.description_en}
   lang={lang}
 >
-  <section class="w-full bg-brand-bg2" style="aspect-ratio: 16/7; min-height: 320px;">
-    <div class="w-full h-full photo-placeholder-wide flex items-center justify-center">
-      <span class="font-display text-brand-border text-6xl">{apartment.name[0]}</span>
-    </div>
+  <section class="w-full bg-brand-bg2 overflow-hidden" style="aspect-ratio: 16/7; min-height: 320px;">
+    <img
+      src={apartment.hero_image}
+      alt={apartment.name}
+      class="w-full h-full object-cover"
+      loading="eager"
+    />
   </section>
 
   <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
@@ -40,30 +74,27 @@ const bedroomsLabel = apartment.bedrooms === 0
 
         <div class="space-y-4">
           <div class="flex flex-wrap gap-4 text-brand-muted text-xs nav-link">
-            <span>{apartment.sqm} {t.apartments.sqm}</span>
-            <span>·</span>
-            <span>{apartment.guests} {t.apartments.guests}</span>
-            <span>·</span>
+            <span>{apartment.size_sqm} {t.apartments.sqm}</span>
+            <span aria-hidden="true">·</span>
+            <span>{apartment.max_guests} {t.apartments.guests}</span>
+            <span aria-hidden="true">·</span>
             <span>{bedroomsLabel}</span>
-            <span>·</span>
+            <span aria-hidden="true">·</span>
             <span>{apartment.bathrooms} {t.apartments.bathrooms}</span>
           </div>
-          <h1 class="font-display text-4xl lg:text-5xl text-brand-text tracking-tight">{apartment.name}</h1>
-          <div class="flex items-baseline gap-1">
-            <span class="text-brand-muted text-sm">{t.apartments.from}</span>
-            <span class="font-display text-3xl text-brand-text">€{apartment.priceFrom}</span>
-            <span class="text-brand-muted text-sm">{t.apartments.night}</span>
-          </div>
+          <h1 class="font-display text-4xl lg:text-5xl text-brand-text tracking-tight">
+            {apartment.name}
+          </h1>
         </div>
 
-        <p class="text-brand-text leading-relaxed text-lg">{apartment.description.en}</p>
+        <p class="text-brand-text leading-relaxed text-lg">{apartment.description_en}</p>
 
         <hr class="divider" />
 
         <div class="space-y-5">
           <h2 class="font-display text-2xl text-brand-text tracking-tight">{t.apartments.amenities}</h2>
           <ul class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {apartment.amenities.map(amenity => (
+            {commonAmenities.map(amenity => (
               <li class="flex items-center gap-2 text-brand-muted text-sm">
                 <span class="w-1 h-1 bg-brand-accent rounded-full flex-shrink-0" aria-hidden="true"></span>
                 {amenity}
@@ -73,35 +104,57 @@ const bedroomsLabel = apartment.bedrooms === 0
         </div>
 
         <hr class="divider" />
+
         <div class="space-y-4">
           <h2 class="font-display text-2xl text-brand-text tracking-tight">Gallery</h2>
           <div class="grid grid-cols-2 gap-2">
-            <div class="photo-placeholder bg-brand-bg2 col-span-2"></div>
-            <div class="photo-placeholder bg-brand-bg2"></div>
-            <div class="photo-placeholder bg-brand-bg2"></div>
+            <div class="col-span-2 overflow-hidden" style="aspect-ratio: 16/7;">
+              <img
+                src={apartment.gallery[0]}
+                alt={`${apartment.name}, main view`}
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            {apartment.gallery.slice(1, 5).map((url, i) => (
+              <div class="overflow-hidden" style="aspect-ratio: 4/3;">
+                <img
+                  src={url}
+                  alt={`${apartment.name}, photo ${i + 2}`}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            ))}
           </div>
         </div>
 
-        <!-- House rules -->
         <hr class="divider" />
+
+        <PhotoGallery
+          title="The building, Vico Santa Maria a Cappella Vecchia 8b"
+          subtitle="Entrance, lobby and common areas shared across all Santopaolo units."
+          images={buildingImages}
+        />
+
+        <hr class="divider" />
+
         <div class="space-y-5">
           <h2 class="font-display text-2xl text-brand-text tracking-tight">
             {t.apartments.goodToKnow}
           </h2>
           <ul class="space-y-3">
-            {[
-              'No smoking (€100 penalty)',
-              'No parties or events',
-              'No pets',
-              'Check-out by 10:00',
-              'Waste sorting required',
-            ].map(rule => (
-              <li class="flex items-center gap-3 text-brand-muted text-sm">
-                <span class="w-1 h-1 bg-brand-muted rounded-full flex-shrink-0" aria-hidden="true"></span>
+            {houseRules.map(rule => (
+              <li class="flex items-start gap-3 text-brand-muted text-sm">
+                <span class="w-1 h-1 bg-brand-muted rounded-full flex-shrink-0 mt-1.5" aria-hidden="true"></span>
                 {rule}
               </li>
             ))}
           </ul>
+          <div class="pt-4 border-t border-brand-border space-y-1">
+            <p class="text-brand-muted text-xs nav-link">CIN: {apartment.cin}</p>
+            <p class="text-brand-muted text-xs nav-link">CIR: {apartment.cir}</p>
+          </div>
         </div>
       </div>
 

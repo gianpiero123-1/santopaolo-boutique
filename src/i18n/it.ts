@@ -1,6 +1,7 @@
 const it = {
   nav: {
     apartments: 'Appartamenti',
+    wellness: 'Wellness',
     concierge: 'Concierge',
     chiaia: 'Chiaia',
     contact: 'Contatti',

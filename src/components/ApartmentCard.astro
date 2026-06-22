@@ -6,14 +6,13 @@ interface Apartment {
   id: number;
   slug: string;
   name: string;
-  guests: number;
+  max_guests: number;
   bedrooms: number;
   bathrooms: number;
-  sqm: number;
-  priceFrom: number;
-  amenities: string[];
-  photos: string[];
-  description: { it: string; en: string };
+  size_sqm: number;
+  hero_image: string;
+  description_it: string;
+  description_en: string;
 }
 
 interface Props {
@@ -26,61 +25,43 @@ const { apartment, lang, featured = false } = Astro.props;
 const t = useTranslations(lang);
 const href = getLocalePath(lang, `/apartments/${apartment.slug}`);
 const bedroomsLabel = apartment.bedrooms === 0 ? 'Studio' : `${apartment.bedrooms} ${t.apartments.bedrooms}`;
+const description = lang === 'it' ? apartment.description_it : apartment.description_en;
 ---
 
-<article class:list={['group border border-brand-border bg-brand-bg2 overflow-hidden', { 'lg:flex': featured }]}>
-  <!-- Photo -->
-  <a href={href} class:list={['block overflow-hidden', { 'lg:w-1/2 lg:flex-shrink-0': featured }]}>
-    <div class="photo-placeholder relative overflow-hidden">
-      {apartment.photos[0] && apartment.photos[0] !== '/images/placeholder-apt.jpg' ? (
-        <img
-          src={apartment.photos[0]}
-          alt={apartment.name}
-          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          loading="lazy"
-        />
-      ) : (
-        <div class="w-full h-full bg-brand-bg2 flex items-center justify-center">
-          <span class="text-brand-border text-4xl font-display">{apartment.name[0]}</span>
-        </div>
-      )}
+<article class="group border border-brand-border bg-brand-bg2 overflow-hidden">
+  <a href={href} class="block overflow-hidden">
+    <div class:list={['relative overflow-hidden', { 'photo-placeholder': !featured, 'aspect-video w-full': featured }]}>
+      <img
+        src={apartment.hero_image}
+        alt={apartment.name}
+        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        loading="lazy"
+      />
     </div>
   </a>
 
-  <!-- Content -->
   <div class:list={['p-6 lg:p-8 flex flex-col justify-between', { 'lg:p-10': featured }]}>
     <div class="space-y-4">
-      <!-- Meta row -->
       <div class="flex items-center gap-4 text-brand-muted text-xs nav-link">
-        <span>{apartment.sqm} {t.apartments.sqm}</span>
+        <span>{apartment.size_sqm} {t.apartments.sqm}</span>
         <span aria-hidden="true">·</span>
-        <span>{apartment.guests} {t.apartments.guests}</span>
+        <span>{apartment.max_guests} {t.apartments.guests}</span>
         <span aria-hidden="true">·</span>
         <span>{bedroomsLabel}</span>
       </div>
 
-      <!-- Name -->
       <h3 class:list={['font-display text-brand-text tracking-tight', { 'text-2xl lg:text-3xl': featured, 'text-xl': !featured }]}>
         <a href={href} class="hover:text-brand-accent transition-colors">
           {apartment.name}
         </a>
       </h3>
 
-      <!-- Description -->
       <p class="text-brand-muted text-sm leading-relaxed line-clamp-3">
-        {apartment.description[lang]}
+        {description}
       </p>
     </div>
 
-    <!-- Price + CTA -->
-    <div class="flex items-end justify-between mt-6 pt-5 border-t border-brand-border">
-      <div>
-        <span class="text-brand-muted text-xs nav-link">{t.apartments.from}</span>
-        <p class="text-brand-text font-display text-2xl font-medium mt-0.5">
-          €{apartment.priceFrom}
-          <span class="text-brand-muted text-sm font-sans font-normal">{t.apartments.night}</span>
-        </p>
-      </div>
+    <div class="mt-6 pt-5 border-t border-brand-border">
       <a href={href} class="btn-outline text-xs py-2.5 px-5">
         {t.apartments.details}
       </a>

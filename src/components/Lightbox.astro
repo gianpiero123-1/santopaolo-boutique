@@ -1,0 +1,111 @@
+---
+interface ImageItem {
+  src: string;
+  alt: string;
+  full?: string;
+  w?: number;
+  h?: number;
+}
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  images: ImageItem[];
+  columns?: number;
+}
+
+const { title, subtitle, images, columns = 3 } = Astro.props;
+const gridCols = columns === 2
+  ? 'grid-cols-1 sm:grid-cols-2'
+  : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
+---
+
+<section class="space-y-5">
+  <div class="space-y-1">
+    <h2 class="font-display text-2xl text-brand-text tracking-tight">{title}</h2>
+    {subtitle && <p class="text-brand-muted text-sm">{subtitle}</p>}
+  </div>
+
+  <div class:list={['pswp-gallery grid gap-2', gridCols]}>
+    {images.map((img, i) => (
+      <a
+        href={img.full ?? img.src}
+        data-pswp-width={img.w ?? 1200}
+        data-pswp-height={img.h ?? 900}
+        class="group relative overflow-hidden block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
+        aria-label={img.alt}
+      >
+        <div class="aspect-[4/3] overflow-hidden bg-brand-bg2">
+          <img
+            src={img.src}
+            alt={img.alt}
+            width="1200"
+            height="900"
+            loading={i === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          />
+        </div>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style is:global>
+  /* PhotoSwipe background */
+  .pswp {
+    --pswp-bg: #0E0E0E;
+    --pswp-icon-color: #F5F2EC;
+    --pswp-icon-color-secondary: #8A8580;
+    --pswp-icon-stroke-color: #F5F2EC;
+    --pswp-icon-stroke-width: 1.5px;
+    --pswp-error-text-color: #8A8580;
+  }
+
+  .pswp__bg { background: rgba(14, 14, 14, 0.95); }
+
+  /* Override button colors */
+  .pswp__button--arrow svg,
+  .pswp__button--close svg {
+    color: #F5F2EC;
+  }
+
+  .pswp__button:hover svg {
+    color: #6B1F1F;
+  }
+
+  /* Counter */
+  .pswp__counter {
+    color: #8A8580;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    opacity: 1;
+  }
+</style>
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+  import 'photoswipe/style.css';
+
+  // Guard: initialize once even when multiple Lightbox components are on the same page.
+  // Astro deduplicates identical <script> blocks, but the guard makes intent explicit.
+  if (!(window as any).__pswpReady) {
+    (window as any).__pswpReady = true;
+
+    const lb = new PhotoSwipeLightbox({
+      gallery: '.pswp-gallery',
+      children: 'a',
+      pswpModule: () => import('photoswipe'),
+      bgOpacity: 0.95,
+      spacing: 0.1,
+      allowPanToNext: true,
+      loop: true,
+      // Keyboard shortcuts are enabled by default
+      escKey: true,
+      arrowKeys: true,
+    });
+
+    lb.init();
+  }
+</script>

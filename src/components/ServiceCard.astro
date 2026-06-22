@@ -24,7 +24,7 @@ const svgInner: Record<string, string> = {
   'restaurants':
     `<path d="M3 2v7a3 3 0 006 0V2M6 9v13M21 15V2a5 5 0 00-5 5v6c0 .6.4 1 1 1h4v6"/>`,
   'food-experience':
-    `<path d="M8 3h8l-2 9a4 4 0 01-8 0L8 3zM5 21h14M12 12v9"/>`,
+    `<path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.589c.411.197.727.584.727 1.041V20a1 1 0 0 0 1 1ZM6 21h12"/>`,
   'private-tours':
     `<path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.5"/>`,
   'personal-shopping':
@@ -55,7 +55,7 @@ const svgInner: Record<string, string> = {
     {service.name[lang]}
   </h3>
 
-  <p class="text-brand-muted text-sm leading-relaxed">
+  <p class="text-brand-muted text-sm leading-relaxed line-clamp-3">
     {service.description[lang]}
   </p>
 </article>

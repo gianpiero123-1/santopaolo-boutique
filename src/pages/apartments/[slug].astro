@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import BookingWidget from '../../components/BookingWidget.astro';
 import { useTranslations, getLocalePath } from '../../i18n/index';
 import apartmentsData from '../../data/apartments.json';
+import PhotoGallery from '../../components/PhotoGallery.astro';
 
 export async function getStaticPaths() {
   return apartmentsData.map(apt => ({
@@ -15,38 +16,67 @@ const { apartment } = Astro.props;
 const lang = 'it';
 const t = useTranslations(lang);
 
-const bedroomsLabel = apartment.bedrooms === 0
-  ? 'Studio'
-  : `${apartment.bedrooms} ${t.apartments.bedrooms}`;
+const bedroomsLabel = apartment.bedrooms === 0 ? 'Studio' : `${apartment.bedrooms} ${t.apartments.bedrooms}`;
+
+const commonAmenities = [
+  'Climatizzazione',
+  'WiFi fibra',
+  'Smart TV',
+  'Lavatrice (lavanderia comune)',
+  'Cucina attrezzata: induzione, forno, lavastoviglie',
+  'Ascensore',
+  'Lenzuola e biancheria incluse',
+  'Cassetta di sicurezza',
+  'Scrivania per lavoro',
+];
+
+const houseRules = [
+  'Vietato fumare (penale €100)',
+  'No feste o eventi',
+  'Animali non ammessi',
+  'Check-out entro le 10:00',
+  'Raccolta differenziata obbligatoria',
+  'City tax €6 a persona a notte, max 14 notti (pagamento al check-in)',
+];
+
+const buildingImages = [
+  { src: '/wellness/building/building-01.jpg', alt: "Facciata palazzo Santopaolo con cornice marmo verde, ingresso Via Santa Maria a Cappella Vecchia" },
+  { src: '/wellness/building/building-02.jpg', alt: "Corridoio Scala B palazzo Santopaolo, marmi e finiture di pregio, Chiaia Napoli" },
+  { src: '/wellness/building/building-03.jpg', alt: "Ascensore e porta vetro smerigliato Santopaolo Wellness, piano wellness dello stabile" },
+  { src: '/wellness/building/building-04.jpg', alt: "Ingresso Santopaolo Fitness & SPA con porta vetro brandizzata, Chiaia Napoli" },
+  { src: '/wellness/building/building-05.jpg', alt: "Facciata esterna palazzo SANTOPAOLO, insegna e parcheggio coperto, Chiaia" },
+  { src: '/wellness/building/building-06.jpg', alt: "Vista esterna palazzo Santopaolo Apartments da angolazione differente, parcheggio" },
+  { src: '/wellness/building/building-07.jpg', alt: "Corridoio interno piano wellness Santopaolo con pianta decorativa e logo su porta" },
+  { src: '/wellness/building/building-08.jpg', alt: "Citofono palazzo Santopaolo, Via Santa Maria a Cappella Vecchia 8/B, Chiaia Napoli" },
+];
 ---
 
 <BaseLayout
   title={`${apartment.name} — ${t.meta.siteName}`}
-  description={apartment.description.it}
+  description={apartment.description_it}
   lang={lang}
 >
-  <!-- Hero image -->
-  <section class="w-full bg-brand-bg2" style="aspect-ratio: 16/7; min-height: 320px;">
-    <div class="w-full h-full photo-placeholder-wide flex items-center justify-center">
-      <span class="font-display text-brand-border text-6xl">{apartment.name[0]}</span>
-    </div>
+  <section class="w-full bg-brand-bg2 overflow-hidden" style="aspect-ratio: 16/7; min-height: 320px;">
+    <img
+      src={apartment.hero_image}
+      alt={apartment.name}
+      class="w-full h-full object-cover"
+      loading="eager"
+    />
   </section>
 
   <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
-      <!-- Main content -->
       <div class="lg:col-span-2 space-y-10">
-        <!-- Back link -->
         <a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">
           {t.apartments.backToList}
         </a>
 
-        <!-- Title + meta -->
         <div class="space-y-4">
           <div class="flex flex-wrap gap-4 text-brand-muted text-xs nav-link">
-            <span>{apartment.sqm} {t.apartments.sqm}</span>
+            <span>{apartment.size_sqm} {t.apartments.sqm}</span>
             <span aria-hidden="true">·</span>
-            <span>{apartment.guests} {t.apartments.guests}</span>
+            <span>{apartment.max_guests} {t.apartments.guests}</span>
             <span aria-hidden="true">·</span>
             <span>{bedroomsLabel}</span>
             <span aria-hidden="true">·</span>
@@ -55,29 +85,16 @@ const bedroomsLabel = apartment.bedrooms === 0
           <h1 class="font-display text-4xl lg:text-5xl text-brand-text tracking-tight">
             {apartment.name}
           </h1>
-          <div class="flex items-baseline gap-1">
-            <span class="text-brand-muted text-sm">{t.apartments.from}</span>
-            <span class="font-display text-3xl text-brand-text">€{apartment.priceFrom}</span>
-            <span class="text-brand-muted text-sm">{t.apartments.night}</span>
-          </div>
         </div>
 
-        <!-- Description -->
-        <div>
-          <p class="text-brand-text leading-relaxed text-lg">
-            {apartment.description.it}
-          </p>
-        </div>
+        <p class="text-brand-text leading-relaxed text-lg">{apartment.description_it}</p>
 
         <hr class="divider" />
 
-        <!-- Amenities -->
         <div class="space-y-5">
-          <h2 class="font-display text-2xl text-brand-text tracking-tight">
-            {t.apartments.amenities}
-          </h2>
+          <h2 class="font-display text-2xl text-brand-text tracking-tight">{t.apartments.amenities}</h2>
           <ul class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {apartment.amenities.map(amenity => (
+            {commonAmenities.map(amenity => (
               <li class="flex items-center gap-2 text-brand-muted text-sm">
                 <span class="w-1 h-1 bg-brand-accent rounded-full flex-shrink-0" aria-hidden="true"></span>
                 {amenity}
@@ -86,47 +103,64 @@ const bedroomsLabel = apartment.bedrooms === 0
           </ul>
         </div>
 
-        <!-- Photo gallery placeholder -->
         <hr class="divider" />
+
         <div class="space-y-4">
           <h2 class="font-display text-2xl text-brand-text tracking-tight">Galleria</h2>
           <div class="grid grid-cols-2 gap-2">
-            <div class="photo-placeholder bg-brand-bg2 col-span-2"></div>
-            <div class="photo-placeholder bg-brand-bg2"></div>
-            <div class="photo-placeholder bg-brand-bg2"></div>
+            <div class="col-span-2 overflow-hidden" style="aspect-ratio: 16/7;">
+              <img
+                src={apartment.gallery[0]}
+                alt={`${apartment.name}, vista principale`}
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            {apartment.gallery.slice(1, 5).map((url, i) => (
+              <div class="overflow-hidden" style="aspect-ratio: 4/3;">
+                <img
+                  src={url}
+                  alt={`${apartment.name}, foto ${i + 2}`}
+                  class="w-full h-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+            ))}
           </div>
         </div>
 
-        <!-- House rules -->
         <hr class="divider" />
+
+        <PhotoGallery
+          title="Il palazzo, Vico Santa Maria a Cappella Vecchia 8b"
+          subtitle="Ingresso, lobby e spazi comuni condivisi da tutte le unità Santopaolo."
+          images={buildingImages}
+        />
+
+        <hr class="divider" />
+
         <div class="space-y-5">
           <h2 class="font-display text-2xl text-brand-text tracking-tight">
             {t.apartments.goodToKnow}
           </h2>
           <ul class="space-y-3">
-            {[
-              'Vietato fumare (penale €100)',
-              'No feste o eventi',
-              'Animali non ammessi',
-              'Check-out entro le 10:00',
-              'Raccolta differenziata obbligatoria',
-            ].map(rule => (
-              <li class="flex items-center gap-3 text-brand-muted text-sm">
-                <span class="w-1 h-1 bg-brand-muted rounded-full flex-shrink-0" aria-hidden="true"></span>
+            {houseRules.map(rule => (
+              <li class="flex items-start gap-3 text-brand-muted text-sm">
+                <span class="w-1 h-1 bg-brand-muted rounded-full flex-shrink-0 mt-1.5" aria-hidden="true"></span>
                 {rule}
               </li>
             ))}
           </ul>
+          <div class="pt-4 border-t border-brand-border space-y-1">
+            <p class="text-brand-muted text-xs nav-link">CIN: {apartment.cin}</p>
+            <p class="text-brand-muted text-xs nav-link">CIR: {apartment.cir}</p>
+          </div>
         </div>
       </div>
 
-      <!-- Sidebar: booking widget -->
       <aside class="lg:col-span-1">
         <div class="sticky top-24">
-          <BookingWidget
-            smoobuPropertyId={apartment.smoobuPropertyId}
-            lang={lang}
-          />
+          <BookingWidget smoobuPropertyId={apartment.smoobuPropertyId} lang={lang} />
         </div>
       </aside>
     </div>

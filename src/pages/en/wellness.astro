@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations, getLocalePath } from '../../i18n/index';
+import Lightbox from '../../components/Lightbox.astro';
+
+const lang = 'en';
+const t = useTranslations(lang);
+
+const services = [
+  {
+    id: 'gym',
+    name: 'Fully Equipped Gym',
+    description: 'Professional cardio and weight equipment available 24h to apartment guests, on the building\'s dedicated wellness floor.',
+    svgInner: `<path d="M5 8h2v8H5zM17 8h2v8h-2zM3 11h2v2H3zM19 11h2v2h-2zM7 12h10"/>`,
+  },
+  {
+    id: 'steam',
+    name: 'Steam Room',
+    description: 'Private steam room with chromotherapy and aromatherapy, always available to guests. Towels provided.',
+    svgInner: `<path d="M12 2L7.5 9A6.5 6.5 0 1 0 16.5 9L12 2z"/>`,
+  },
+  {
+    id: 'pt',
+    name: 'Personal Training on Request',
+    description: 'One-to-one sessions with a certified trainer, scheduled around your goals and the length of your stay.',
+    svgInner: `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
+  },
+];
+
+const extras = [
+  'Shared laundry',
+  'Covered attended parking 24h (€30/day, SUV friendly)',
+  'Electric vehicle charging',
+];
+
+const gymImages = [
+  { src: '/wellness/gym/gym-01.jpg', alt: 'Santopaolo Apartments gym, full view: Precor treadmill, weight machines and dumbbell rack' },
+  { src: '/wellness/gym/gym-02.jpg', alt: 'Santopaolo gym entrance with decorative wall and weight area beyond' },
+  { src: '/wellness/gym/gym-03.jpg', alt: 'Santopaolo gym, treadmill and cardio machines with coloured feature wall' },
+  { src: '/wellness/gym/gym-04.jpg', alt: 'Weight machines and TRX station at Santopaolo Fitness, Chiaia Naples' },
+  { src: '/wellness/gym/gym-05.jpg', alt: 'Treadmill and dumbbell rack at Santopaolo gym with steam room access door visible' },
+  { src: '/wellness/gym/gym-06.jpg', alt: 'Santopaolo fitness room with machines, TV screen and blue steam room door' },
+  { src: '/wellness/gym/gym-07.jpg', alt: 'Hexagonal dumbbell rack at Santopaolo gym, Chiaia: professional weights 5-40 kg' },
+  { src: '/wellness/gym/gym-08.jpg', alt: 'Santopaolo gym with full-height mirror wall, dumbbell rack and room divider' },
+];
+
+const steamroomImages = [
+  { src: '/wellness/steam/steam-01.jpg', alt: 'Santopaolo SPA chromotherapy shower with pink lighting and grey stone tiles' },
+  { src: '/wellness/steam/steam-02.jpg', alt: 'Santopaolo steam room with built-in bench, vertical black tiles and pink chromotherapy light' },
+  { src: '/wellness/steam/steam-03.jpg', alt: 'Santopaolo SPA shower cabin in grey stone with sliding glass door' },
+  { src: '/wellness/steam/steam-04.jpg', alt: 'Santopaolo shower interior with natural stone cladding and rain shower head' },
+];
+---
+
+<BaseLayout
+  title={`Wellness Floor — ${t.meta.siteName}`}
+  description="Equipped gym, steam room and personal training at Santopaolo Apartments in Chiaia, Naples."
+  lang={lang}
+>
+  <section class="section-padding">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-accent mb-3">Santopaolo Boutique Apartments</p>
+      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">
+        Wellness Floor
+      </h1>
+      <p class="text-brand-muted text-lg max-w-2xl">
+        A dedicated wellness floor reserved exclusively for apartment guests. No outside bookings, no crowds.
+      </p>
+      <div class="mt-12 lg:mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {services.map(service => (
+          <article class="flex flex-col bg-brand-bg2 p-8 border border-[rgba(245,242,236,0.06)] hover:border-brand-accent transition-colors duration-200 group">
+            <div class="mb-6">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-brand-muted"
+                aria-hidden="true"
+                set:html={service.svgInner}
+              />
+            </div>
+            <h3 class="font-display text-brand-text text-lg leading-tight tracking-tight mb-3 group-hover:text-brand-accent transition-colors duration-200">
+              {service.name}
+            </h3>
+            <p class="text-brand-muted text-sm leading-relaxed">
+              {service.description}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <Lightbox
+        title="The gym"
+        images={gymImages}
+      />
+    </div>
+  </section>
+
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <Lightbox
+        title="Turkish bath and chromotherapy showers"
+        images={steamroomImages}
+        columns={2}
+      />
+    </div>
+  </section>
+
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-xl">
+        <h2 class="font-display text-2xl text-brand-text tracking-tight mb-6">Additional services</h2>
+        <ul class="space-y-3">
+          {extras.map(extra => (
+            <li class="flex items-start gap-3 text-brand-muted text-sm">
+              <span class="w-1 h-1 bg-brand-accent rounded-full flex-shrink-0 mt-1.5" aria-hidden="true"></span>
+              {extra}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-padding bg-brand-bg2 border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight mb-4">
+        Book a PT session
+      </h2>
+      <p class="text-brand-muted mb-8 max-w-lg mx-auto">
+        Contact us to plan your personal training sessions before you arrive.
+      </p>
+      <a href={getLocalePath(lang, '/contact') + '?subject=personal-training'} class="btn-solid">
+        Request a session
+      </a>
+    </div>
+  </section>
+</BaseLayout>

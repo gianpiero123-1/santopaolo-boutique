@@ -1,12 +1,24 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ApartmentCard from '../../components/ApartmentCard.astro';
+import Hero from '../../components/Hero.astro';
 import { useTranslations, getLocalePath } from '../../i18n/index';
 import apartmentsData from '../../data/apartments.json';
 
 const lang = 'en';
 const t = useTranslations(lang);
 const featured = apartmentsData.slice(0, 3);
+const heroImages = [
+  apartmentsData[0].gallery[0],
+  apartmentsData[1].gallery[0],
+  apartmentsData[2].gallery[0],
+  apartmentsData[3].gallery[0],
+  apartmentsData[4].gallery[0],
+  apartmentsData[0].gallery[1],
+  apartmentsData[2].gallery[1],
+  '/wellness/gym/gym-01.jpg',
+  '/wellness/steam/steam-01.jpg',
+];
 ---
 
 <BaseLayout
@@ -14,25 +26,19 @@ const featured = apartmentsData.slice(0, 3);
   description={t.meta.defaultDescription}
   lang={lang}
 >
-  <!-- Hero -->
-  <section class="relative min-h-[92vh] flex items-end bg-brand-bg overflow-hidden">
-    <div class="absolute inset-0 bg-brand-bg2" aria-hidden="true">
-      <div class="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/60 to-transparent"></div>
-    </div>
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 pb-16 lg:pb-24 w-full">
-      <div class="max-w-2xl space-y-6">
-        <p class="nav-link text-brand-accent">{t.home.hero.eyebrow}</p>
-        <h1 class="font-display text-5xl lg:text-7xl text-brand-text leading-none tracking-tight whitespace-pre-line">
-          {t.home.hero.headline}
-        </h1>
-        <p class="text-brand-muted text-lg leading-relaxed max-w-md">{t.home.hero.sub}</p>
-        <div class="flex flex-col sm:flex-row gap-3 pt-2">
-          <a href={getLocalePath(lang, '/apartments')} class="btn-solid text-center">{t.home.hero.cta}</a>
-          <a href={getLocalePath(lang, '/concierge')} class="btn-outline text-center">{t.home.hero.ctaSecondary}</a>
-        </div>
-      </div>
-    </div>
-  </section>
+  <Fragment slot="head">
+    <link rel="preload" as="image" href="/images/concierge-hero.jpg" />
+  </Fragment>
+  <Hero
+    images={heroImages}
+    eyebrow="Chiaia, Naples"
+    titleHtml="Five boutique apartments<br />in the heart of Chiaia"
+    sub="Private hospitality, contemporary design, a unique neighbourhood."
+    btnPrimary="Discover the apartments"
+    btnPrimaryHref={getLocalePath(lang, '/apartments')}
+    btnGhost="Concierge services"
+    btnGhostHref={getLocalePath(lang, '/concierge')}
+  />
 
   <!-- Featured Apartments -->
   <section class="section-padding bg-brand-bg">
@@ -56,18 +62,21 @@ const featured = apartmentsData.slice(0, 3);
 
   <hr class="divider" />
 
-  <!-- Concierge teaser -->
-  <section class="section-padding bg-brand-bg">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20 items-center">
-        <div class="photo-placeholder-wide bg-brand-bg2 order-last lg:order-first"></div>
-        <div class="space-y-6">
-          <p class="nav-link text-brand-accent">{t.home.concierge.eyebrow}</p>
-          <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{t.home.concierge.title}</h2>
-          <p class="text-brand-muted leading-relaxed">{t.home.concierge.body}</p>
-          <a href={getLocalePath(lang, '/concierge')} class="btn-outline inline-block">{t.home.concierge.cta}</a>
-        </div>
-      </div>
+  <!-- Concierge hero -->
+  <section class="ch-section">
+    <img
+      src="/images/concierge-hero.jpg"
+      alt="Private driver in Naples, transfer service"
+      loading="eager"
+      decoding="async"
+      class="ch-img"
+    />
+    <div class="ch-overlay" aria-hidden="true"></div>
+    <div class="ch-content">
+      <p class="ch-eyebrow">CONCIERGE SERVICES</p>
+      <h2 class="ch-title">A stay without compromise</h2>
+      <p class="ch-body">Every detail of your Naples stay, managed with discretion and care. From arrival to departure.</p>
+      <a href={getLocalePath(lang, '/concierge/services')} class="ch-cta">Explore services</a>
     </div>
   </section>
 
@@ -100,3 +109,114 @@ const featured = apartmentsData.slice(0, 3);
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .ch-section {
+    position: relative;
+    height: clamp(520px, 50vh, 640px);
+    overflow: hidden;
+  }
+
+  .ch-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+  }
+
+  .ch-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      to right,
+      rgba(14, 14, 14, 0.85) 0%,
+      rgba(14, 14, 14, 0.2) 100%
+    );
+  }
+
+  .ch-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 520px;
+    padding: clamp(3rem, 8vw, 6rem) clamp(2rem, 6vw, 5rem);
+  }
+
+  .ch-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: #8A8580;
+    margin: 0 0 16px;
+  }
+
+  .ch-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    font-weight: 400;
+    line-height: 1.1;
+    color: #F5F2EC;
+    margin: 0 0 20px;
+  }
+
+  .ch-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    color: rgba(245, 242, 236, 0.78);
+    max-width: 480px;
+    margin: 0 0 32px;
+  }
+
+  .ch-cta {
+    display: inline-block;
+    align-self: flex-start;
+    padding: 14px 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #6B1F1F;
+    border: 1px solid #6B1F1F;
+    background: transparent;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .ch-cta:hover {
+    background: #6B1F1F;
+    color: #F5F2EC;
+  }
+
+  @media (max-width: 640px) {
+    .ch-overlay {
+      background: linear-gradient(
+        to bottom,
+        rgba(14, 14, 14, 0.75) 0%,
+        rgba(14, 14, 14, 0.4) 100%
+      );
+    }
+
+    .ch-content {
+      max-width: 100%;
+      align-items: center;
+      text-align: center;
+    }
+
+    .ch-body {
+      font-size: 15px;
+    }
+
+    .ch-cta {
+      align-self: center;
+    }
+  }
+</style>

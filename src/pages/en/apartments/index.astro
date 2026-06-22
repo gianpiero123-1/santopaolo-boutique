@@ -25,8 +25,8 @@ const t = useTranslations(lang);
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-px bg-brand-border">
         {apartmentsData.map((apt, i) => (
-          <div class:list={['bg-brand-bg', { 'lg:col-span-2': i === 4 }]}>
-            <ApartmentCard apartment={apt} lang={lang} featured={i === 4} />
+          <div class:list={['bg-brand-bg', { 'lg:col-span-2': i === 0 }]}>
+            <ApartmentCard apartment={apt} lang={lang} featured={i === 0} />
           </div>
         ))}
       </div>

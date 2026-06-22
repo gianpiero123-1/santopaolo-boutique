@@ -3,6 +3,7 @@ import type { Translations } from './it';
 const en: Translations = {
   nav: {
     apartments: 'Apartments',
+    wellness: 'Wellness',
     concierge: 'Concierge',
     chiaia: 'Chiaia',
     contact: 'Contact',
@@ -11,7 +12,7 @@ const en: Translations = {
   home: {
     hero: {
       eyebrow: 'Chiaia, Naples',
-      headline: 'Five boutique\napartments at the\nheart of Chiaia',
+      headline: 'Five boutique\napartments in the\nheart of Chiaia',
       sub: 'Private hospitality, contemporary design, a unique neighbourhood.',
       cta: 'Explore apartments',
       ctaSecondary: 'Concierge Services',
@@ -127,7 +128,7 @@ const en: Translations = {
     updated: 'Last updated',
   },
   footer: {
-    tagline: '5 boutique apartments at the heart of Chiaia, Naples.',
+    tagline: '5 boutique apartments in the heart of Chiaia, Naples.',
     links: {
       apartments: 'Apartments',
       concierge: 'Concierge',
@@ -150,7 +151,7 @@ const en: Translations = {
   meta: {
     siteName: 'Santopaolo Boutique Apartments',
     defaultTitle: 'Santopaolo Boutique Apartments, Chiaia, Naples',
-    defaultDescription: '5 boutique apartments at the heart of Chiaia, Naples. Exclusive concierge services, contemporary design, privileged location.',
+    defaultDescription: '5 boutique apartments in the heart of Chiaia, Naples. Exclusive concierge services, contemporary design, privileged location.',
   },
 };
 

@@ -44,12 +44,15 @@ const t = useTranslations(lang);
           <div class="space-y-4">
             <h2 class="font-display text-2xl lg:text-3xl text-brand-text tracking-tight">{apt.name}</h2>
             <div class="flex flex-wrap gap-4 text-brand-muted text-xs nav-link">
-              <span>{apt.sqm} {t.apartments.sqm}</span>
+              <span>{apt.size_sqm} {t.apartments.sqm}</span>
               <span>·</span>
-              <span>{apt.guests} {t.apartments.guests}</span>
+              <span>{apt.max_guests} {t.apartments.guests}</span>
+              <span>·</span>
+              <span>
+                {apt.bedrooms === 0 ? 'Studio' : `${apt.bedrooms} ${t.apartments.bedrooms}`}
+              </span>
             </div>
-            <p class="text-brand-muted text-sm leading-relaxed">{apt.description.en}</p>
-            <p class="font-display text-2xl text-brand-text">€{apt.priceFrom}<span class="text-brand-muted text-sm font-sans">{t.apartments.night}</span></p>
+            <p class="text-brand-muted text-sm leading-relaxed">{apt.description_en}</p>
           </div>
           <BookingWidget smoobuPropertyId={apt.smoobuPropertyId} lang={lang} />
         </div>

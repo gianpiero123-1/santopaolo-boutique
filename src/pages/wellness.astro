@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useTranslations, getLocalePath } from '../i18n/index';
+import Lightbox from '../components/Lightbox.astro';
+
+const lang = 'it';
+const t = useTranslations(lang);
+
+const services = [
+  {
+    id: 'gym',
+    name: 'Palestra Attrezzata',
+    description: 'Cardio e pesi professionali disponibili 24h per gli ospiti degli appartamenti, al piano wellness dello stabile.',
+    svgInner: `<path d="M5 8h2v8H5zM17 8h2v8h-2zM3 11h2v2H3zM19 11h2v2h-2zM7 12h10"/>`,
+  },
+  {
+    id: 'steam',
+    name: 'Bagno turco',
+    description: 'Bagno turco privato con cromoterapia e aromaterapia, sempre disponibile per gli ospiti. Asciugamani forniti dalla struttura.',
+    svgInner: `<path d="M12 2L7.5 9A6.5 6.5 0 1 0 16.5 9L12 2z"/>`,
+  },
+  {
+    id: 'pt',
+    name: 'Personal Training su Richiesta',
+    description: 'Sessioni one-to-one con trainer certificato, programmate in base ai tuoi obiettivi e alla durata del soggiorno.',
+    svgInner: `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
+  },
+];
+
+const extras = [
+  'Lavanderia comune',
+  'Parcheggio coperto custodito 24h (€30/giorno, SUV friendly)',
+  'Ricarica veicoli elettrici',
+];
+
+const gymImages = [
+  { src: '/wellness/gym/gym-01.jpg', alt: 'Palestra Santopaolo Apartments vista generale: tapis roulant Precor, macchinari isotonici e rack manubri' },
+  { src: '/wellness/gym/gym-02.jpg', alt: 'Ingresso palestra Santopaolo con parete decorativa e zona pesi sullo sfondo' },
+  { src: '/wellness/gym/gym-03.jpg', alt: 'Palestra Santopaolo, tapis roulant e macchinari cardio con parete colorata' },
+  { src: '/wellness/gym/gym-04.jpg', alt: 'Zona macchinari isotonici e TRX palestra Santopaolo Fitness, Chiaia Napoli' },
+  { src: '/wellness/gym/gym-05.jpg', alt: 'Tapis roulant e manubri palestra Santopaolo con accesso al bagno turco visibile' },
+  { src: '/wellness/gym/gym-06.jpg', alt: 'Sala fitness Santopaolo con macchinari, TV e porta blu di accesso al bagno turco' },
+  { src: '/wellness/gym/gym-07.jpg', alt: 'Rack manubri esagonali palestra Santopaolo, Chiaia: pesi professionali 5-40 kg' },
+  { src: '/wellness/gym/gym-08.jpg', alt: 'Palestra Santopaolo con parete a specchio, rack manubri e separatore arredo' },
+];
+
+const steamroomImages = [
+  { src: '/wellness/steam/steam-01.jpg', alt: 'Doccia emozionale cromoterapia Santopaolo SPA con illuminazione rosa, piastrelle grigio pietra' },
+  { src: '/wellness/steam/steam-02.jpg', alt: 'Bagno turco Santopaolo con sedile in muratura, piastrelle nere verticali e luce cromoterapia rosa' },
+  { src: '/wellness/steam/steam-03.jpg', alt: 'Cabina doccia Santopaolo SPA in pietra grigia, porta vetro scorrevole' },
+  { src: '/wellness/steam/steam-04.jpg', alt: 'Interno doccia Santopaolo con rivestimento in pietra naturale e soffione a pioggia' },
+];
+---
+
+<BaseLayout
+  title={`Wellness Floor — ${t.meta.siteName}`}
+  description="Palestra attrezzata, bagno turco e personal training negli appartamenti Santopaolo a Chiaia, Napoli."
+  lang={lang}
+>
+  <section class="section-padding">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-accent mb-3">Santopaolo Boutique Apartments</p>
+      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">
+        Wellness Floor
+      </h1>
+      <p class="text-brand-muted text-lg max-w-2xl">
+        Un piano dedicato al benessere, riservato agli ospiti degli appartamenti. Nessuna prenotazione esterna, nessuna folla.
+      </p>
+      <div class="mt-12 lg:mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {services.map(service => (
+          <article class="flex flex-col bg-brand-bg2 p-8 border border-[rgba(245,242,236,0.06)] hover:border-brand-accent transition-colors duration-200 group">
+            <div class="mb-6">
+              <svg
+                width="32"
+                height="32"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-brand-muted"
+                aria-hidden="true"
+                set:html={service.svgInner}
+              />
+            </div>
+            <h3 class="font-display text-brand-text text-lg leading-tight tracking-tight mb-3 group-hover:text-brand-accent transition-colors duration-200">
+              {service.name}
+            </h3>
+            <p class="text-brand-muted text-sm leading-relaxed">
+              {service.description}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <Lightbox
+        title="La palestra"
+        images={gymImages}
+      />
+    </div>
+  </section>
+
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <Lightbox
+        title="Bagno turco e docce cromoterapia"
+        images={steamroomImages}
+        columns={2}
+      />
+    </div>
+  </section>
+
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-xl">
+        <h2 class="font-display text-2xl text-brand-text tracking-tight mb-6">Servizi aggiuntivi</h2>
+        <ul class="space-y-3">
+          {extras.map(extra => (
+            <li class="flex items-start gap-3 text-brand-muted text-sm">
+              <span class="w-1 h-1 bg-brand-accent rounded-full flex-shrink-0 mt-1.5" aria-hidden="true"></span>
+              {extra}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-padding bg-brand-bg2 border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight mb-4">
+        Prenota una sessione PT
+      </h2>
+      <p class="text-brand-muted mb-8 max-w-lg mx-auto">
+        Contattaci per pianificare le tue sessioni di personal training prima dell'arrivo.
+      </p>
+      <a href={getLocalePath(lang, '/contact') + '?subject=personal-training'} class="btn-solid">
+        Richiedi una sessione
+      </a>
+    </div>
+  </section>
+</BaseLayout>

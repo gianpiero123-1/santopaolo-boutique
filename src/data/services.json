@@ -1,66 +1,66 @@
 [
   {
     "id": "transfer",
-    "name": { "it": "Transfer Aeroporto, Porto, Stazione", "en": "Airport, Port and Station Transfer" },
+    "name": { "it": "Transfer Aeroporto, Porto, Stazione", "en": "Airport, Port, Station Transfer" },
     "description": {
-      "it": "Autista privato per arrivi e partenze da Capodichino, dal Porto di Napoli e da Piazza Garibaldi. Puntuale, discreto, a vostra completa disposizione.",
-      "en": "Private chauffeur service for arrivals and departures from Capodichino Airport, Naples Port and Piazza Garibaldi station. Punctual, discreet, entirely at your disposal."
+      "it": "Chauffeur privato per arrivi e partenze da Capodichino, Porto di Napoli o Stazione Centrale.",
+      "en": "Private chauffeur for arrivals and departures from Capodichino, Naples Port or Central Station."
     }
   },
   {
     "id": "boat-tour",
     "name": { "it": "Tour in Barca Privata", "en": "Private Boat Tour" },
     "description": {
-      "it": "Capri, Procida e la Costiera Amalfitana, raggiunte a bordo di un'imbarcazione privata con skipper dedicato. Il Golfo di Napoli come non avete mai visto.",
-      "en": "Capri, Procida and the Amalfi Coast, reached aboard a private vessel with a dedicated skipper. The Gulf of Naples as you have never seen it."
+      "it": "Capri, Procida e Costiera Amalfitana, con skipper dedicato e partenza dal molo.",
+      "en": "Capri, Procida and the Amalfi Coast, with a dedicated skipper, departure from the marina."
     }
   },
   {
     "id": "car-rental",
     "name": { "it": "Noleggio Auto e Scooter", "en": "Car and Scooter Rental" },
     "description": {
-      "it": "Auto o scooter consegnati direttamente in appartamento per esplorare Napoli e dintorni in piena autonomia. Flessibilità e libertà di movimento, senza pensieri.",
-      "en": "Car or scooter delivered to your door to explore Naples and its surroundings at your own pace. Freedom and flexibility, without compromise."
+      "it": "Auto o scooter consegnati direttamente in appartamento. Si gira la città ai propri tempi.",
+      "en": "Car or scooter delivered to the apartment. Explore the city on your own terms."
     }
   },
   {
     "id": "restaurants",
     "name": { "it": "Prenotazioni Ristoranti", "en": "Restaurant Reservations" },
     "description": {
-      "it": "Accesso privilegiato a una selezione curata tra i migliori ristoranti di Chiaia e di tutta Napoli. Prenotazioni garantite, anche nei locali più esclusivi.",
-      "en": "Priority access to a curated selection of the finest restaurants in Chiaia and across Naples. Reservations guaranteed, even at the most sought-after addresses."
+      "it": "Accesso prioritario a una selezione curata dei migliori ristoranti di Chiaia e Napoli.",
+      "en": "Priority access to a curated selection of the best restaurants in Chiaia and across Naples."
     }
   },
   {
     "id": "food-experience",
     "name": { "it": "Esperienze Gastronomiche", "en": "Gastronomic Experiences" },
     "description": {
-      "it": "Cooking class napoletana, food tour nei mercati storici e degustazioni private con produttori locali. Un'immersione nel gusto autentico della città.",
-      "en": "Neapolitan cooking classes, food tours through the historic markets and private tastings with local producers. An immersion in the authentic taste of the city."
+      "it": "Cooking class napoletane, food tour nei mercati storici, degustazioni private con i produttori.",
+      "en": "Neapolitan cooking classes, food tours through historic markets, private tastings with local producers."
     }
   },
   {
     "id": "private-tours",
-    "name": { "it": "Tour Privati Pompei, Ercolano, Vesuvio", "en": "Private Tours: Pompeii, Herculaneum, Vesuvius" },
+    "name": { "it": "Tour Privati Pompei, Ercolano, Vesuvio", "en": "Private Tours Pompeii, Herculaneum, Vesuvius" },
     "description": {
-      "it": "Guida privata dedicata per i siti archeologici di Pompei, Ercolano e il Vesuvio. Accesso prioritario, nessuna coda, solo voi e la storia.",
-      "en": "Dedicated private guide for the archaeological sites of Pompeii, Herculaneum and Vesuvius. Priority access, no queues, just you and history."
+      "it": "Guida privata per i siti archeologici e il Vesuvio. Niente code, accesso prioritario.",
+      "en": "Private guide for the archaeological sites and Vesuvius. No queues, priority access."
     }
   },
   {
     "id": "personal-shopping",
-    "name": { "it": "Personal Shopping Chiaia", "en": "Personal Shopping Chiaia" },
+    "name": { "it": "Personal Shopping a Chiaia", "en": "Personal Shopping in Chiaia" },
     "description": {
-      "it": "Un consulente di stile tra le boutique di Via dei Mille, Via Filangieri e i concept store di Chiaia. Napoli è una delle capitali europee della sartoria e del lusso.",
-      "en": "A personal stylist through the boutiques of Via dei Mille, Via Filangieri and the concept stores of Chiaia. Naples is one of Europe's capitals of tailoring and luxury."
+      "it": "Uno stylist personale tra le boutique di Via dei Mille, Via Filangieri e i concept store del quartiere.",
+      "en": "A personal stylist through the boutiques of Via dei Mille, Via Filangieri and Chiaia's concept stores."
     }
   },
   {
     "id": "concierge-247",
     "name": { "it": "Concierge 24/7", "en": "24/7 Concierge" },
     "description": {
-      "it": "Assistenza continua per ogni esigenza, dal momento del check-in all'ultimo istante del soggiorno. Un solo numero, risposte immediate.",
-      "en": "Continuous assistance for any need, from the moment of check-in to the very last instant of your stay. A single number, immediate responses."
+      "it": "Assistenza continua, dal check-in all'ultimo momento del soggiorno.",
+      "en": "Continuous assistance, from check-in to the very last moment of your stay."
     }
   }
 ]
