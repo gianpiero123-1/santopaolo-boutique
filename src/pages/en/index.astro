@@ -58,28 +58,30 @@ const mobileHeroCards = [
     <div class="relative z-10 h-full flex flex-col items-center justify-between py-16 px-6">
       <div class="flex-1"></div>
 
-      <div class="flex flex-col items-center gap-4 text-center">
-        <img src="/logo-mark.svg" alt="Santopaolo Boutique Apartments" class="w-16 h-16" />
-        <div class="flex flex-col items-center gap-2">
-          <h1 class="font-display text-3xl font-medium text-[#F5F2EC] leading-none tracking-tight">
-            SANTOPAOLO
-          </h1>
-          <p class="text-[10px] font-medium text-[#F5F2EC]/90 tracking-[0.35em] uppercase whitespace-nowrap">
-            Boutique Apartments
-          </p>
+      <div class="flex flex-col items-center gap-6 text-center w-full">
+        <div class="flex flex-col items-center gap-4">
+          <img src="/logo-mark.svg" alt="Santopaolo Boutique Apartments" class="w-16 h-16" />
+          <div class="flex flex-col items-center gap-2">
+            <h1 class="font-display text-3xl font-medium text-[#F5F2EC] leading-none tracking-tight">
+              SANTOPAOLO
+            </h1>
+            <p class="text-[10px] font-medium text-[#F5F2EC]/90 tracking-[0.35em] uppercase whitespace-nowrap">
+              Boutique Apartments
+            </p>
+          </div>
+        </div>
+
+        <div class="w-full flex flex-row gap-2 mt-2">
+          <a href={getLocalePath(lang, '/apartments')} class="flex-1 text-center bg-[#6B1F1F] hover:bg-[#8A2A2A] text-[#F5F2EC] font-medium tracking-[0.15em] uppercase text-[10px] py-3 px-2 transition-colors">
+            View apartments
+          </a>
+          <a href={getLocalePath(lang, '/concierge')} class="flex-1 text-center border border-[#F5F2EC]/40 hover:border-[#F5F2EC] text-[#F5F2EC] font-medium tracking-[0.15em] uppercase text-[10px] py-3 px-2 transition-colors">
+            Concierge services
+          </a>
         </div>
       </div>
 
-      <div class="flex-1"></div>
-
-      <div class="w-full flex flex-row gap-2">
-        <a href={getLocalePath(lang, '/apartments')} class="flex-1 text-center bg-[#6B1F1F] hover:bg-[#8A2A2A] text-[#F5F2EC] font-medium tracking-[0.15em] uppercase text-[10px] py-3 px-2 transition-colors">
-          View apartments
-        </a>
-        <a href={getLocalePath(lang, '/concierge')} class="flex-1 text-center border border-[#F5F2EC]/40 hover:border-[#F5F2EC] text-[#F5F2EC] font-medium tracking-[0.15em] uppercase text-[10px] py-3 px-2 transition-colors">
-          Concierge services
-        </a>
-      </div>
+      <div class="flex-[2]"></div>
     </div>
   </section>
 
