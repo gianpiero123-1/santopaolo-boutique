@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
 import { useTranslations, getLocalePath } from '../../i18n/index';
 import servicesData from '../../data/services.json';
+import '../../styles/concierge-hero.css';
 
 const lang = 'it';
 const t = useTranslations(lang);
@@ -14,24 +15,27 @@ const previewServices = servicesData.slice(0, 4);
   description={t.concierge.hero.body}
   lang={lang}
 >
+  <Fragment slot="head">
+    <link rel="preload" as="image" href="/images/concierge-hero.jpg" />
+  </Fragment>
+
   <!-- Hero -->
-  <section class="relative min-h-[75vh] flex items-end bg-brand-bg overflow-hidden">
-    <div class="absolute inset-0 bg-brand-bg2" aria-hidden="true">
-      <div class="absolute inset-0 bg-gradient-to-t from-brand-bg via-brand-bg/50 to-transparent"></div>
-    </div>
-    <div class="relative max-w-7xl mx-auto px-6 lg:px-8 pb-16 lg:pb-24 w-full">
-      <div class="max-w-xl space-y-6">
-        <p class="nav-link text-brand-accent">{t.concierge.hero.eyebrow}</p>
-        <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight leading-none">
-          {t.concierge.hero.title}
-        </h1>
-        <p class="text-brand-muted text-lg leading-relaxed">
-          {t.concierge.hero.body}
-        </p>
-        <a href={getLocalePath(lang, '/concierge/services')} class="btn-solid inline-block">
-          {t.concierge.hero.cta}
-        </a>
-      </div>
+  <section class="ch-section ch-section--tall">
+    <img
+      src="/images/concierge-hero.jpg"
+      alt="Driver privato a Napoli, servizio transfer"
+      loading="eager"
+      decoding="async"
+      class="ch-img"
+    />
+    <div class="ch-overlay" aria-hidden="true"></div>
+    <div class="ch-content">
+      <p class="ch-eyebrow">{t.concierge.hero.eyebrow}</p>
+      <h1 class="ch-title">{t.concierge.hero.title}</h1>
+      <p class="ch-body">{t.concierge.hero.body}</p>
+      <a href={getLocalePath(lang, '/concierge/services')} class="ch-cta">
+        {t.concierge.hero.cta}
+      </a>
     </div>
   </section>
 
