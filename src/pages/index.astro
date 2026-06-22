@@ -20,6 +20,16 @@ const heroImages = [
   '/wellness/gym/gym-01.jpg',
   '/wellness/steam/steam-01.jpg',
 ];
+
+// Mobile hero mosaic: gallery[0] of each apartment + wellness gym shot
+const mobileHeroCards = [
+  apartmentsData[0].gallery[0],
+  apartmentsData[1].gallery[0],
+  apartmentsData[2].gallery[0],
+  apartmentsData[3].gallery[0],
+  apartmentsData[4].gallery[0],
+  '/wellness/gym/gym-01.jpg',
+];
 ---
 
 <BaseLayout
@@ -30,11 +40,54 @@ const heroImages = [
   <Fragment slot="head">
     <link rel="preload" as="image" href="/images/concierge-hero.jpg" />
   </Fragment>
-  <Hero
-    images={heroImages}
-    btnPrimaryHref={getLocalePath(lang, '/apartments')}
-    btnGhostHref={getLocalePath(lang, '/concierge')}
-  />
+  <!-- Mobile hero: 2x3 photo mosaic + centered brand + CTAs -->
+  <section class="relative md:hidden h-screen w-full overflow-hidden bg-[#0E0E0E]">
+    <div class="absolute inset-0 grid grid-cols-2 grid-rows-3 gap-2 p-2">
+      {mobileHeroCards.map((src) => (
+        <div class="relative rounded-2xl overflow-hidden">
+          <img src={src} alt="" class="w-full h-full object-cover" loading="eager" decoding="async" />
+        </div>
+      ))}
+    </div>
+
+    <!-- Dark overlay for legibility -->
+    <div class="absolute inset-0 bg-black/60"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/80"></div>
+
+    <!-- Centered content -->
+    <div class="relative z-10 h-full flex flex-col items-center justify-between py-16 px-6">
+      <div class="flex-1"></div>
+
+      <div class="flex flex-col items-center gap-5 text-center">
+        <img src="/logo-mark.svg" alt="Santopaolo Boutique Apartments" class="w-20 h-20" />
+        <h1 class="font-display text-4xl leading-[1.1] text-[#F5F2EC] tracking-tight">
+          Santopaolo
+          <span class="block text-2xl tracking-[0.2em] uppercase mt-2 text-[#F5F2EC]/90">Boutique Apartments</span>
+        </h1>
+        <p class="text-sm text-[#F5F2EC]/70 tracking-[0.15em] uppercase">Chiaia, Napoli</p>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <div class="w-full flex flex-col gap-3">
+        <a href={getLocalePath(lang, '/apartments')} class="w-full text-center bg-[#6B1F1F] hover:bg-[#8A2A2A] text-[#F5F2EC] font-medium tracking-[0.15em] uppercase text-sm py-4 transition-colors">
+          Scopri gli appartamenti
+        </a>
+        <a href={getLocalePath(lang, '/concierge')} class="w-full text-center border border-[#F5F2EC]/40 hover:border-[#F5F2EC] text-[#F5F2EC] font-medium tracking-[0.15em] uppercase text-sm py-4 transition-colors">
+          Servizi concierge
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Desktop hero (unchanged), hidden on mobile -->
+  <div class="hidden md:block">
+    <Hero
+      images={heroImages}
+      btnPrimaryHref={getLocalePath(lang, '/apartments')}
+      btnGhostHref={getLocalePath(lang, '/concierge')}
+    />
+  </div>
 
   <!-- Featured Apartments -->
   <section class="section-padding bg-brand-bg">
