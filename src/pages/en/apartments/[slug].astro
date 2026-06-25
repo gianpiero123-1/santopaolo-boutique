@@ -16,6 +16,16 @@ const { apartment } = Astro.props;
 const lang = 'en';
 const t = useTranslations(lang);
 
+// Mapping apartment -> Italianway booking engine ID
+const italianwayIds: Record<number, string> = {
+  1: '16799',
+  2: '16784',
+  3: '16788',
+  4: '15813',
+  5: '16786',
+};
+const italianwayId = italianwayIds[apartment.id];
+
 const bedroomsLabel = apartment.bedrooms === 0 ? 'Studio' : `${apartment.bedrooms} ${t.apartments.bedrooms}`;
 
 const commonAmenities = [
@@ -160,7 +170,7 @@ const buildingImages = [
 
       <aside class="lg:col-span-1">
         <div class="sticky top-24">
-          <BookingWidget smoobuPropertyId={apartment.smoobuPropertyId} lang={lang} />
+          <BookingWidget italianwayId={italianwayId} maxGuests={apartment.max_guests} lang={lang} />
         </div>
       </aside>
     </div>

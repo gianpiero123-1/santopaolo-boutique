@@ -31,29 +31,18 @@ function isActive(href: string): boolean {
   data-navbar
 >
   <div class="max-w-7xl mx-auto px-6 lg:px-8">
-    <nav class="flex items-center justify-between h-16 lg:h-20">
+    <nav class="flex items-center justify-between py-6 lg:py-8">
       <!-- Logo -->
       <a
         href={getLocalePath(lang, '/')}
-        class="flex items-center gap-3 flex-shrink-0"
+        class="block flex-shrink-0"
         aria-label="Santopaolo Boutique Apartments — Home"
       >
         <img
-          src="/logo.svg"
-          alt=""
-          class="hidden lg:block h-11 w-auto"
-          aria-hidden="true"
+          src="/logo-santopaolo-dark.svg"
+          alt="Santopaolo Boutique Apartments"
+          class="h-20 lg:h-28 w-auto"
         />
-        <img
-          src="/logo-mark.svg"
-          alt=""
-          class="block lg:hidden h-8 w-auto"
-          aria-hidden="true"
-        />
-        <span class="hidden lg:flex flex-col leading-none">
-          <span class="font-display text-brand-text text-[20px] tracking-[0.01em] leading-tight">Santopaolo</span>
-          <span class="font-sans text-brand-muted text-[9px] tracking-[0.4em] uppercase mt-0.5">Boutique Apartments</span>
-        </span>
       </a>
 
       <!-- Desktop nav -->
@@ -116,7 +105,7 @@ function isActive(href: string): boolean {
 </header>
 
 <!-- Spacer for fixed navbar -->
-<div class="h-16 lg:h-20" aria-hidden="true"></div>
+<div class="h-32 lg:h-44" aria-hidden="true"></div>
 
 <script>
   const navbar = document.querySelector('[data-navbar]') as HTMLElement;

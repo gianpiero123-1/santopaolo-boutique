@@ -1,8 +1,0 @@
-<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Santopaolo">
-  <rect width="64" height="64" fill="#0E0E0E"/>
-  <g fill="none" stroke="#6B1F1F" stroke-width="2" stroke-linejoin="miter">
-    <polygon points="32,12 12,52 52,52"/>
-    <polygon points="22,22 4,58 40,58"/>
-    <polygon points="42,22 24,58 60,58"/>
-  </g>
-</svg>

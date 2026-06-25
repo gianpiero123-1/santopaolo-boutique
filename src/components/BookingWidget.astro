@@ -1,39 +1,133 @@
 ---
-import type { Lang } from '../i18n/index';
-import { useTranslations } from '../i18n/index';
-
 interface Props {
-  smoobuPropertyId: string;
-  lang?: Lang;
+  italianwayId: string;
+  maxGuests: number;
+  lang?: 'it' | 'en';
 }
 
-const { smoobuPropertyId, lang = 'it' } = Astro.props;
-const t = useTranslations(lang);
+const { italianwayId, maxGuests, lang = 'it' } = Astro.props;
+
+const slug = lang === 'it' ? 'appartamento-napoli' : 'apartment-naples';
+const baseUrl = `https://napartments.italianway.house/apartments/${italianwayId}-${slug}`;
+const localeParam = lang === 'it' ? 'it' : 'en';
+
+const today = new Date().toISOString().split('T')[0];
+const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+
+const t = {
+  it: {
+    title: 'Verifica disponibilità e prezzi in tempo reale.',
+    checkin: 'Check-in',
+    checkout: 'Check-out',
+    guests: 'Ospiti',
+    cta: 'Verifica e prenota',
+    whatsapp: 'Prenota via WhatsApp',
+    guestLabel: (n: number) => n === 1 ? '1 ospite' : `${n} ospiti`
+  },
+  en: {
+    title: 'Check real-time availability and rates.',
+    checkin: 'Check-in',
+    checkout: 'Check-out',
+    guests: 'Guests',
+    cta: 'Check and book',
+    whatsapp: 'Book via WhatsApp',
+    guestLabel: (n: number) => n === 1 ? '1 guest' : `${n} guests`
+  }
+}[lang];
+
+const formId = `booking-${italianwayId}`;
 ---
 
-<div class="border border-brand-border bg-brand-bg2 p-6 lg:p-8 space-y-4">
-  <p class="text-brand-muted text-xs nav-link mb-2">{t.book.smoobuNote}</p>
+<div class="rounded-sm border border-[#2A2A2A] bg-[#1C1C1C] p-6 space-y-5">
+  <p class="text-xs uppercase tracking-wider text-[#8A8580] font-inter">
+    {t.title}
+  </p>
 
-  <!-- TODO: embed Smoobu booking widget -->
-  <!-- Replace the placeholder below with the actual Smoobu embed code.
-       Property ID: {smoobuPropertyId}
-       Docs: https://help.smoobu.com/en/articles/booking-widget -->
-  <div
-    class="w-full min-h-48 bg-brand-bg border border-dashed border-brand-border flex items-center justify-center"
-    aria-label="Booking widget placeholder"
-  >
-    <div class="text-center space-y-2 px-6">
-      <p class="text-brand-muted text-sm">Booking Widget</p>
-      <p class="text-brand-border text-xs font-mono">Smoobu ID: {smoobuPropertyId}</p>
+  <form id={formId} class="space-y-4">
+    <div class="space-y-1">
+      <label for={`${formId}-checkin`} class="block text-[10px] uppercase tracking-wider text-[#8A8580] font-inter">
+        {t.checkin}
+      </label>
+      <input
+        type="date"
+        id={`${formId}-checkin`}
+        name="from_date"
+        min={today}
+        class="w-full bg-[#0E0E0E] border border-[#2A2A2A] text-[#F5F2EC] px-3 py-2.5 text-sm font-inter focus:outline-none focus:border-[#6B1F1F] transition-colors"
+      />
     </div>
-  </div>
+
+    <div class="space-y-1">
+      <label for={`${formId}-checkout`} class="block text-[10px] uppercase tracking-wider text-[#8A8580] font-inter">
+        {t.checkout}
+      </label>
+      <input
+        type="date"
+        id={`${formId}-checkout`}
+        name="to_date"
+        min={tomorrow}
+        class="w-full bg-[#0E0E0E] border border-[#2A2A2A] text-[#F5F2EC] px-3 py-2.5 text-sm font-inter focus:outline-none focus:border-[#6B1F1F] transition-colors"
+      />
+    </div>
+
+    <div class="space-y-1">
+      <label for={`${formId}-guests`} class="block text-[10px] uppercase tracking-wider text-[#8A8580] font-inter">
+        {t.guests}
+      </label>
+      <select
+        id={`${formId}-guests`}
+        name="guests"
+        class="w-full bg-[#0E0E0E] border border-[#2A2A2A] text-[#F5F2EC] px-3 py-2.5 text-sm font-inter focus:outline-none focus:border-[#6B1F1F] transition-colors"
+      >
+        {Array.from({ length: maxGuests }, (_, i) => i + 1).map((n) => (
+          <option value={n}>{t.guestLabel(n)}</option>
+        ))}
+      </select>
+    </div>
+
+    <button
+      type="submit"
+      class="w-full bg-[#6B1F1F] hover:bg-[#8A2A2A] text-[#F5F2EC] uppercase tracking-wider text-xs font-inter py-3.5 transition-colors"
+    >
+      {t.cta}
+    </button>
+  </form>
 
   <a
-    href={`https://wa.me/390810000000?text=${encodeURIComponent('Vorrei prenotare ' + smoobuPropertyId)}`}
+    href="https://wa.me/393313225577"
     target="_blank"
     rel="noopener noreferrer"
-    class="btn-outline w-full text-center text-xs py-3 block"
+    class="block w-full text-center border border-[#6B1F1F] text-[#6B1F1F] hover:bg-[#6B1F1F] hover:text-[#F5F2EC] uppercase tracking-wider text-xs font-inter py-3.5 transition-colors"
   >
-    {lang === 'it' ? 'Prenota via WhatsApp' : 'Book via WhatsApp'}
+    {t.whatsapp}
   </a>
 </div>
+
+<script define:vars={{ formId, baseUrl, localeParam }}>
+  document.getElementById(formId)?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const fd = new FormData(form);
+    const params = new URLSearchParams();
+    params.set('locale', localeParam);
+    const ci = fd.get('from_date');
+    const co = fd.get('to_date');
+    const g = fd.get('guests');
+    if (ci) params.set('from_date', ci);
+    if (co) params.set('to_date', co);
+    if (g) params.set('guests', g);
+    const url = `${baseUrl}?${params.toString()}`;
+    window.open(url, '_blank', 'noopener');
+  });
+
+  const ci = document.getElementById(`${formId}-checkin`);
+  const co = document.getElementById(`${formId}-checkout`);
+  ci?.addEventListener('change', () => {
+    if (ci.value) {
+      const d = new Date(ci.value);
+      d.setDate(d.getDate() + 1);
+      co.min = d.toISOString().split('T')[0];
+      if (co.value && co.value <= ci.value) co.value = co.min;
+    }
+  });
+</script>

@@ -32,7 +32,7 @@ const {
 } = Astro.props;
 ---
 
-<section class="hero">
+<section class="hero relative flex items-center justify-center overflow-hidden">
 
   <!-- Mobile full-bleed background, visible only on small screens -->
   <div class="hero__mobile-img" style={`background-image: url('${images[0]}')`} aria-hidden="true">
@@ -57,14 +57,26 @@ const {
   <!-- Layer vignette (z-15): radial dark gradient for text legibility -->
   <div class="hero__vignette" aria-hidden="true"></div>
 
-  <!-- Layer B (z-20): centered text -->
-  <div class="hero__content">
-    <span class="hero__eyebrow">{eyebrow}</span>
-    <h1 class="hero__title" set:html={titleHtml} />
-    <p class="hero__sub">{sub}</p>
-    <div class="hero__ctas">
-      <a href={btnPrimaryHref} class="btn btn--primary">{btnPrimary}</a>
-      <a href={btnGhostHref} class="btn btn--ghost">{btnGhost}</a>
+  <!-- Layer B (z-20): centered logo + CTAs -->
+  <div class="relative z-20 flex flex-col items-center px-6 text-center">
+    <img
+      src="/logos/santopaolo-vertical-light.svg"
+      alt="Santopaolo Boutique Apartments"
+      class="w-[280px] md:w-[420px] lg:w-[520px] h-auto"
+    />
+    <div class="mt-12 md:mt-16 flex flex-col md:flex-row items-center gap-4 md:gap-6">
+      <a
+        href={btnPrimaryHref}
+        class="inline-block bg-[#6B1F1F] hover:bg-[#8A2A2A] text-[#F5F2EC] uppercase tracking-[0.15em] text-xs py-4 px-7 transition-colors"
+      >
+        {btnPrimary}
+      </a>
+      <a
+        href={btnGhostHref}
+        class="inline-block border border-[#8A8580] hover:border-[#F5F2EC] text-[#F5F2EC] uppercase tracking-[0.15em] text-xs py-4 px-7 transition-colors"
+      >
+        {btnGhost}
+      </a>
     </div>
   </div>
 
@@ -172,89 +184,6 @@ const {
     );
   }
 
-  /* ===== LAYER B (z-20): perfectly centered text ===== */
-  .hero__content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 20;
-    width: min(900px, calc(100% - 3rem));
-    text-align: center;
-    padding: 0 1rem;
-  }
-
-  .hero__eyebrow {
-    display: block;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #8A8580;
-    margin-bottom: 24px;
-    animation: textEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 600ms backwards;
-  }
-
-  .hero__title {
-    font-family: 'Fraunces', serif;
-    font-weight: 400;
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    line-height: 1.05;
-    color: #F5F2EC;
-    letter-spacing: -0.01em;
-    margin: 0 0 32px;
-    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-    animation: textEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 650ms backwards;
-  }
-
-  .hero__sub {
-    font-family: 'Inter', sans-serif;
-    font-size: 1.125rem;
-    line-height: 1.6;
-    color: #8A8580;
-    max-width: 520px;
-    margin: 0 auto 48px;
-    animation: textEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 700ms backwards;
-  }
-
-  .hero__ctas {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    animation: textEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) 750ms backwards;
-  }
-
-  @keyframes textEnter {
-    from { opacity: 0; translate: 0 20px; }
-    to   { opacity: 1; translate: 0 0; }
-  }
-
-  /* ===== BUTTONS ===== */
-  .btn {
-    display: inline-block;
-    padding: 1rem 1.75rem;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-    cursor: pointer;
-  }
-  .btn--primary { background: #6B1F1F; color: #F5F2EC; }
-  .btn--primary:hover { background: #8A2A2A; }
-  .btn--ghost {
-    background: transparent;
-    color: #F5F2EC;
-    border-color: rgba(245, 242, 236, 0.5);
-  }
-  .btn--ghost:hover {
-    background: rgba(245, 242, 236, 0.1);
-    border-color: #F5F2EC;
-  }
-
   /* ===== TABLET (≤1024px): 6 cards at 140px ===== */
   @media (max-width: 1024px) {
     .photo-card { width: 140px; }
@@ -268,16 +197,6 @@ const {
     .hero__mobile-img { display: block; }
     .hero__cards { display: none; }
     .hero__vignette { display: none; }
-
-    .hero__title {
-      font-size: clamp(2.5rem, 8vw, 4rem);
-      margin-bottom: 24px;
-    }
-
-    .hero__sub {
-      font-size: 1rem;
-      margin-bottom: 36px;
-    }
   }
 
   /* ===== REDUCED MOTION ===== */
@@ -285,12 +204,6 @@ const {
     .photo-card {
       animation: none;
       opacity: 0.55;
-    }
-    .hero__eyebrow,
-    .hero__title,
-    .hero__sub,
-    .hero__ctas {
-      animation: none;
     }
   }
 </style>
