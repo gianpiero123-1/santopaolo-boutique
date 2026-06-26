@@ -11,10 +11,13 @@ import type { Booking } from '../../../lib/constants';
 
 export const GET: APIRoute = async ({ request }) => {
   // Optional cron protection: only enforced if CRON_SECRET is configured.
+  // Accept either the Vercel cron header (Authorization: Bearer <CRON_SECRET>)
+  // or a ?secret=<CRON_SECRET> query param (external cron, e.g. cron-job.org).
   const cronSecret = env('CRON_SECRET');
   if (cronSecret) {
     const auth = request.headers.get('authorization');
-    if (auth !== `Bearer ${cronSecret}`) {
+    const querySecret = new URL(request.url).searchParams.get('secret');
+    if (auth !== `Bearer ${cronSecret}` && querySecret !== cronSecret) {
       return json({ error: 'unauthorized' }, 401);
     }
   }
