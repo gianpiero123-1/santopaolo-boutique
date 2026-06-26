@@ -1,0 +1,168 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Calendar from '../../components/admin/Calendar.astro';
+import BookingDetail from '../../components/admin/BookingDetail.astro';
+import { createServerSupabase } from '../../lib/supabase-client';
+import { APARTMENT_ORDER, CHANNELS } from '../../lib/constants';
+import { today, addDays, dateOnly, toISODate, formatRange } from '../../lib/dates';
+import {
+  getLastSync, getBookingsInRange, getBookingById, getNotesForBooking, getTasksForBooking,
+} from '../../lib/queries';
+import { isDirect } from '../../lib/ui';
+
+const supabase = createServerSupabase();
+const sp = Astro.url.searchParams;
+const todayISO = toISODate(today());
+
+// ---- params ----
+const ALLOWED_RANGES = [14, 30, 60, 90];
+let range = parseInt(sp.get('range') ?? '30', 10);
+if (!ALLOWED_RANGES.includes(range)) range = 30;
+
+const startISO = sp.get('start') || todayISO;
+const startDate = dateOnly(startISO);
+const endDate = addDays(startDate, range - 1);
+
+// unit filter: indices 1..5 -> apartment ids (default all)
+const unitParam = sp.get('unit');
+const activeUnits = unitParam
+  ? unitParam.split(',').map((s) => parseInt(s, 10)).filter((n) => n >= 1 && n <= 5)
+  : [1, 2, 3, 4, 5];
+const activeUnitSet = new Set(activeUnits);
+const selectedApartmentIds = activeUnits.map((n) => APARTMENT_ORDER[n - 1]);
+
+// channel filter (default all)
+const channelParam = sp.get('channel');
+const activeChannels = channelParam
+  ? channelParam.split(',').filter((c) => (CHANNELS as readonly string[]).includes(c))
+  : [...CHANNELS];
+const activeChannelSet = new Set(activeChannels);
+
+const bookingId = sp.get('booking');
+
+// ---- data ----
+const [lastSync, allBookings] = await Promise.all([
+  getLastSync(supabase),
+  getBookingsInRange(supabase, startISO, toISODate(endDate)),
+]);
+
+function channelOf(ota: string | null): string {
+  if (isDirect(ota)) return 'Diretto';
+  return ota && (CHANNELS as readonly string[]).includes(ota) ? ota : 'Diretto';
+}
+
+const bookings = allBookings.filter(
+  (b) => activeUnitSet.has(APARTMENT_ORDER.indexOf(b.apartment_id) + 1) && activeChannelSet.has(channelOf(b.ota)),
+);
+
+let detail = null;
+if (bookingId) {
+  const booking = await getBookingById(supabase, bookingId);
+  if (booking) {
+    const [notes, tasks] = await Promise.all([
+      getNotesForBooking(supabase, bookingId),
+      getTasksForBooking(supabase, bookingId),
+    ]);
+    detail = { booking, notes, tasks };
+  }
+}
+
+// ---- URL building (preserves current filters) ----
+function makeUrl(overrides: Record<string, string | null>): string {
+  const base: Record<string, string | null> = {
+    range: range === 30 ? null : String(range),
+    start: startISO === todayISO ? null : startISO,
+    unit: activeUnits.length === 5 ? null : activeUnits.join(','),
+    channel: activeChannels.length === CHANNELS.length ? null : activeChannels.join(','),
+    booking: bookingId,
+  };
+  const merged = { ...base, ...overrides };
+  const usp = new URLSearchParams();
+  for (const [k, v] of Object.entries(merged)) {
+    if (v != null && v !== '') usp.set(k, v);
+  }
+  const qs = usp.toString();
+  return qs ? `/admin/calendar?${qs}` : '/admin/calendar';
+}
+
+function toggle(list: readonly (number | string)[], value: number | string): string {
+  const arr = list.map(String);
+  const v = String(value);
+  const next = arr.includes(v) ? arr.filter((x) => x !== v) : [...arr, v];
+  return next.join(',');
+}
+
+const rangeLabel = formatRange(startDate, endDate);
+const minCell = range === 14 ? 78 : 54;
+const monthDividers = range >= 30;
+---
+
+<AdminLayout title="Calendario" activePage="calendar" lastSync={lastSync}>
+
+  <div class="page-title-row">
+    <h1 class="page-title">Calendario</h1>
+    <div class="nav-controls">
+      <a class="nav-arrow" href={makeUrl({ start: toISODate(addDays(startDate, -range)) })}>‹</a>
+      <span class="nav-range">{rangeLabel}</span>
+      <a class="nav-arrow" href={makeUrl({ start: toISODate(addDays(startDate, range)) })}>›</a>
+      <a class="nav-today" href={makeUrl({ start: null })}>Oggi</a>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <div class="filter-group">
+      <span class="filter-label">Range</span>
+      {ALLOWED_RANGES.map((r) => (
+        <a class={`chip${range === r ? ' active' : ''}`} href={makeUrl({ range: String(r) })}>{r} gg</a>
+      ))}
+    </div>
+    <div class="range-divider"></div>
+    <div class="filter-group">
+      <span class="filter-label">Unità</span>
+      {[1, 2, 3, 4, 5].map((n) => (
+        <a class={`chip${activeUnitSet.has(n) ? ' active' : ''}`} href={makeUrl({ unit: toggle(activeUnits, n) || null })}>App {n}</a>
+      ))}
+    </div>
+    <div class="range-divider"></div>
+    <div class="filter-group">
+      <span class="filter-label">Canale</span>
+      {CHANNELS.map((c) => (
+        <a class={`chip${activeChannelSet.has(c) ? ' active' : ''}`} href={makeUrl({ channel: toggle(activeChannels, c) || null })}>{c}</a>
+      ))}
+    </div>
+  </div>
+
+  <div class={`main-layout${detail ? ' cal' : ''}`}>
+    <div>
+      <Calendar
+        bookings={bookings}
+        rangeStartISO={startISO}
+        days={range}
+        minCell={minCell}
+        monthDividers={monthDividers}
+        selectedId={bookingId}
+        apartmentIds={selectedApartmentIds}
+        makeHref={(b) => makeUrl({ booking: b.id })}
+      />
+
+      <div class="legend">
+        <div class="leg-item"><div class="leg-chip booking"></div>Prenotazione OTA</div>
+        <div class="leg-item"><div class="leg-chip direct"></div>Prenotazione diretta</div>
+        <div class="leg-item"><div class="leg-chip empty"></div>Libero</div>
+        <div class="leg-item"><div class="leg-chip today"></div>Oggi</div>
+      </div>
+    </div>
+
+    {detail && (
+      <BookingDetail
+        booking={detail.booking}
+        notes={detail.notes}
+        tasks={detail.tasks}
+        closeHref={makeUrl({ booking: null })}
+      />
+    )}
+  </div>
+
+</AdminLayout>

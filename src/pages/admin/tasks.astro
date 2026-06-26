@@ -1,0 +1,393 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createServerSupabase } from '../../lib/supabase-client';
+import { APARTMENT_ORDER, apartmentShort, TASK_TYPE_LABELS, type Task } from '../../lib/constants';
+import {
+  today, addDays, toISODate, romeDateOf, formatTime, formatDayMonth, weekdayLong,
+} from '../../lib/dates';
+import { getLastSync, getTasksBetween } from '../../lib/queries';
+
+const supabase = createServerSupabase();
+const sp = Astro.url.searchParams;
+const tab = sp.get('tab') ?? 'today';
+const bookingId = sp.get('booking');
+
+const todayDate = today();
+const todayISO = toISODate(todayDate);
+const tomorrowISO = toISODate(addDays(todayDate, 1));
+const weekEndISO = toISODate(addDays(todayDate, 6));
+
+// Fetch a generous window of pending + recent completed tasks.
+const [lastSync, pendingAll, completedAll] = await Promise.all([
+  getLastSync(supabase),
+  getTasksBetween(supabase, toISODate(addDays(todayDate, -2)), toISODate(addDays(todayDate, 120)), 'pending'),
+  getTasksBetween(supabase, toISODate(addDays(todayDate, -30)), toISODate(addDays(todayDate, 1)), 'completed'),
+]);
+
+const isToday = (t: Task) => romeDateOf(t.due_at) === todayISO;
+const isTomorrow = (t: Task) => romeDateOf(t.due_at) === tomorrowISO;
+const inWeek = (t: Task) => {
+  const d = romeDateOf(t.due_at);
+  return d >= todayISO && d <= weekEndISO;
+};
+
+const counts = {
+  today: pendingAll.filter(isToday).length,
+  tomorrow: pendingAll.filter(isTomorrow).length,
+  week: pendingAll.filter(inWeek).length,
+  open: pendingAll.length,
+  done: completedAll.length,
+};
+
+let active: Task[];
+if (tab === 'tomorrow') active = pendingAll.filter(isTomorrow);
+else if (tab === 'week') active = pendingAll.filter(inWeek);
+else if (tab === 'open') active = pendingAll;
+else if (tab === 'done') active = completedAll.slice().reverse();
+else active = pendingAll.filter(isToday);
+
+// Group by Rome date.
+const groupMap = new Map<string, Task[]>();
+for (const t of active) {
+  const d = romeDateOf(t.due_at);
+  if (!groupMap.has(d)) groupMap.set(d, []);
+  groupMap.get(d)!.push(t);
+}
+const groups = [...groupMap.entries()]
+  .sort((a, b) => (a[0] < b[0] ? -1 : 1))
+  .map(([dateISO, tasks]) => ({ dateISO, tasks }));
+
+function groupLabel(dateISO: string): string {
+  const [y, m, d] = dateISO.split('-').map(Number);
+  const dt = new Date(Date.UTC(y, m - 1, d));
+  if (dateISO === todayISO) return `Oggi, ${formatDayMonth(dt)}`;
+  if (dateISO === tomorrowISO) return `Domani, ${weekdayLong(dt).toLowerCase()} ${formatDayMonth(dt)}`;
+  const w = weekdayLong(dt);
+  return `${w.charAt(0).toUpperCase() + w.slice(1)} ${formatDayMonth(dt)}`;
+}
+
+function reminderSub(t: Task): string {
+  if (t.telegram_sent) return 'Telegram inviato';
+  if (!t.telegram_reminder_at) return 'Manuale';
+  const mins = Math.round((new Date(t.due_at).getTime() - new Date(t.telegram_reminder_at).getTime()) / 60000);
+  if (mins <= 0) return 'Reminder';
+  if (mins < 60) return `Reminder ${mins}m`;
+  if (mins % 60 === 0) return `Reminder ${mins / 60}h`;
+  return `Reminder ${mins}m`;
+}
+
+function unitLabel(t: Task): string {
+  if (!t.apartment_ids || t.apartment_ids.length === 0) return 'Tutte le unità';
+  if (t.apartment_ids.length === APARTMENT_ORDER.length) return 'Tutte le unità';
+  return t.apartment_ids.map(apartmentShort).join(', ');
+}
+
+const tabs = [
+  { key: 'today', label: 'Oggi', count: counts.today },
+  { key: 'tomorrow', label: 'Domani', count: counts.tomorrow },
+  { key: 'week', label: 'Settimana', count: counts.week },
+  { key: 'open', label: 'Tutti aperti', count: counts.open },
+  { key: 'done', label: 'Completati', count: counts.done },
+];
+---
+
+<AdminLayout title="Task" activePage="tasks" lastSync={lastSync}>
+
+  <div class="page-title-row">
+    <h1 class="page-title">Task</h1>
+  </div>
+
+  <div class="tabs">
+    {tabs.map((t) => (
+      <a class={`tab${tab === t.key ? ' active' : ''}`} href={t.key === 'today' ? '/admin/tasks' : `/admin/tasks?tab=${t.key}`}>
+        {t.label}<span class="tab-count">{t.count}</span>
+      </a>
+    ))}
+  </div>
+
+  <div class="main-layout tasks">
+
+    <!-- LEFT: task list -->
+    <div>
+      {groups.length === 0 && <div class="panel-empty">Nessun task in questa vista.</div>}
+
+      {groups.map((g) => {
+        const open = g.tasks.filter((t) => t.status === 'pending').length;
+        const done = g.tasks.filter((t) => t.status === 'completed').length;
+        return (
+          <div class="task-group">
+            <div class="task-group-head">
+              <span>{groupLabel(g.dateISO)}</span>
+              <span class="task-group-count">{open} aperti{done ? `, ${done} fatti` : ''}</span>
+            </div>
+
+            {g.tasks.map((t) => (
+              <div class={`task${t.status === 'completed' ? ' done' : ''}`} data-task-id={t.id}>
+                <button class={`task-checkbox js-toggle${t.status === 'completed' ? ' checked' : ''}`} data-id={t.id} data-done={t.status === 'completed' ? '1' : '0'} aria-label="Completa task">{t.status === 'completed' ? '✓' : ''}</button>
+                <div>
+                  <div class="task-time">{formatTime(t.due_at)}</div>
+                  <div class="task-time-sub">{reminderSub(t)}</div>
+                </div>
+                <div class="task-body">
+                  <div class="task-title">{t.title}</div>
+                  {t.description && <div class="task-desc">{t.description}</div>}
+                  <div class="task-meta">
+                    <span class="task-tag unit">{unitLabel(t)}</span>
+                    <span class="task-tag type">{TASK_TYPE_LABELS[t.task_type]}</span>
+                    {t.telegram_sent && <span class="task-tag telegram">Telegram inviato</span>}
+                    {!t.telegram_sent && t.telegram_reminder_at && <span class="task-tag telegram">Telegram {formatTime(t.telegram_reminder_at)}</span>}
+                    {t.recurring && <span class="task-tag recurring">{t.recurring === 'daily' ? 'Giornaliera' : t.recurring === 'weekly' ? 'Settimanale' : 'Mensile'}</span>}
+                  </div>
+                </div>
+                <button class="task-actions js-delete" data-id={t.id} aria-label="Elimina task">⋯</button>
+              </div>
+            ))}
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- RIGHT: new task form -->
+    <aside class="form-panel">
+      <div class="form-head">
+        <h3>Nuovo task</h3>
+        <a class="form-cancel" href="/admin/tasks">Annulla</a>
+      </div>
+
+      <form id="task-form">
+        <input type="hidden" name="booking_id" value={bookingId ?? ''} />
+
+        <div class="field">
+          <label class="field-label" for="t-title">Titolo</label>
+          <input id="t-title" name="title" type="text" class="field-input" placeholder="es. Pulizie post check-out" required />
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="t-desc">Descrizione</label>
+          <textarea id="t-desc" name="description" class="field-textarea" placeholder="Dettagli operativi, contatti, note..."></textarea>
+        </div>
+
+        <div class="field field-row">
+          <div>
+            <label class="field-label" for="t-date">Data</label>
+            <input id="t-date" name="date" type="date" class="field-input" value={todayISO} required />
+          </div>
+          <div>
+            <label class="field-label" for="t-time">Ora</label>
+            <input id="t-time" name="time" type="time" class="field-input" value="11:30" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Unità</label>
+          <div class="field-chips" id="unit-chips">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button type="button" class="chip-mini" data-unit={APARTMENT_ORDER[n - 1]}>App {n}</button>
+            ))}
+            <button type="button" class="chip-mini active" data-unit="all">Tutte</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="t-type">Tipo</label>
+          <select id="t-type" name="task_type" class="field-select">
+            <option value="cleaning">Pulizie</option>
+            <option value="laundry">Lavanderia</option>
+            <option value="tax">Tasse soggiorno</option>
+            <option value="checkin">Check-in</option>
+            <option value="checkout">Check-out</option>
+            <option value="maintenance">Manutenzione</option>
+            <option value="other">Altro</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Reminder Telegram</label>
+          <div class="field-chips" id="reminder-chips">
+            <button type="button" class="chip-mini" data-rem="">Niente</button>
+            <button type="button" class="chip-mini active" data-rem="15">15 min prima</button>
+            <button type="button" class="chip-mini" data-rem="60">1 ora prima</button>
+            <button type="button" class="chip-mini" data-rem="360">6 ore prima</button>
+            <button type="button" class="chip-mini" data-rem="1440">24 ore prima</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Ripetizione</label>
+          <div class="field-chips" id="recurring-chips">
+            <button type="button" class="chip-mini active" data-rec="">Mai</button>
+            <button type="button" class="chip-mini" data-rec="daily">Giornaliera</button>
+            <button type="button" class="chip-mini" data-rec="weekly">Settimanale</button>
+            <button type="button" class="chip-mini" data-rec="monthly">Mensile</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Anteprima Telegram</label>
+          <div class="tg-preview" id="tg-preview"><span class="tg-preview-head">Anteprima</span>Compila il titolo per vedere l'anteprima</div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Salva task</button>
+          <a class="btn-secondary" href="/admin/tasks" style="text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">Annulla</a>
+        </div>
+      </form>
+    </aside>
+
+  </div>
+</AdminLayout>
+
+<script>
+  // ---- chip group helpers ----
+  const unitChips = document.getElementById('unit-chips');
+  const reminderChips = document.getElementById('reminder-chips');
+  const recurringChips = document.getElementById('recurring-chips');
+
+  // Units: multi-select with a "Tutte" reset.
+  unitChips?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('.chip-mini') as HTMLElement | null;
+    if (!btn) return;
+    const all = btn.dataset.unit === 'all';
+    const allBtn = unitChips.querySelector('[data-unit="all"]');
+    if (all) {
+      unitChips.querySelectorAll('.chip-mini').forEach((c) => c.classList.remove('active'));
+      btn.classList.add('active');
+    } else {
+      btn.classList.toggle('active');
+      allBtn?.classList.remove('active');
+      const anyUnit = [...unitChips.querySelectorAll('.chip-mini')].some(
+        (c) => (c as HTMLElement).dataset.unit !== 'all' && c.classList.contains('active'),
+      );
+      if (!anyUnit) allBtn?.classList.add('active');
+    }
+    updatePreview();
+  });
+
+  function singleSelect(container: HTMLElement | null) {
+    container?.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('.chip-mini') as HTMLElement | null;
+      if (!btn) return;
+      container.querySelectorAll('.chip-mini').forEach((c) => c.classList.remove('active'));
+      btn.classList.add('active');
+      updatePreview();
+    });
+  }
+  singleSelect(reminderChips);
+  singleSelect(recurringChips);
+
+  function selectedUnits(): number[] {
+    if (!unitChips) return [];
+    const allActive = unitChips.querySelector('[data-unit="all"]')?.classList.contains('active');
+    if (allActive) return [];
+    return [...unitChips.querySelectorAll('.chip-mini.active')]
+      .map((c) => parseInt((c as HTMLElement).dataset.unit || '', 10))
+      .filter((n) => !isNaN(n));
+  }
+  function selectedReminder(): number | null {
+    const v = reminderChips?.querySelector('.chip-mini.active') as HTMLElement | null;
+    const raw = v?.dataset.rem ?? '';
+    return raw === '' ? null : parseInt(raw, 10);
+  }
+  function selectedRecurring(): string | null {
+    const v = recurringChips?.querySelector('.chip-mini.active') as HTMLElement | null;
+    return v?.dataset.rec || null;
+  }
+
+  // ---- live telegram preview ----
+  const titleEl = document.getElementById('t-title') as HTMLInputElement;
+  const descEl = document.getElementById('t-desc') as HTMLTextAreaElement;
+  const dateEl = document.getElementById('t-date') as HTMLInputElement;
+  const timeEl = document.getElementById('t-time') as HTMLInputElement;
+  const preview = document.getElementById('tg-preview');
+
+  function updatePreview() {
+    if (!preview) return;
+    const title = titleEl.value.trim();
+    const rem = selectedReminder();
+    if (!title) {
+      preview.innerHTML = '<span class="tg-preview-head">Anteprima</span>Compila il titolo per vedere l\'anteprima';
+      return;
+    }
+    const units = selectedUnits();
+    const unitTxt = units.length === 0 ? 'Tutte le unità' : units.map((id) => 'App ' + (['16799','16784','16788','15813','16786'].indexOf(String(id)) + 1)).join(', ');
+    const time = timeEl.value || '00:00';
+    let head = 'Anteprima';
+    if (rem != null) {
+      const [h, m] = time.split(':').map(Number);
+      const total = h * 60 + m - rem;
+      const hh = Math.floor(((total % 1440) + 1440) % 1440 / 60);
+      const mm = ((total % 60) + 60) % 60;
+      head = 'Inviato alle ' + String(hh).padStart(2, '0') + ':' + String(mm).padStart(2, '0');
+    }
+    const lines = [
+      'Promemoria Santopaolo Cockpit', '',
+      title,
+      unitTxt + ', alle ' + time,
+    ];
+    if (descEl.value.trim()) { lines.push('', descEl.value.trim()); }
+    lines.push('', 'admin.santopaoloapartments.com/tasks');
+    preview.innerHTML = '<span class="tg-preview-head">' + head + '</span>' + lines.join('\n');
+  }
+  [titleEl, descEl, dateEl, timeEl].forEach((el) => el?.addEventListener('input', updatePreview));
+
+  // ---- submit ----
+  const form = document.getElementById('task-form') as HTMLFormElement;
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const bookingId = (form.querySelector('[name="booking_id"]') as HTMLInputElement).value || null;
+    const date = dateEl.value;
+    const time = timeEl.value;
+    if (!titleEl.value.trim() || !date || !time) return;
+    // Browser local time (owner is in Rome) -> ISO.
+    const due = new Date(`${date}T${time}:00`);
+    const payload = {
+      title: titleEl.value.trim(),
+      description: descEl.value.trim() || null,
+      due_at: due.toISOString(),
+      apartment_ids: selectedUnits(),
+      task_type: (document.getElementById('t-type') as HTMLSelectElement).value,
+      telegram_reminder_minutes: selectedReminder(),
+      recurring: selectedRecurring(),
+      booking_id: bookingId,
+    };
+    const btn = form.querySelector('.btn-primary') as HTMLButtonElement;
+    btn.disabled = true;
+    const res = await fetch('/api/tasks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (res.ok) {
+      window.location.href = '/admin/tasks';
+    } else {
+      btn.disabled = false;
+      alert('Errore nel salvataggio del task');
+    }
+  });
+
+  // ---- complete / delete ----
+  document.querySelectorAll('.js-toggle').forEach((el) => {
+    el.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const id = (el as HTMLElement).dataset.id;
+      const done = (el as HTMLElement).dataset.done === '1';
+      const res = await fetch(`/api/tasks/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: done ? 'pending' : 'completed' }),
+      });
+      if (res.ok) window.location.reload();
+    });
+  });
+  document.querySelectorAll('.js-delete').forEach((el) => {
+    el.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      if (!confirm('Eliminare questo task?')) return;
+      const id = (el as HTMLElement).dataset.id;
+      const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE' });
+      if (res.ok) window.location.reload();
+    });
+  });
+</script>

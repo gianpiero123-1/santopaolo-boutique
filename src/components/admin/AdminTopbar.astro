@@ -1,0 +1,48 @@
+---
+import { today, formatWeekdayDayMonth } from '../../lib/dates';
+
+interface Props {
+  /** ISO timestamp of the last successful Kalisi sync, if any. */
+  lastSync?: string | null;
+}
+
+const { lastSync = null } = Astro.props;
+
+const todayLabel = (() => {
+  const t = formatWeekdayDayMonth(today());
+  return t.charAt(0).toUpperCase() + t.slice(1);
+})();
+
+// Relative "Sync Xm fa" label.
+let syncLabel = 'Mai sincronizzato';
+let stale = true;
+if (lastSync) {
+  const diffMs = Date.now() - new Date(lastSync).getTime();
+  const mins = Math.max(0, Math.floor(diffMs / 60000));
+  stale = mins > 45; // sync runs every 15 min; flag if well overdue
+  if (mins < 1) syncLabel = 'Sync ora';
+  else if (mins < 60) syncLabel = `Sync ${mins}m fa`;
+  else {
+    const hours = Math.floor(mins / 60);
+    syncLabel = `Sync ${hours}h fa`;
+  }
+}
+---
+
+<div class="topbar">
+  <a class="brand" href="/admin" style="text-decoration:none;">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2 L22 20 L2 20 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+      <path d="M12 6 L18 18 L6 18 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+      <path d="M12 10 L15 16 L9 16 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+    </svg>
+    <span class="brand-title">Cockpit</span>
+  </a>
+  <div class="meta">
+    <span class="meta-date">{todayLabel}</span>
+    <span><span class={`sync-dot${stale ? ' stale' : ''}`}></span>{syncLabel}</span>
+    <form class="logout-form" method="POST" action="/api/auth/logout">
+      <button type="submit" class="logout-btn">Esci</button>
+    </form>
+  </div>
+</div>

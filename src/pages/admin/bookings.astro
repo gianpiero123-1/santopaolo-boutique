@@ -1,0 +1,248 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createServerSupabase } from '../../lib/supabase-client';
+import { APARTMENT_ORDER, CHANNELS, type Booking } from '../../lib/constants';
+import {
+  today, dateOnly, toISODate, formatDayMonth, formatEuro, monthShort,
+} from '../../lib/dates';
+import { getLastSync } from '../../lib/queries';
+import { bookingDisplayStatus, perNight, isDirect, checkinTimeLabel, checkoutTimeLabel } from '../../lib/ui';
+
+const supabase = createServerSupabase();
+const sp = Astro.url.searchParams;
+const todayDate = today();
+const todayISO = toISODate(todayDate);
+
+// ---- params ----
+const q = (sp.get('q') ?? '').trim();
+const statusFilter = sp.get('status') ?? 'all';
+const channelFilter = sp.get('channel') ?? 'all';
+const unitFilter = sp.get('unit') ?? 'all';
+const page = Math.max(1, parseInt(sp.get('page') ?? '1', 10) || 1);
+const PER_PAGE = 12;
+
+// month: YYYY-MM, default current Rome month
+const monthStr = sp.get('month') || todayISO.slice(0, 7);
+const [yy, mm] = monthStr.split('-').map(Number);
+const monthStart = new Date(Date.UTC(yy, mm - 1, 1));
+const monthEnd = new Date(Date.UTC(yy, mm, 0)); // last day
+const daysInMonth = monthEnd.getUTCDate();
+const monthLabel = formatDayMonth(monthStart).split(' ')[1]; // month word
+const monthTitle = `${monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1)} ${yy}`;
+
+// ---- query (month + search) ----
+let query = supabase
+  .from('bookings_cache')
+  .select('*')
+  .gte('checkin_date', toISODate(monthStart))
+  .lte('checkin_date', toISODate(monthEnd))
+  .order('checkin_date', { ascending: true });
+
+if (q) {
+  const safe = q.replace(/[,()%]/g, ' ').trim();
+  if (safe) {
+    query = query.or(
+      `guest_name.ilike.%${safe}%,ota_booking_code.ilike.%${safe}%,guest_phone.ilike.%${safe}%`,
+    );
+  }
+}
+
+const { data: rawData } = await query;
+const monthBookings = (rawData as Booking[]) ?? [];
+const lastSync = await getLastSync(supabase);
+
+// ---- channel/unit/status filtering in JS ----
+function channelOf(ota: string | null): string {
+  if (isDirect(ota)) return 'Diretto';
+  return ota && (CHANNELS as readonly string[]).includes(ota) ? ota : 'Diretto';
+}
+
+let filtered = monthBookings;
+if (channelFilter !== 'all') filtered = filtered.filter((b) => channelOf(b.ota) === channelFilter);
+if (unitFilter !== 'all') {
+  const aptId = APARTMENT_ORDER[parseInt(unitFilter, 10) - 1];
+  filtered = filtered.filter((b) => b.apartment_id === aptId);
+}
+if (statusFilter !== 'all') {
+  filtered = filtered.filter((b) => bookingDisplayStatus(b, todayISO).cls === statusFilter);
+}
+
+// ---- KPIs (month, excluding cancelled) ----
+const kpiSet = monthBookings.filter((b) => b.status !== 'cancelled');
+const revenue = kpiSet.reduce((s, b) => s + (b.total_amount ?? 0), 0);
+const nights = kpiSet.reduce((s, b) => s + (b.nights ?? 0), 0);
+const adr = nights > 0 ? Math.round(revenue / nights) : 0;
+const occupancy = Math.round((nights / (5 * daysInMonth)) * 100);
+
+// ---- pagination ----
+const total = filtered.length;
+const pages = Math.max(1, Math.ceil(total / PER_PAGE));
+const curPage = Math.min(page, pages);
+const startIdx = (curPage - 1) * PER_PAGE;
+const pageRows = filtered.slice(startIdx, startIdx + PER_PAGE);
+
+// ---- URL builder ----
+function makeUrl(overrides: Record<string, string | null>): string {
+  const base: Record<string, string | null> = {
+    q: q || null,
+    status: statusFilter === 'all' ? null : statusFilter,
+    channel: channelFilter === 'all' ? null : channelFilter,
+    unit: unitFilter === 'all' ? null : unitFilter,
+    month: monthStr === todayISO.slice(0, 7) ? null : monthStr,
+    page: curPage === 1 ? null : String(curPage),
+  };
+  const merged = { ...base, ...overrides };
+  const usp = new URLSearchParams();
+  for (const [k, v] of Object.entries(merged)) if (v != null && v !== '') usp.set(k, v);
+  const qs = usp.toString();
+  return qs ? `/admin/bookings?${qs}` : '/admin/bookings';
+}
+
+const statusChips = [
+  { key: 'all', label: 'Tutte' },
+  { key: 'in-casa', label: 'In casa' },
+  { key: 'in-arrivo', label: 'In arrivo' },
+  { key: 'futura', label: 'Future' },
+  { key: 'passata', label: 'Passate' },
+  { key: 'cancellata', label: 'Cancellate' },
+];
+const channelChips = [{ key: 'all', label: 'Tutti' }, ...CHANNELS.map((c) => ({ key: c, label: c }))];
+const unitChips = [{ key: 'all', label: 'Tutte' }, ...[1, 2, 3, 4, 5].map((n) => ({ key: String(n), label: `App ${n}` }))];
+---
+
+<AdminLayout title="Prenotazioni" activePage="bookings" lastSync={lastSync}>
+
+  <div class="page-title-row">
+    <h1 class="page-title">Prenotazioni</h1>
+  </div>
+
+  <div class="kpi-grid tight">
+    <div class="kpi sm">
+      <div class="kpi-label">Revenue {monthLabel}</div>
+      <div class="kpi-value">{formatEuro(revenue)}</div>
+      <div class="kpi-detail">{kpiSet.length} prenotazioni</div>
+    </div>
+    <div class="kpi sm">
+      <div class="kpi-label">Notti vendute</div>
+      <div class="kpi-value">{nights}</div>
+      <div class="kpi-detail">su {5 * daysInMonth} totali</div>
+    </div>
+    <div class="kpi sm">
+      <div class="kpi-label">ADR</div>
+      <div class="kpi-value">{formatEuro(adr)}</div>
+      <div class="kpi-detail">media a notte</div>
+    </div>
+    <div class="kpi sm">
+      <div class="kpi-label">Occupancy</div>
+      <div class="kpi-value">{occupancy}%</div>
+      <div class="kpi-detail">5 unità, {daysInMonth} giorni</div>
+    </div>
+  </div>
+
+  <form class="filters-bar stacked" method="GET" action="/admin/bookings">
+    <input type="hidden" name="month" value={monthStr} />
+    {statusFilter !== 'all' && <input type="hidden" name="status" value={statusFilter} />}
+    {channelFilter !== 'all' && <input type="hidden" name="channel" value={channelFilter} />}
+    {unitFilter !== 'all' && <input type="hidden" name="unit" value={unitFilter} />}
+    <div class="filters-row">
+      <input type="text" name="q" class="search-box" placeholder="Cerca ospite, codice OTA, telefono..." value={q} />
+      <div class="filter-group">
+        <span class="filter-label">Periodo</span>
+        <span class="chip active">{monthTitle}</span>
+      </div>
+    </div>
+  </form>
+
+  <div class="filters-bar stacked">
+    <div class="filters-row">
+      <div class="filter-group">
+        <span class="filter-label">Stato</span>
+        {statusChips.map((c) => (
+          <a class={`chip${statusFilter === c.key ? ' active' : ''}`} href={makeUrl({ status: c.key === 'all' ? null : c.key, page: null })}>{c.label}</a>
+        ))}
+      </div>
+    </div>
+    <div class="filters-row">
+      <div class="filter-group">
+        <span class="filter-label">Canale</span>
+        {channelChips.map((c) => (
+          <a class={`chip${channelFilter === c.key ? ' active' : ''}`} href={makeUrl({ channel: c.key === 'all' ? null : c.key, page: null })}>{c.label}</a>
+        ))}
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Unità</span>
+        {unitChips.map((c) => (
+          <a class={`chip${unitFilter === c.key ? ' active' : ''}`} href={makeUrl({ unit: c.key === 'all' ? null : c.key, page: null })}>{c.label}</a>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th><th>Ospite</th><th>Unità</th><th>Notti</th>
+          <th>Canale</th><th>Importo</th><th>Stato</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {pageRows.length === 0 && (
+          <tr class="empty-row"><td colspan="8">Nessuna prenotazione trovata per i filtri selezionati.</td></tr>
+        )}
+        {pageRows.map((b) => {
+          const st = bookingDisplayStatus(b, todayISO);
+          const ci = dateOnly(b.checkin_date);
+          const co = dateOnly(b.checkout_date);
+          const pn = perNight(b);
+          return (
+            <tr class="click-row" data-href={`/admin/calendar?booking=${b.id}`}>
+              <td>
+                <div class="row-dates">{ci.getUTCDate()} {monthShort(ci.getUTCMonth())}, {checkinTimeLabel()}</div>
+                <div class="row-dates-sub">→ {co.getUTCDate()} {monthShort(co.getUTCMonth())}, {checkoutTimeLabel()}</div>
+              </td>
+              <td>
+                <div class="row-guest">{b.guest_name}</div>
+                <div class="row-guest-sub">{b.guest_count} ospiti{b.ota_booking_code ? `, codice ${b.ota_booking_code}` : ', prenotazione diretta'}</div>
+              </td>
+              <td class="row-unit">{b.apartment_label}</td>
+              <td class="row-nights">{b.nights}</td>
+              <td class="row-channel">{channelOf(b.ota)}</td>
+              <td>
+                <div class="row-amount">{formatEuro(b.total_amount)}</div>
+                {pn != null && <div class="row-amount-sub">{formatEuro(pn)}/n{isDirect(b.ota) ? ', 0% commissioni' : ''}</div>}
+              </td>
+              <td><span class={`status ${st.cls}`}>{st.label}</span></td>
+              <td><button type="button" class="row-actions" aria-label="Azioni">⋯</button></td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <div class="pag-info">{total === 0 ? '0' : `${startIdx + 1}–${startIdx + pageRows.length}`} di {total} prenotazioni</div>
+    <div class="pag-controls">
+      <a class={`pag-btn${curPage === 1 ? ' disabled' : ''}`} href={makeUrl({ page: String(curPage - 1) })}>Precedenti</a>
+      {Array.from({ length: pages }, (_, i) => i + 1).map((p) => (
+        <a class={`pag-btn${p === curPage ? ' active' : ''}`} href={makeUrl({ page: p === 1 ? null : String(p) })}>{p}</a>
+      ))}
+      <a class={`pag-btn${curPage === pages ? ' disabled' : ''}`} href={makeUrl({ page: String(curPage + 1) })}>Successive</a>
+    </div>
+  </div>
+
+</AdminLayout>
+
+<script>
+  // Row click navigates to the booking detail; the ⋯ button is exempt.
+  document.querySelectorAll('tr.click-row').forEach((row) => {
+    row.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('.row-actions')) return;
+      const href = (row as HTMLElement).dataset.href;
+      if (href) window.location.href = href;
+    });
+  });
+</script>

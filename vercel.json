@@ -1,0 +1,8 @@
+{
+  "crons": [
+    { "path": "/api/kalisi/sync", "schedule": "*/15 * * * *" },
+    { "path": "/api/telegram/morning-brief", "schedule": "0 6 * * *" },
+    { "path": "/api/telegram/task-reminders", "schedule": "*/5 * * * *" },
+    { "path": "/api/telegram/checkin-reminders", "schedule": "*/5 * * * *" }
+  ]
+}

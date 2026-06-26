@@ -1,0 +1,37 @@
+---
+import '../styles/admin.css';
+import AdminTopbar from '../components/admin/AdminTopbar.astro';
+import AdminNavFoot from '../components/admin/AdminNavFoot.astro';
+
+interface Props {
+  title: string;
+  activePage: 'home' | 'calendar' | 'bookings' | 'tasks';
+  lastSync?: string | null;
+  /** Extra class on the .wrap (e.g. "narrow" for the home page). */
+  wrapClass?: string;
+}
+
+const { title, activePage, lastSync = null, wrapClass = '' } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#0E0E0E" />
+  <title>{title} — Santopaolo Cockpit</title>
+  <link rel="manifest" href="/admin/manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="/admin/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+  <div class={`wrap${wrapClass ? ' ' + wrapClass : ''}`}>
+    <AdminTopbar lastSync={lastSync} />
+    <slot />
+    <AdminNavFoot activePage={activePage} />
+  </div>
+</body>
+</html>

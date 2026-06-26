@@ -1,0 +1,128 @@
+---
+import type { Booking } from '../../lib/constants';
+import { APARTMENT_ORDER, APARTMENTS } from '../../lib/constants';
+import {
+  addDays, dateOnly, toISODate, today,
+  weekdayShort, formatShortDay, isWeekend,
+} from '../../lib/dates';
+import { guestWithCount, isDirect } from '../../lib/ui';
+
+interface Props {
+  bookings: Booking[];
+  rangeStartISO: string;
+  days: number;
+  /** min cell width in px (78 for 14d view, 54 for 30d+). */
+  minCell?: number;
+  /** Show a bordeaux divider on the 1st of each month. */
+  monthDividers?: boolean;
+  /** Currently selected booking id (highlighted). */
+  selectedId?: string | null;
+  /** Build the href for a booking bar (defaults to the calendar detail link). */
+  makeHref?: (b: Booking) => string;
+  /** Show the sqm + guests meta next to each apartment label. */
+  showMeta?: boolean;
+  /** Limit which apartment rows are shown (defaults to all). */
+  apartmentIds?: number[];
+}
+
+const {
+  bookings,
+  rangeStartISO,
+  days,
+  minCell = 54,
+  monthDividers = false,
+  selectedId = null,
+  makeHref = (b: Booking) => `/admin/calendar?booking=${b.id}`,
+  showMeta = true,
+  apartmentIds = APARTMENT_ORDER,
+} = Astro.props;
+
+const todayISO = toISODate(today());
+const rangeStart = dateOnly(rangeStartISO);
+
+// Build the day header model.
+const dayCells = Array.from({ length: days }, (_, i) => {
+  const date = addDays(rangeStart, i);
+  const iso = toISODate(date);
+  return {
+    iso,
+    col: i + 2,
+    name: weekdayShort(date),
+    num: formatShortDay(date),
+    isToday: iso === todayISO,
+    isWeekend: isWeekend(date),
+    isMonthStart: monthDividers && i > 0 && date.getUTCDate() === 1,
+  };
+});
+
+function placement(b: Booking): { colStart: number; colEnd: number } {
+  const startDiff = Math.round(
+    (dateOnly(b.checkin_date).getTime() - rangeStart.getTime()) / 86_400_000,
+  );
+  const endDiff = Math.round(
+    (dateOnly(b.checkout_date).getTime() - rangeStart.getTime()) / 86_400_000,
+  );
+  const startIdx = Math.min(Math.max(startDiff, 0), days);
+  const endIdx = Math.min(Math.max(endDiff, 0), days);
+  const colStart = 2 + startIdx;
+  const colEnd = Math.max(colStart + 1, 2 + endIdx);
+  return { colStart, colEnd };
+}
+
+const gridCols = `130px repeat(${days}, minmax(${minCell}px, 1fr))`;
+const minWidth = 130 + days * minCell;
+
+const rows = apartmentIds.map((aptId, idx) => ({
+  aptId,
+  info: APARTMENTS[aptId],
+  rowIndex: idx + 2,
+  bookings: bookings.filter((b) => b.apartment_id === aptId),
+}));
+---
+
+<div class="cal-wrap">
+  <div class="cal-grid" style={`grid-template-columns:${gridCols};min-width:${minWidth}px;`}>
+    <div class="cal-corner"></div>
+    {dayCells.map((d) => (
+      <div
+        class={`cal-h${d.isToday ? ' today' : ''}${d.isWeekend ? ' weekend' : ''}${d.isMonthStart ? ' month-divider' : ''}`}
+        style={`grid-column:${d.col};grid-row:1;`}
+      >
+        <span class="day-name">{d.name}</span>
+        <span class="day-num">{d.num}</span>
+      </div>
+    ))}
+
+    {rows.map((row) => (
+      <>
+        <div class="cal-label" style={`grid-row:${row.rowIndex};`}>
+          {row.info.label}
+          {showMeta && <span class="lab-meta">{row.info.sqm}mq, {row.info.guests}</span>}
+        </div>
+        {dayCells.map((d) => (
+          <div
+            class={`cal-cell${d.isToday ? ' today' : ''}${d.isWeekend ? ' weekend' : ''}${d.isMonthStart ? ' month-divider' : ''}`}
+            style={`grid-column:${d.col};grid-row:${row.rowIndex};`}
+          ></div>
+        ))}
+        {row.bookings.map((b) => {
+          const { colStart, colEnd } = placement(b);
+          const direct = isDirect(b.ota);
+          const selected = selectedId === b.id;
+          const cancelled = b.status === 'cancelled';
+          return (
+            <a
+              href={makeHref(b)}
+              class={`cal-booking${direct ? ' direct' : ''}${selected ? ' selected' : ''}${cancelled ? ' cancelled' : ''}`}
+              style={`grid-column:${colStart} / ${colEnd};grid-row:${row.rowIndex};`}
+              title={`${guestWithCount(b)} — ${b.nights} notti`}
+            >
+              <span class="b-name">{guestWithCount(b)}, {b.nights}n</span>
+              {b.ota && <span class="b-ch">{b.ota}</span>}
+            </a>
+          );
+        })}
+      </>
+    ))}
+  </div>
+</div>

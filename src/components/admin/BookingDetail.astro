@@ -1,0 +1,101 @@
+---
+import type { Booking, Note, Task } from '../../lib/constants';
+import { env } from '../../lib/env';
+import { formatDayMonth, dateOnly, formatEuro, formatTime, romeDateOf } from '../../lib/dates';
+import { bookingDisplayStatus, perNight, guestWithCount, checkinTimeLabel, checkoutTimeLabel } from '../../lib/ui';
+
+interface Props {
+  booking: Booking;
+  notes: Note[];
+  tasks: Task[];
+  /** Href to close the panel (preserves current filters). */
+  closeHref: string;
+}
+
+const { booking, notes, tasks, closeHref } = Astro.props;
+
+const status = bookingDisplayStatus(booking);
+const ci = dateOnly(booking.checkin_date);
+const co = dateOnly(booking.checkout_date);
+const pn = perNight(booking);
+const kalisiUrl = `${env('KALISI_BASE_URL').replace(/\/$/, '')}/admin/orders/${booking.kalisi_id}`;
+---
+
+<aside class="detail-panel">
+  <div class="panel-head">
+    <div>
+      <h3>{guestWithCount(booking)}</h3>
+      <span class={`panel-badge${status.cls === 'cancellata' ? ' cancelled' : ''}`}>{status.label}</span>
+    </div>
+    <a class="panel-close" href={closeHref}>×</a>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-label">Unità</div>
+    <div class="panel-section-value">{booking.apartment_label}</div>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-label">Date</div>
+    <div class="panel-section-value">{formatDayMonth(ci)} → {formatDayMonth(co)}</div>
+    <div class="panel-section-sub">{booking.nights} notti, check-in {checkinTimeLabel()}, check-out {checkoutTimeLabel()}</div>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-label">Ospiti</div>
+    <div class="panel-section-value">{booking.guest_count} {booking.guest_count === 1 ? 'ospite' : 'ospiti'}</div>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-label">Importo</div>
+    <div class="panel-amount">{formatEuro(booking.total_amount)}</div>
+    <div class="panel-section-sub">
+      {pn != null ? `${formatEuro(pn)} a notte` : 'Importo non disponibile'}
+      {booking.commission != null ? `, commissione ${formatEuro(booking.commission)}` : ''}
+    </div>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-label">Canale</div>
+    <div class="panel-section-value">{booking.ota || 'Diretto'}</div>
+    {booking.ota_booking_code && <div class="panel-section-sub">Codice OTA, {booking.ota_booking_code}</div>}
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-label">Contatti</div>
+    <div class="panel-section-value">{booking.guest_phone || '—'}</div>
+    {booking.guest_email && <div class="panel-section-sub">{booking.guest_email}</div>}
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-label">Note personali</div>
+    {notes.length === 0 && <div class="panel-note empty">Nessuna nota</div>}
+    {notes.map((n) => <div class="panel-note">{n.content}</div>)}
+    <form class="note-form" method="POST" action="/api/notes" style="margin-top:8px;">
+      <input type="hidden" name="booking_id" value={booking.id} />
+      {notes[0] && <input type="hidden" name="id" value={notes[0].id} />}
+      <input type="hidden" name="redirect" value={Astro.url.pathname + Astro.url.search} />
+      <textarea name="content" class="field-textarea" placeholder="Aggiungi o modifica una nota..." style="min-height:48px;">{notes[0]?.content ?? ''}</textarea>
+      <button type="submit" class="panel-btn" style="margin-top:8px;">Salva nota</button>
+    </form>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-label">Task collegati</div>
+    {tasks.length === 0 && <div class="panel-note empty">Nessun task collegato</div>}
+    <div class="panel-tasks">
+      {tasks.map((t) => (
+        <div class="panel-task-item">
+          <span class={`panel-task-checkbox${t.status === 'completed' ? ' done' : ''}`}>{t.status === 'completed' ? '✓' : ''}</span>
+          <span>{t.title}</span>
+          <span class="panel-task-time">{romeDateOf(t.due_at).split('-').reverse().slice(0, 2).join('/')}, {formatTime(t.due_at)}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="panel-actions">
+    <a class="panel-btn secondary" href={`/admin/tasks?booking=${booking.id}`}>Genera task</a>
+    <a class="panel-btn secondary" href={kalisiUrl} target="_blank" rel="noopener">Apri su Kalisi</a>
+  </div>
+</aside>

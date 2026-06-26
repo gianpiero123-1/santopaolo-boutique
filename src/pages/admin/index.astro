@@ -1,0 +1,176 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import Calendar from '../../components/admin/Calendar.astro';
+import { createServerSupabase } from '../../lib/supabase-client';
+import { apartmentShort, APARTMENT_ORDER, TASK_TYPE_LABELS } from '../../lib/constants';
+import {
+  today, addDays, toISODate, formatTime, romeDateOf, romeHourMinute, formatEuro,
+} from '../../lib/dates';
+import {
+  getLastSync, getBookingsInRange, getCheckins, getCheckouts, getOccupiedNow, getTasksBetween,
+} from '../../lib/queries';
+import {
+  checkinTimeLabel, checkoutTimeLabel, guestWithCount,
+} from '../../lib/ui';
+import { DEFAULT_CHECKIN_HOUR, DEFAULT_CHECKOUT_HOUR } from '../../lib/constants';
+
+const supabase = createServerSupabase();
+const todayDate = today();
+const todayISO = toISODate(todayDate);
+const tomorrowISO = toISODate(addDays(todayDate, 1));
+const nowISO = new Date().toISOString();
+
+const [lastSync, checkins, checkouts, occupied, calBookings, openTasks, todaysTasks] = await Promise.all([
+  getLastSync(supabase),
+  getCheckins(supabase, todayISO),
+  getCheckouts(supabase, todayISO),
+  getOccupiedNow(supabase, todayISO),
+  getBookingsInRange(supabase, todayISO, toISODate(addDays(todayDate, 13))),
+  getTasksBetween(supabase, nowISO, toISODate(addDays(todayDate, 60)), 'pending'),
+  // generous UTC window, filtered to the Rome calendar day below
+  getTasksBetween(supabase, toISODate(addDays(todayDate, -1)), toISODate(addDays(todayDate, 2))),
+]);
+
+const occupiedIds = new Set(occupied.map((b) => b.apartment_id));
+const freeApts = APARTMENT_ORDER.filter((id) => !occupiedIds.has(id)).map(apartmentShort);
+
+const checkinApts = checkins.map((b) => apartmentShort(b.apartment_id));
+const checkoutApts = checkouts.map((b) => apartmentShort(b.apartment_id));
+
+const openTodayCount = openTasks.filter((t) => romeDateOf(t.due_at) === todayISO).length;
+const openTomorrowCount = openTasks.filter((t) => romeDateOf(t.due_at) === tomorrowISO).length;
+
+const dayTasks = todaysTasks.filter((t) => romeDateOf(t.due_at) === todayISO);
+
+// Build today's timeline as a sorted union of check-ins, check-outs and tasks.
+type Ev = {
+  sort: number;
+  time: string;
+  type: 'checkin' | 'checkout' | 'task';
+  detail: string;
+  sub: string;
+  unit: string;
+  channel: string;
+  href: string;
+};
+const events: Ev[] = [];
+
+for (const b of checkins) {
+  events.push({
+    sort: DEFAULT_CHECKIN_HOUR * 60,
+    time: checkinTimeLabel(),
+    type: 'checkin',
+    detail: `${guestWithCount(b)} ospiti`,
+    sub: [`${b.nights} notti`, b.total_amount != null ? `totale ${formatEuro(b.total_amount)}` : null, b.ota_booking_code ? `codice OTA ${b.ota_booking_code}` : null].filter(Boolean).join(', '),
+    unit: b.apartment_label,
+    channel: b.ota || 'Diretto',
+    href: `/admin/calendar?booking=${b.id}`,
+  });
+}
+for (const b of checkouts) {
+  events.push({
+    sort: DEFAULT_CHECKOUT_HOUR * 60,
+    time: checkoutTimeLabel(),
+    type: 'checkout',
+    detail: `${guestWithCount(b)} ospiti`,
+    sub: [`${b.nights} notti`, b.total_amount != null ? `totale ${formatEuro(b.total_amount)}` : null].filter(Boolean).join(', '),
+    unit: b.apartment_label,
+    channel: b.ota || 'Diretto',
+    href: `/admin/calendar?booking=${b.id}`,
+  });
+}
+for (const t of dayTasks) {
+  const { hour, minute } = romeHourMinute(t.due_at);
+  const units = t.apartment_ids?.length
+    ? (t.apartment_ids.length === APARTMENT_ORDER.length ? 'Tutte' : t.apartment_ids.map(apartmentShort).join(', '))
+    : 'Tutte';
+  events.push({
+    sort: hour * 60 + minute,
+    time: formatTime(t.due_at),
+    type: 'task',
+    detail: t.title,
+    sub: t.description || TASK_TYPE_LABELS[t.task_type],
+    unit: units,
+    channel: 'Manuale',
+    href: '/admin/tasks',
+  });
+}
+events.sort((a, b) => a.sort - b.sort);
+---
+
+<AdminLayout title="Home" activePage="home" lastSync={lastSync} wrapClass="narrow">
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Check-in oggi</div>
+      <div class="kpi-value">{checkins.length}</div>
+      <div class="kpi-detail accent">{checkinApts.length ? checkinApts.join(', ') : '—'}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Check-out oggi</div>
+      <div class="kpi-value">{checkouts.length}</div>
+      <div class="kpi-detail">{checkoutApts.length ? checkoutApts.join(', ') : '—'}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Occupate ora</div>
+      <div class="kpi-value">{occupied.length} / 5</div>
+      <div class="kpi-detail">{freeApts.length ? `Libere ${freeApts.join(', ')}` : 'Tutte occupate'}</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Task aperti</div>
+      <div class="kpi-value">{openTasks.length}</div>
+      <div class="kpi-detail">{openTodayCount} oggi, {openTomorrowCount} domani</div>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Calendario</h2>
+      <div class="section-actions">
+        <a class="range-btn" href="/admin/calendar?range=14">14 giorni</a>
+        <a class="range-btn active" href="/admin/calendar?range=30">Calendario completo</a>
+      </div>
+    </div>
+
+    <Calendar bookings={calBookings} rangeStartISO={todayISO} days={14} minCell={78} />
+
+    <div class="legend">
+      <div class="leg-item"><div class="leg-chip booking"></div>Prenotazione OTA</div>
+      <div class="leg-item"><div class="leg-chip direct"></div>Prenotazione diretta</div>
+      <div class="leg-item"><div class="leg-chip empty"></div>Libero</div>
+      <div class="leg-item"><div class="leg-chip today"></div>Oggi</div>
+    </div>
+  </div>
+
+  <!-- Oggi -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Oggi</h2>
+      <span class="section-counter">{events.length} {events.length === 1 ? 'evento' : 'eventi'}</span>
+    </div>
+
+    {events.length === 0 && (
+      <div class="panel-empty">Nessun evento in programma oggi.</div>
+    )}
+
+    {events.map((e) => (
+      <a class="timeline-row" href={e.href}>
+        <span class="t-time">{e.time}</span>
+        <span class={`t-type ${e.type === 'checkin' ? 't-checkin' : e.type === 'checkout' ? 't-checkout' : 't-task'}`}>
+          {e.type === 'checkin' ? 'Check-in' : e.type === 'checkout' ? 'Check-out' : 'Task'}
+        </span>
+        <div>
+          <div class="t-detail">{e.detail}</div>
+          {e.sub && <div class="t-detail-sub">{e.sub}</div>}
+        </div>
+        <span class="t-unit">{e.unit}</span>
+        <span class="t-channel">{e.channel}</span>
+      </a>
+    ))}
+  </div>
+
+</AdminLayout>
