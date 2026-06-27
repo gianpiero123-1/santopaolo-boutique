@@ -1,4 +1,3 @@
-import { parse as parseHtml } from 'node-html-parser';
 import { apartmentLabel, type BookingStatus } from './constants';
 import { parseDDMMYYYY, toDDMMYYYY, toISODate } from './dates';
 import { requireEnv, env } from './env';
@@ -90,11 +89,10 @@ export class KalisiClient {
     const getRes = await fetch(loginUrl, { headers: { Accept: 'text/html' } });
     console.log(`[kalisi] Step 1 GET status: ${getRes.status}`);
     const html = await getRes.text();
-    const root = parseHtml(html);
 
-    const token =
-      root.querySelector('input[name="authenticity_token"]')?.getAttribute('value') ??
-      root.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    const tokenFromInput = html.match(/<input[^>]+name=["']authenticity_token["'][^>]+value=["']([^"']+)["']/i);
+    const tokenFromMeta = html.match(/<meta[^>]+name=["']csrf-token["'][^>]+content=["']([^"']+)["']/i);
+    const token = tokenFromInput?.[1] ?? tokenFromMeta?.[1];
 
     if (!token) {
       console.log('[kalisi] authenticity_token NOT found on sign-in page');
