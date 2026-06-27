@@ -107,8 +107,8 @@ const en: Translations = {
       note: 'We will reply within 24 hours.',
     },
     info: {
-      email: 'info@santopaoloapartments.com',
-      phone: '+39 081 000 0000',
+      email: 'info@santopaoloboutiqueapartments.com',
+      phone: '+39 331 322 5577',
       whatsapp: 'WhatsApp',
       address: 'Vico Santa Maria a Cappella Vecchia 8b, Chiaia, Naples',
     },

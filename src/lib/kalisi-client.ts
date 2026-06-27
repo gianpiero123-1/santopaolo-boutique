@@ -34,11 +34,14 @@ export interface NormalizedOrder {
 }
 
 const SESSION_MAX_AGE_MS = 18 * 60 * 60 * 1000; // 18h
+const LOGIN_RETRY_COOLDOWN_MS = 30 * 1000; // 30s — guard against rapid re-attempts
 
 export class KalisiClient {
   private cfg: KalisiConfig;
   sessionCookie: string | null = null;
   private loggedInAt = 0;
+  /** Timestamp of the last login *attempt* (success or failure). */
+  private lastLoginAttemptAt = 0;
 
   constructor(cfg: KalisiConfig) {
     this.cfg = cfg;
@@ -72,10 +75,20 @@ export class KalisiClient {
    * Throws if login does not result in a redirect with a session cookie.
    */
   async login(): Promise<void> {
+    // Anti-retry guard: skip if we attempted a login less than 30s ago.
+    const sinceLast = Date.now() - this.lastLoginAttemptAt;
+    if (this.lastLoginAttemptAt && sinceLast < LOGIN_RETRY_COOLDOWN_MS) {
+      console.log(`[kalisi] Login skipped: recent attempt ${Math.round(sinceLast / 1000)}s ago (cooldown 30s)`);
+      throw new Error('Kalisi login skipped: recent attempt (<30s)');
+    }
+    this.lastLoginAttemptAt = Date.now();
+
     const loginUrl = this.url(this.cfg.loginPath);
 
     // 1) GET the sign-in page, capture CSRF token + any initial cookies.
+    console.log(`[kalisi] Login, step 1: GET sign_in page -> ${loginUrl}`);
     const getRes = await fetch(loginUrl, { headers: { Accept: 'text/html' } });
+    console.log(`[kalisi] Step 1 GET status: ${getRes.status}`);
     const html = await getRes.text();
     const root = parseHtml(html);
 
@@ -84,12 +97,16 @@ export class KalisiClient {
       root.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
     if (!token) {
+      console.log('[kalisi] authenticity_token NOT found on sign-in page');
       throw new Error('Kalisi login: authenticity_token not found on sign-in page');
     }
+    console.log(`[kalisi] authenticity_token found: length=${token.length}, prefix=${token.slice(0, 8)}...`);
 
     const initialCookies = KalisiClient.collectCookies(getRes.headers.getSetCookie?.() ?? []);
+    console.log(`[kalisi] Step 1 initial cookies: ${initialCookies ? maskCookie(initialCookies) : '(none)'}`);
 
     // 2) POST credentials as form-urlencoded.
+    console.log('[kalisi] Login, step 2: POST sign_in');
     const form = new URLSearchParams({
       'staff[organization_code]': this.cfg.orgCode,
       'staff[email]': this.cfg.email,
@@ -98,6 +115,11 @@ export class KalisiClient {
       authenticity_token: token,
       commit: 'Log in',
     });
+    console.log(
+      `[kalisi] Step 2 form fields: staff[organization_code]=${this.cfg.orgCode}, ` +
+        `staff[email]=${maskEmail(this.cfg.email)}, staff[password]=(hidden), ` +
+        `staff[remember_me]=1, authenticity_token=${token.slice(0, 8)}..., commit=Log in`,
+    );
 
     const postRes = await fetch(loginUrl, {
       method: 'POST',
@@ -108,18 +130,31 @@ export class KalisiClient {
       },
       body: form.toString(),
     });
+    console.log(`[kalisi] Step 2 POST status: ${postRes.status}`);
 
-    const sessionCookies = KalisiClient.collectCookies(postRes.headers.getSetCookie?.() ?? []);
+    const rawSetCookies = postRes.headers.getSetCookie?.() ?? [];
+    console.log(
+      `[kalisi] Step 2 set-cookie received: ${
+        rawSetCookies.length ? rawSetCookies.map((c) => c.split(';')[0].split('=')[0]).join(', ') : '(none)'
+      }`,
+    );
+    const sessionCookies = KalisiClient.collectCookies(rawSetCookies);
 
     // Devise redirects (302/303) on success. Treat a redirect + cookie as OK.
     const isRedirect = postRes.status === 301 || postRes.status === 302 || postRes.status === 303;
     if (!isRedirect) {
+      // On a non-redirect, the body usually carries the failure reason.
+      const body = await postRes.text().catch(() => '');
+      if (/locked/i.test(body)) console.log('[kalisi] POST body indicates account "Locked"');
+      if (/invalid/i.test(body)) console.log('[kalisi] POST body indicates "Invalid" credentials');
       throw new Error(`Kalisi login failed: expected redirect, got HTTP ${postRes.status}`);
     }
     if (!sessionCookies) {
+      console.log('[kalisi] Login failed: redirect received but no session cookie');
       throw new Error('Kalisi login failed: no session cookie returned');
     }
 
+    console.log('[kalisi] Login success: session cookie stored');
     this.sessionCookie = sessionCookies;
     this.loggedInAt = Date.now();
   }
@@ -149,9 +184,10 @@ export class KalisiClient {
     });
 
     if (res.status === 401 || res.status === 403) {
-      // Session expired mid-flight — re-login once and retry.
-      await this.login();
-      return this.fetchOrders(fromDate, toDate);
+      // Session rejected mid-flight. Do NOT auto re-login/retry within the same
+      // request — surface the error so the caller decides on the next run.
+      console.log(`[kalisi] fetchOrders got HTTP ${res.status} — not retrying (auto re-login disabled)`);
+      throw new Error(`Kalisi fetchOrders unauthorized: HTTP ${res.status} (session rejected, no auto-retry)`);
     }
     if (!res.ok) {
       throw new Error(`Kalisi fetchOrders failed: HTTP ${res.status}`);
@@ -210,6 +246,28 @@ export function createKalisiClient(): KalisiClient {
     orgCode: requireEnv('KALISI_ORG_CODE'),
     loginPath: env('KALISI_LOGIN_PATH') || '/admin/sign_in',
   });
+}
+
+// ---- logging helpers ----
+
+/** Mask an email for logs: "mario.rossi@x.com" -> "ma***@x.com". */
+function maskEmail(email: string): string {
+  const at = email.indexOf('@');
+  if (at <= 0) return '***';
+  const local = email.slice(0, at);
+  const domain = email.slice(at);
+  return `${local.slice(0, 2)}***${domain}`;
+}
+
+/** Mask cookie values for logs: keep names, redact values. */
+function maskCookie(cookieHeader: string): string {
+  return cookieHeader
+    .split('; ')
+    .map((pair) => {
+      const eq = pair.indexOf('=');
+      return eq > 0 ? `${pair.slice(0, eq)}=***` : pair;
+    })
+    .join('; ');
 }
 
 // ---- field helpers ----

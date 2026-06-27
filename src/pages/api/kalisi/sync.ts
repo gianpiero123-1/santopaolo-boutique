@@ -34,7 +34,34 @@ export const GET: APIRoute = async ({ request }) => {
 
   try {
     const client = createKalisiClient();
-    await client.login();
+
+    try {
+      await client.login();
+    } catch (loginErr) {
+      const loginMessage = loginErr instanceof Error ? loginErr.message : String(loginErr);
+      console.error('[kalisi] login() failed:', loginMessage);
+
+      if (logId) {
+        await supabase
+          .from('sync_log')
+          .update({
+            status: 'failed',
+            completed_at: new Date().toISOString(),
+            error_message: `Login failed: ${loginMessage}`,
+          })
+          .eq('id', logId);
+      }
+
+      return json(
+        {
+          ok: false,
+          stage: 'login',
+          error: loginMessage,
+          detail: 'Kalisi login did not complete; sync aborted (no auto-retry this request).',
+        },
+        502,
+      );
+    }
 
     const from = today();
     const to = addDays(from, 90);

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santopaolo Cockpit — Bookings /admin/bookings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --nero: #0E0E0E; --antracite: #1C1C1C; --carbon: #141414;
+    --border: #2A2A2A; --off-white: #F5F2EC; --marmo: #8A8580;
+    --bordeaux: #6B1F1F; --bordeaux-hover: #8A2A2A; --green: #4ade80;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--nero); color: var(--off-white);
+    font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 28px 32px; }
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 28px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; letter-spacing: 0.5px; }
+  .meta { display: flex; align-items: center; gap: 24px; color: var(--marmo); font-size: 12px; }
+  .sync-dot {
+    width: 6px; height: 6px; background: var(--green); border-radius: 50%;
+    display: inline-block; margin-right: 8px; box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+  }
+  .logout-btn {
+    background: none; border: 1px solid var(--border); color: var(--marmo);
+    padding: 8px 14px; border-radius: 2px; font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase; cursor: pointer; font-family: inherit;
+  }
+
+  /* Page title */
+  .page-title-row {
+    display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px;
+  }
+  .page-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; }
+
+  /* KPI strip */
+  .kpi-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px;
+  }
+  .kpi {
+    background: var(--antracite); border: 1px solid var(--border);
+    padding: 18px; border-radius: 3px;
+  }
+  .kpi-label {
+    font-size: 11px; color: var(--marmo); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .kpi-value {
+    font-family: 'Fraunces', serif; font-size: 30px; font-weight: 500;
+    line-height: 1; margin-bottom: 6px;
+  }
+  .kpi-detail { font-size: 11px; color: var(--marmo); }
+
+  /* Filters */
+  .filters-bar {
+    background: var(--antracite); border: 1px solid var(--border);
+    padding: 16px 18px; border-radius: 3px; margin-bottom: 18px;
+  }
+  .filters-row {
+    display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+  }
+  .filters-row + .filters-row { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--carbon); }
+
+  .search-box {
+    flex: 1; min-width: 280px;
+    background: var(--nero); border: 1px solid var(--border);
+    padding: 9px 14px; border-radius: 2px;
+    color: var(--off-white); font-size: 13px;
+    font-family: inherit;
+  }
+  .search-box::placeholder { color: var(--marmo); }
+  .search-box:focus { outline: none; border-color: var(--bordeaux); }
+
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .filter-label {
+    font-size: 10px; color: var(--marmo); text-transform: uppercase;
+    letter-spacing: 1px; margin-right: 4px;
+  }
+  .chip {
+    background: transparent; border: 1px solid var(--border); color: var(--marmo);
+    padding: 5px 12px; border-radius: 2px; font-size: 11px; letter-spacing: 0.4px;
+    cursor: pointer; font-family: inherit;
+  }
+  .chip.active {
+    color: var(--off-white); border-color: var(--bordeaux);
+    background: rgba(107, 31, 31, 0.18);
+  }
+  .chip:hover { color: var(--off-white); }
+
+  /* Table */
+  .table-wrap {
+    background: var(--antracite); border: 1px solid var(--border);
+    border-radius: 3px; overflow-x: auto;
+  }
+  table {
+    width: 100%; border-collapse: collapse; font-size: 13px;
+    min-width: 1000px;
+  }
+  th {
+    text-align: left; padding: 12px 14px;
+    font-size: 10px; color: var(--marmo); text-transform: uppercase;
+    letter-spacing: 1px; font-weight: 500;
+    border-bottom: 1px solid var(--border); background: var(--carbon);
+  }
+  td {
+    padding: 14px; border-bottom: 1px solid var(--carbon); vertical-align: top;
+  }
+  tr:hover td { background: var(--carbon); cursor: pointer; }
+  tr:last-child td { border-bottom: none; }
+
+  .row-dates {
+    font-family: 'Fraunces', serif; font-size: 13.5px; color: var(--off-white);
+  }
+  .row-dates-sub { font-size: 10.5px; color: var(--marmo); margin-top: 3px; letter-spacing: 0.3px; }
+  .row-guest { color: var(--off-white); font-size: 13.5px; }
+  .row-guest-sub { font-size: 11px; color: var(--marmo); margin-top: 2px; }
+  .row-unit { font-family: 'Fraunces', serif; font-size: 13px; }
+  .row-nights { color: var(--off-white); font-size: 13px; }
+  .row-channel { font-size: 10.5px; color: var(--marmo); text-transform: uppercase; letter-spacing: 0.8px; }
+  .row-amount { font-family: 'Fraunces', serif; font-size: 14px; color: var(--off-white); }
+  .row-amount-sub { font-size: 10.5px; color: var(--marmo); margin-top: 2px; }
+
+  .status {
+    display: inline-block; padding: 4px 10px; border-radius: 2px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .status.in-casa { background: var(--bordeaux); color: var(--off-white); }
+  .status.in-arrivo { background: transparent; color: var(--off-white); border: 1px solid var(--bordeaux); }
+  .status.futura { background: transparent; color: var(--marmo); border: 1px solid var(--border); }
+  .status.passata { background: transparent; color: var(--marmo); }
+  .status.cancellata { background: transparent; color: #8B4444; border: 1px solid #8B4444; text-decoration: line-through; }
+  .status.check-out { background: var(--border); color: var(--off-white); }
+
+  .row-actions {
+    background: none; border: none; color: var(--marmo); cursor: pointer;
+    padding: 4px 8px; font-size: 18px; line-height: 1;
+  }
+  .row-actions:hover { color: var(--off-white); }
+
+  /* Pagination */
+  .pagination {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 18px; padding: 0 4px;
+  }
+  .pag-info { font-size: 11px; color: var(--marmo); }
+  .pag-controls { display: flex; gap: 8px; }
+  .pag-btn {
+    background: none; border: 1px solid var(--border); color: var(--marmo);
+    padding: 6px 14px; border-radius: 2px; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; font-family: inherit;
+  }
+  .pag-btn:hover { color: var(--off-white); border-color: var(--marmo); }
+  .pag-btn.active { color: var(--off-white); border-color: var(--bordeaux); background: rgba(107, 31, 31, 0.18); }
+
+  /* Nav foot */
+  .nav-foot {
+    display: flex; gap: 32px; padding-top: 24px; margin-top: 32px;
+    border-top: 1px solid var(--border); font-size: 11px;
+    letter-spacing: 1.2px; text-transform: uppercase;
+  }
+  .nav-foot a { color: var(--marmo); text-decoration: none; padding-bottom: 6px; }
+  .nav-foot a:hover { color: var(--off-white); }
+  .nav-foot a.active { color: var(--off-white); border-bottom: 1px solid var(--bordeaux); }
+
+  @media (max-width: 768px) {
+    .wrap { padding: 16px 14px; }
+    .page-title { font-size: 22px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .kpi { padding: 14px; }
+    .kpi-value { font-size: 24px; }
+    .filters-row { gap: 10px; }
+    .search-box { min-width: 100%; }
+    .meta { gap: 12px; flex-wrap: wrap; }
+    .meta > span:first-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2 L22 20 L2 20 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+        <path d="M12 6 L18 18 L6 18 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+        <path d="M12 10 L15 16 L9 16 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+      </svg>
+      <span class="brand-title">Cockpit</span>
+    </div>
+    <div class="meta">
+      <span>Venerdì 26 giugno</span>
+      <span><span class="sync-dot"></span>Sync 2m fa</span>
+      <button class="logout-btn">Esci</button>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="page-title-row">
+    <h1 class="page-title">Prenotazioni</h1>
+  </div>
+
+  <!-- KPI mese -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Revenue giugno</div>
+      <div class="kpi-value">18.450€</div>
+      <div class="kpi-detail">+12% vs maggio</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Notti vendute</div>
+      <div class="kpi-value">84</div>
+      <div class="kpi-detail">su 150 totali</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">ADR</div>
+      <div class="kpi-value">220€</div>
+      <div class="kpi-detail">media a notte</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Occupancy</div>
+      <div class="kpi-value">71%</div>
+      <div class="kpi-detail">5 unità, 30 giorni</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-bar">
+    <div class="filters-row">
+      <input type="text" class="search-box" placeholder="Cerca ospite, codice OTA, telefono...">
+      <div class="filter-group">
+        <span class="filter-label">Periodo</span>
+        <button class="chip active">Giugno 2026</button>
+      </div>
+    </div>
+    <div class="filters-row">
+      <div class="filter-group">
+        <span class="filter-label">Stato</span>
+        <button class="chip active">Tutte</button>
+        <button class="chip">In casa</button>
+        <button class="chip">In arrivo</button>
+        <button class="chip">Future</button>
+        <button class="chip">Passate</button>
+        <button class="chip">Cancellate</button>
+      </div>
+    </div>
+    <div class="filters-row">
+      <div class="filter-group">
+        <span class="filter-label">Canale</span>
+        <button class="chip active">Tutti</button>
+        <button class="chip">Booking</button>
+        <button class="chip">Airbnb</button>
+        <button class="chip">Vrbo</button>
+        <button class="chip">Diretto</button>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Unità</span>
+        <button class="chip active">Tutte</button>
+        <button class="chip">App 1</button>
+        <button class="chip">App 2</button>
+        <button class="chip">App 3</button>
+        <button class="chip">App 4</button>
+        <button class="chip">App 5</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Ospite</th>
+          <th>Unità</th>
+          <th>Notti</th>
+          <th>Canale</th>
+          <th>Importo</th>
+          <th>Stato</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+
+        <tr>
+          <td>
+            <div class="row-dates">26 giu, 15:00</div>
+            <div class="row-dates-sub">→ 3 lug, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">James O'Connor</div>
+            <div class="row-guest-sub">6 ospiti, codice 4892JN</div>
+          </td>
+          <td class="row-unit">Santopaolo 1</td>
+          <td class="row-nights">7</td>
+          <td class="row-channel">Airbnb</td>
+          <td>
+            <div class="row-amount">2.450€</div>
+            <div class="row-amount-sub">350€/n</div>
+          </td>
+          <td><span class="status in-arrivo">In arrivo</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">25 giu, 15:00</div>
+            <div class="row-dates-sub">→ 27 giu, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Marco Bianchi</div>
+            <div class="row-guest-sub">2 ospiti, codice BKG-7654</div>
+          </td>
+          <td class="row-unit">Santopaolo 2</td>
+          <td class="row-nights">2</td>
+          <td class="row-channel">Booking</td>
+          <td>
+            <div class="row-amount">340€</div>
+            <div class="row-amount-sub">170€/n</div>
+          </td>
+          <td><span class="status in-casa">In casa</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">27 giu, 15:00</div>
+            <div class="row-dates-sub">→ 1 lug, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Sofia Russo</div>
+            <div class="row-guest-sub">2 ospiti, codice BKG-7821</div>
+          </td>
+          <td class="row-unit">Santopaolo 2</td>
+          <td class="row-nights">4</td>
+          <td class="row-channel">Booking</td>
+          <td>
+            <div class="row-amount">720€</div>
+            <div class="row-amount-sub">180€/n</div>
+          </td>
+          <td><span class="status futura">Futura</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">26 giu, 16:00</div>
+            <div class="row-dates-sub">→ 1 lug, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Lucas Martin</div>
+            <div class="row-guest-sub">4 ospiti, codice VRB-9921</div>
+          </td>
+          <td class="row-unit">Santopaolo 3</td>
+          <td class="row-nights">5</td>
+          <td class="row-channel">Vrbo</td>
+          <td>
+            <div class="row-amount">1.180€</div>
+            <div class="row-amount-sub">236€/n</div>
+          </td>
+          <td><span class="status in-arrivo">In arrivo</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">22 giu, 15:00</div>
+            <div class="row-dates-sub">→ 27 giu, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Tom Becker</div>
+            <div class="row-guest-sub">4 ospiti, codice AIR-RFTG78</div>
+          </td>
+          <td class="row-unit">Santopaolo 4</td>
+          <td class="row-nights">5</td>
+          <td class="row-channel">Airbnb</td>
+          <td>
+            <div class="row-amount">980€</div>
+            <div class="row-amount-sub">196€/n</div>
+          </td>
+          <td><span class="status check-out">Check-out 27</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">23 giu, 15:00</div>
+            <div class="row-dates-sub">→ 26 giu, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Anna Schmidt</div>
+            <div class="row-guest-sub">2 ospiti, codice BKG-6633</div>
+          </td>
+          <td class="row-unit">Santopaolo 5</td>
+          <td class="row-nights">3</td>
+          <td class="row-channel">Booking</td>
+          <td>
+            <div class="row-amount">540€</div>
+            <div class="row-amount-sub">180€/n</div>
+          </td>
+          <td><span class="status check-out">Check-out oggi</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">28 giu, 15:00</div>
+            <div class="row-dates-sub">→ 4 lug, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Famille Dubois</div>
+            <div class="row-guest-sub">4 ospiti, codice VRB-1129</div>
+          </td>
+          <td class="row-unit">Santopaolo 4</td>
+          <td class="row-nights">6</td>
+          <td class="row-channel">Vrbo</td>
+          <td>
+            <div class="row-amount">1.380€</div>
+            <div class="row-amount-sub">230€/n</div>
+          </td>
+          <td><span class="status futura">Futura</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">29 giu, 15:00</div>
+            <div class="row-dates-sub">→ 3 lug, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Pierre Lefebvre</div>
+            <div class="row-guest-sub">2 ospiti, prenotazione diretta</div>
+          </td>
+          <td class="row-unit">Santopaolo 5</td>
+          <td class="row-nights">4</td>
+          <td class="row-channel">Diretto</td>
+          <td>
+            <div class="row-amount">880€</div>
+            <div class="row-amount-sub">220€/n, 0% commissioni</div>
+          </td>
+          <td><span class="status futura">Futura</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">3 lug, 15:00</div>
+            <div class="row-dates-sub">→ 7 lug, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Klaus Schneider</div>
+            <div class="row-guest-sub">2 ospiti, codice BKG-8893</div>
+          </td>
+          <td class="row-unit">Santopaolo 2</td>
+          <td class="row-nights">4</td>
+          <td class="row-channel">Booking</td>
+          <td>
+            <div class="row-amount">760€</div>
+            <div class="row-amount-sub">190€/n</div>
+          </td>
+          <td><span class="status futura">Futura</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">18 giu, 15:00</div>
+            <div class="row-dates-sub">→ 22 giu, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Robert Davies</div>
+            <div class="row-guest-sub">4 ospiti, codice 4421KP</div>
+          </td>
+          <td class="row-unit">Santopaolo 1</td>
+          <td class="row-nights">4</td>
+          <td class="row-channel">Airbnb</td>
+          <td>
+            <div class="row-amount">1.320€</div>
+            <div class="row-amount-sub">330€/n</div>
+          </td>
+          <td><span class="status passata">Completata</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">15 giu, 15:00</div>
+            <div class="row-dates-sub">→ 21 giu, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Hassan Al-Mansouri</div>
+            <div class="row-guest-sub">5 ospiti, prenotazione diretta</div>
+          </td>
+          <td class="row-unit">Santopaolo 1</td>
+          <td class="row-nights">6</td>
+          <td class="row-channel">Diretto</td>
+          <td>
+            <div class="row-amount">2.100€</div>
+            <div class="row-amount-sub">350€/n, 0% commissioni</div>
+          </td>
+          <td><span class="status passata">Completata</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+        <tr>
+          <td>
+            <div class="row-dates">10 giu, 15:00</div>
+            <div class="row-dates-sub">→ 13 giu, 11:00</div>
+          </td>
+          <td>
+            <div class="row-guest">Yuki Tanaka</div>
+            <div class="row-guest-sub">1 ospite, codice BKG-5511</div>
+          </td>
+          <td class="row-unit">Santopaolo 5</td>
+          <td class="row-nights">3</td>
+          <td class="row-channel">Booking</td>
+          <td>
+            <div class="row-amount">490€</div>
+            <div class="row-amount-sub">163€/n</div>
+          </td>
+          <td><span class="status cancellata">Cancellata</span></td>
+          <td><button class="row-actions">⋯</button></td>
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    <div class="pag-info">12 di 47 prenotazioni</div>
+    <div class="pag-controls">
+      <button class="pag-btn">Precedenti</button>
+      <button class="pag-btn active">1</button>
+      <button class="pag-btn">2</button>
+      <button class="pag-btn">3</button>
+      <button class="pag-btn">4</button>
+      <button class="pag-btn">Successive</button>
+    </div>
+  </div>
+
+  <!-- Nav foot -->
+  <div class="nav-foot">
+    <a href="#">Home</a>
+    <a href="#">Calendario</a>
+    <a href="#" class="active">Prenotazioni</a>
+    <a href="#">Task</a>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santopaolo Cockpit — Tasks /admin/tasks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --nero: #0E0E0E; --antracite: #1C1C1C; --carbon: #141414;
+    --border: #2A2A2A; --off-white: #F5F2EC; --marmo: #8A8580;
+    --bordeaux: #6B1F1F; --bordeaux-hover: #8A2A2A; --green: #4ade80;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--nero); color: var(--off-white);
+    font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1400px; margin: 0 auto; padding: 28px 32px; }
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 28px;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand-title { font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500; letter-spacing: 0.5px; }
+  .meta { display: flex; align-items: center; gap: 24px; color: var(--marmo); font-size: 12px; }
+  .sync-dot {
+    width: 6px; height: 6px; background: var(--green); border-radius: 50%;
+    display: inline-block; margin-right: 8px; box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+  }
+  .logout-btn {
+    background: none; border: 1px solid var(--border); color: var(--marmo);
+    padding: 8px 14px; border-radius: 2px; font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase; cursor: pointer; font-family: inherit;
+  }
+
+  .page-title-row {
+    display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px;
+  }
+  .page-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 500; }
+
+  /* Tabs filter */
+  .tabs {
+    display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 22px;
+  }
+  .tab {
+    background: none; border: none; color: var(--marmo);
+    padding: 10px 16px; font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase;
+    cursor: pointer; font-family: inherit;
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tab:hover { color: var(--off-white); }
+  .tab.active { color: var(--off-white); border-bottom-color: var(--bordeaux); }
+  .tab-count {
+    display: inline-block; margin-left: 6px;
+    background: var(--carbon); padding: 1px 6px; border-radius: 2px;
+    font-size: 10px; color: var(--marmo);
+  }
+  .tab.active .tab-count { background: var(--bordeaux); color: var(--off-white); }
+
+  /* Two-col layout */
+  .main-layout {
+    display: grid; grid-template-columns: 1fr 420px; gap: 24px; margin-bottom: 32px;
+  }
+
+  /* Task list */
+  .task-group { margin-bottom: 28px; }
+  .task-group-head {
+    font-family: 'Fraunces', serif; font-size: 16px; color: var(--marmo);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .task-group-count { font-size: 10px; letter-spacing: 1px; }
+
+  .task {
+    background: var(--antracite); border: 1px solid var(--border);
+    padding: 14px 16px; border-radius: 3px;
+    margin-bottom: 10px;
+    display: grid; grid-template-columns: 22px 70px 1fr auto;
+    gap: 14px; align-items: center;
+    transition: border-color 0.15s;
+    cursor: pointer;
+  }
+  .task:hover { border-color: var(--marmo); }
+  .task.done { opacity: 0.5; }
+  .task.done .task-title { text-decoration: line-through; }
+
+  .task-checkbox {
+    width: 18px; height: 18px; border-radius: 2px;
+    border: 1px solid var(--marmo); background: transparent;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; color: var(--off-white);
+  }
+  .task-checkbox.checked {
+    background: var(--bordeaux); border-color: var(--bordeaux);
+  }
+
+  .task-time {
+    font-family: 'Fraunces', serif; font-size: 14px; color: var(--off-white);
+  }
+  .task-time-sub { font-size: 10px; color: var(--marmo); margin-top: 2px; letter-spacing: 0.3px; }
+
+  .task-body { min-width: 0; }
+  .task-title { color: var(--off-white); font-size: 13.5px; margin-bottom: 4px; font-weight: 500; }
+  .task-desc { color: var(--marmo); font-size: 11.5px; }
+  .task-meta {
+    display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;
+  }
+  .task-tag {
+    font-size: 9.5px; padding: 2px 7px; border-radius: 2px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    background: var(--carbon); color: var(--marmo);
+    border: 1px solid var(--border);
+  }
+  .task-tag.unit { color: var(--off-white); border-color: var(--border); }
+  .task-tag.type { color: var(--bordeaux-hover); border-color: rgba(107, 31, 31, 0.5); }
+  .task-tag.telegram {
+    color: var(--off-white); border-color: var(--bordeaux);
+    background: rgba(107, 31, 31, 0.18);
+  }
+  .task-tag.recurring { color: var(--marmo); }
+
+  .task-actions {
+    background: none; border: none; color: var(--marmo); cursor: pointer;
+    padding: 4px 8px; font-size: 18px; line-height: 1;
+  }
+  .task-actions:hover { color: var(--off-white); }
+
+  /* Form panel */
+  .form-panel {
+    background: var(--antracite); border: 1px solid var(--border);
+    border-radius: 3px; padding: 22px;
+    align-self: start; position: sticky; top: 28px;
+  }
+
+  .form-head {
+    margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .form-head h3 {
+    font-family: 'Fraunces', serif; font-size: 20px; font-weight: 500;
+  }
+  .form-cancel {
+    background: none; border: none; color: var(--marmo); cursor: pointer;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px;
+    font-family: inherit;
+  }
+  .form-cancel:hover { color: var(--off-white); }
+
+  .field { margin-bottom: 16px; }
+  .field-label {
+    display: block; font-size: 10px; color: var(--marmo);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px;
+  }
+  .field-input, .field-textarea, .field-select {
+    width: 100%;
+    background: var(--nero); border: 1px solid var(--border);
+    color: var(--off-white); font-size: 13px;
+    padding: 9px 12px; border-radius: 2px;
+    font-family: inherit;
+  }
+  .field-input:focus, .field-textarea:focus, .field-select:focus {
+    outline: none; border-color: var(--bordeaux);
+  }
+  .field-textarea { resize: vertical; min-height: 64px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip-mini {
+    background: transparent; border: 1px solid var(--border); color: var(--marmo);
+    padding: 5px 10px; border-radius: 2px; font-size: 11px;
+    cursor: pointer; font-family: inherit;
+  }
+  .chip-mini.active {
+    color: var(--off-white); border-color: var(--bordeaux);
+    background: rgba(107, 31, 31, 0.18);
+  }
+
+  .field-toggle-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0;
+  }
+  .toggle {
+    width: 36px; height: 20px; background: var(--border); border-radius: 12px;
+    position: relative; cursor: pointer;
+  }
+  .toggle.on { background: var(--bordeaux); }
+  .toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 14px; height: 14px; background: var(--off-white); border-radius: 50%;
+    transition: left 0.15s;
+  }
+  .toggle.on::after { left: 19px; }
+  .toggle-label { font-size: 12px; color: var(--off-white); }
+
+  /* Telegram preview */
+  .tg-preview {
+    background: var(--nero); border: 1px solid var(--border);
+    padding: 14px 16px; border-radius: 3px;
+    font-size: 12px; line-height: 1.5;
+    color: var(--off-white);
+    white-space: pre-wrap; font-family: 'Inter', sans-serif;
+    margin-top: 6px;
+  }
+  .tg-preview-head {
+    font-size: 10px; color: var(--marmo);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+  }
+
+  /* Form actions */
+  .form-actions {
+    display: flex; gap: 10px; margin-top: 22px; padding-top: 18px;
+    border-top: 1px solid var(--border);
+  }
+  .btn-primary {
+    flex: 1; background: var(--bordeaux); color: var(--off-white); border: none;
+    padding: 11px 16px; border-radius: 2px; font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase; cursor: pointer; font-family: inherit;
+  }
+  .btn-primary:hover { background: var(--bordeaux-hover); }
+  .btn-secondary {
+    background: transparent; border: 1px solid var(--border); color: var(--marmo);
+    padding: 11px 16px; border-radius: 2px; font-size: 11px;
+    letter-spacing: 1px; text-transform: uppercase; cursor: pointer; font-family: inherit;
+  }
+  .btn-secondary:hover { color: var(--off-white); border-color: var(--marmo); }
+
+  /* Nav foot */
+  .nav-foot {
+    display: flex; gap: 32px; padding-top: 24px; margin-top: 8px;
+    border-top: 1px solid var(--border); font-size: 11px;
+    letter-spacing: 1.2px; text-transform: uppercase;
+  }
+  .nav-foot a { color: var(--marmo); text-decoration: none; padding-bottom: 6px; }
+  .nav-foot a:hover { color: var(--off-white); }
+  .nav-foot a.active { color: var(--off-white); border-bottom: 1px solid var(--bordeaux); }
+
+  @media (max-width: 1024px) {
+    .main-layout { grid-template-columns: 1fr; }
+    .form-panel { position: relative; top: 0; }
+  }
+  @media (max-width: 768px) {
+    .wrap { padding: 16px 14px; }
+    .page-title { font-size: 22px; }
+    .task { grid-template-columns: 22px 1fr auto; }
+    .task-time { grid-column: 2; }
+    .task-body { grid-column: 2; }
+    .field-row { grid-template-columns: 1fr; }
+    .meta { gap: 12px; flex-wrap: wrap; }
+    .meta > span:first-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2 L22 20 L2 20 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+        <path d="M12 6 L18 18 L6 18 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+        <path d="M12 10 L15 16 L9 16 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+      </svg>
+      <span class="brand-title">Cockpit</span>
+    </div>
+    <div class="meta">
+      <span>Venerdì 26 giugno</span>
+      <span><span class="sync-dot"></span>Sync 2m fa</span>
+      <button class="logout-btn">Esci</button>
+    </div>
+  </div>
+
+  <!-- Title -->
+  <div class="page-title-row">
+    <h1 class="page-title">Task</h1>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active">Oggi<span class="tab-count">4</span></button>
+    <button class="tab">Domani<span class="tab-count">3</span></button>
+    <button class="tab">Settimana<span class="tab-count">11</span></button>
+    <button class="tab">Tutti aperti<span class="tab-count">18</span></button>
+    <button class="tab">Completati<span class="tab-count">23</span></button>
+  </div>
+
+  <!-- Layout -->
+  <div class="main-layout">
+
+    <!-- LEFT, task list -->
+    <div>
+
+      <div class="task-group">
+        <div class="task-group-head">
+          <span>Oggi, 26 giugno</span>
+          <span class="task-group-count">4 aperti, 2 fatti</span>
+        </div>
+
+        <div class="task done">
+          <div class="task-checkbox checked">✓</div>
+          <div>
+            <div class="task-time">08:00</div>
+            <div class="task-time-sub">Telegram inviato</div>
+          </div>
+          <div class="task-body">
+            <div class="task-title">Brief mattutino</div>
+            <div class="task-desc">Riepilogo check-in, check-out e task del giorno</div>
+            <div class="task-meta">
+              <span class="task-tag recurring">Giornaliera</span>
+              <span class="task-tag telegram">Telegram inviato</span>
+            </div>
+          </div>
+          <button class="task-actions">⋯</button>
+        </div>
+
+        <div class="task done">
+          <div class="task-checkbox checked">✓</div>
+          <div>
+            <div class="task-time">09:00</div>
+            <div class="task-time-sub">Manuale</div>
+          </div>
+          <div class="task-body">
+            <div class="task-title">Lavanderia, ritiro biancheria</div>
+            <div class="task-desc">Da Mario Lavanderia, via dei Mille</div>
+            <div class="task-meta">
+              <span class="task-tag unit">Tutte le unità</span>
+              <span class="task-tag type">Lavanderia</span>
+            </div>
+          </div>
+          <button class="task-actions">⋯</button>
+        </div>
+
+        <div class="task">
+          <div class="task-checkbox"></div>
+          <div>
+            <div class="task-time">11:30</div>
+            <div class="task-time-sub">Reminder 15m</div>
+          </div>
+          <div class="task-body">
+            <div class="task-title">Pulizie post check-out</div>
+            <div class="task-desc">Squadra Gaetano, prevista 1h, biancheria fresca</div>
+            <div class="task-meta">
+              <span class="task-tag unit">Santopaolo 5</span>
+              <span class="task-tag type">Pulizie</span>
+              <span class="task-tag telegram">Telegram 11:15</span>
+            </div>
+          </div>
+          <button class="task-actions">⋯</button>
+        </div>
+
+        <div class="task">
+          <div class="task-checkbox"></div>
+          <div>
+            <div class="task-time">15:00</div>
+            <div class="task-time-sub">Reminder 1h</div>
+          </div>
+          <div class="task-body">
+            <div class="task-title">Check-in O'Connor, preparazione</div>
+            <div class="task-desc">Verificare welcome kit, controllo ricarica EV, chiavi pronte</div>
+            <div class="task-meta">
+              <span class="task-tag unit">Santopaolo 1</span>
+              <span class="task-tag type">Check-in</span>
+              <span class="task-tag telegram">Telegram 14:00</span>
+            </div>
+          </div>
+          <button class="task-actions">⋯</button>
+        </div>
+
+        <div class="task">
+          <div class="task-checkbox"></div>
+          <div>
+            <div class="task-time">18:00</div>
+            <div class="task-time-sub">Reminder 1h</div>
+          </div>
+          <div class="task-body">
+            <div class="task-title">Tasse soggiorno, registrazione</div>
+            <div class="task-desc">Portale alloggiatiweb, 8 ospiti totali, scadenza 24h</div>
+            <div class="task-meta">
+              <span class="task-tag unit">App 1, 3</span>
+              <span class="task-tag type">Tasse</span>
+              <span class="task-tag telegram">Telegram 17:00</span>
+            </div>
+          </div>
+          <button class="task-actions">⋯</button>
+        </div>
+
+        <div class="task">
+          <div class="task-checkbox"></div>
+          <div>
+            <div class="task-time">20:00</div>
+            <div class="task-time-sub">Reminder 30m</div>
+          </div>
+          <div class="task-body">
+            <div class="task-title">Cambio codice serratura</div>
+            <div class="task-desc">Nuovo ospite arriva domani, vecchio codice scade alle 22</div>
+            <div class="task-meta">
+              <span class="task-tag unit">Santopaolo 2</span>
+              <span class="task-tag type">Altro</span>
+              <span class="task-tag telegram">Telegram 19:30</span>
+            </div>
+          </div>
+          <button class="task-actions">⋯</button>
+        </div>
+
+      </div>
+
+      <div class="task-group">
+        <div class="task-group-head">
+          <span>Domani, sabato 27 giugno</span>
+          <span class="task-group-count">3 aperti</span>
+        </div>
+
+        <div class="task">
+          <div class="task-checkbox"></div>
+          <div>
+            <div class="task-time">11:00</div>
+            <div class="task-time-sub">Reminder 30m</div>
+          </div>
+          <div class="task-body">
+            <div class="task-title">Check-out Becker, ispezione</div>
+            <div class="task-desc">Controllo eventuali danni, restituzione cauzione</div>
+            <div class="task-meta">
+              <span class="task-tag unit">Santopaolo 4</span>
+              <span class="task-tag type">Check-out</span>
+              <span class="task-tag telegram">Telegram 10:30</span>
+            </div>
+          </div>
+          <button class="task-actions">⋯</button>
+        </div>
+
+        <div class="task">
+          <div class="task-checkbox"></div>
+          <div>
+            <div class="task-time">12:00</div>
+            <div class="task-time-sub">Reminder 15m</div>
+          </div>
+          <div class="task-body">
+            <div class="task-title">Pulizie post check-out</div>
+            <div class="task-desc">Squadra Gaetano, prevista 1h</div>
+            <div class="task-meta">
+              <span class="task-tag unit">Santopaolo 4</span>
+              <span class="task-tag type">Pulizie</span>
+              <span class="task-tag telegram">Telegram 11:45</span>
+            </div>
+          </div>
+          <button class="task-actions">⋯</button>
+        </div>
+
+        <div class="task">
+          <div class="task-checkbox"></div>
+          <div>
+            <div class="task-time">15:00</div>
+            <div class="task-time-sub">Reminder 1h</div>
+          </div>
+          <div class="task-body">
+            <div class="task-title">Check-in Russo, preparazione</div>
+            <div class="task-desc">Welcome kit, codice serratura nuovo</div>
+            <div class="task-meta">
+              <span class="task-tag unit">Santopaolo 2</span>
+              <span class="task-tag type">Check-in</span>
+              <span class="task-tag telegram">Telegram 14:00</span>
+            </div>
+          </div>
+          <button class="task-actions">⋯</button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT, form panel -->
+    <aside class="form-panel">
+      <div class="form-head">
+        <h3>Nuovo task</h3>
+        <button class="form-cancel">Annulla</button>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Titolo</label>
+        <input type="text" class="field-input" placeholder="es. Pulizie post check-out">
+      </div>
+
+      <div class="field">
+        <label class="field-label">Descrizione</label>
+        <textarea class="field-textarea" placeholder="Dettagli operativi, contatti, note..."></textarea>
+      </div>
+
+      <div class="field field-row">
+        <div>
+          <label class="field-label">Data</label>
+          <input type="text" class="field-input" value="26/06/2026">
+        </div>
+        <div>
+          <label class="field-label">Ora</label>
+          <input type="text" class="field-input" value="11:30">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Unità</label>
+        <div class="field-chips">
+          <button class="chip-mini">App 1</button>
+          <button class="chip-mini">App 2</button>
+          <button class="chip-mini">App 3</button>
+          <button class="chip-mini">App 4</button>
+          <button class="chip-mini active">App 5</button>
+          <button class="chip-mini">Tutte</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Tipo</label>
+        <select class="field-select">
+          <option>Pulizie</option>
+          <option>Lavanderia</option>
+          <option>Tasse soggiorno</option>
+          <option>Check-in</option>
+          <option>Check-out</option>
+          <option>Manutenzione</option>
+          <option>Altro</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Reminder Telegram</label>
+        <div class="field-chips">
+          <button class="chip-mini">Niente</button>
+          <button class="chip-mini active">15 min prima</button>
+          <button class="chip-mini">1 ora prima</button>
+          <button class="chip-mini">6 ore prima</button>
+          <button class="chip-mini">24 ore prima</button>
+          <button class="chip-mini">Custom</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Ripetizione</label>
+        <div class="field-chips">
+          <button class="chip-mini active">Mai</button>
+          <button class="chip-mini">Giornaliera</button>
+          <button class="chip-mini">Settimanale</button>
+          <button class="chip-mini">Mensile</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Anteprima Telegram</label>
+        <div class="tg-preview"><span class="tg-preview-head">Inviato alle 11:15</span>Promemoria Santopaolo Cockpit
+
+Pulizie post check-out
+Santopaolo 5, alle 11:30
+
+Squadra Gaetano, prevista 1h, biancheria fresca
+
+admin.santopaoloapartments.com/tasks</div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary">Salva task</button>
+        <button class="btn-secondary">Annulla</button>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- Nav foot -->
+  <div class="nav-foot">
+    <a href="#">Home</a>
+    <a href="#">Calendario</a>
+    <a href="#">Prenotazioni</a>
+    <a href="#" class="active">Task</a>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santopaolo Cockpit — Mockup Home /admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --nero: #0E0E0E;
+    --antracite: #1C1C1C;
+    --carbon: #141414;
+    --border: #2A2A2A;
+    --off-white: #F5F2EC;
+    --marmo: #8A8580;
+    --bordeaux: #6B1F1F;
+    --bordeaux-hover: #8A2A2A;
+    --green: #4ade80;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--nero);
+    color: var(--off-white);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  .wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 28px 32px;
+  }
+
+  /* Topbar */
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .brand-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    color: var(--marmo);
+    font-size: 12px;
+  }
+
+  .sync-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+    box-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+  }
+
+  .logout-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--marmo);
+    padding: 8px 14px;
+    border-radius: 2px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover {
+    color: var(--off-white);
+    border-color: var(--marmo);
+  }
+
+  /* KPI Grid */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+
+  .kpi {
+    background: var(--antracite);
+    border: 1px solid var(--border);
+    padding: 20px;
+    border-radius: 3px;
+  }
+
+  .kpi-label {
+    font-size: 11px;
+    color: var(--marmo);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+
+  .kpi-value {
+    font-family: 'Fraunces', serif;
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+
+  .kpi-detail {
+    font-size: 11px;
+    color: var(--marmo);
+    letter-spacing: 0.3px;
+  }
+
+  .kpi-detail.accent {
+    color: var(--bordeaux-hover);
+  }
+
+  /* Section */
+  .section {
+    margin-bottom: 36px;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-header h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+  }
+
+  .section-counter {
+    font-size: 11px;
+    color: var(--marmo);
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  .section-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .range-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--marmo);
+    padding: 5px 12px;
+    border-radius: 2px;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .range-btn.active {
+    color: var(--off-white);
+    border-color: var(--bordeaux);
+    background: rgba(107, 31, 31, 0.15);
+  }
+
+  /* Calendar */
+  .cal-wrap {
+    background: var(--antracite);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow-x: auto;
+  }
+
+  .cal-grid {
+    display: grid;
+    grid-template-columns: 130px repeat(14, minmax(78px, 1fr));
+    min-width: 1100px;
+    position: relative;
+  }
+
+  .cal-corner {
+    background: var(--antracite);
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    height: 44px;
+  }
+
+  .cal-h {
+    padding: 10px 6px;
+    font-size: 10px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--carbon);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--marmo);
+    background: var(--antracite);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 44px;
+  }
+
+  .cal-h .day-name {
+    font-size: 9px;
+    color: var(--marmo);
+    margin-bottom: 2px;
+  }
+
+  .cal-h .day-num {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--off-white);
+  }
+
+  .cal-h.today {
+    background: rgba(107, 31, 31, 0.18);
+  }
+
+  .cal-h.today .day-num {
+    color: var(--off-white);
+  }
+
+  .cal-h.weekend {
+    background: rgba(255, 255, 255, 0.015);
+  }
+
+  .cal-label {
+    padding: 0 14px;
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--carbon);
+    display: flex;
+    align-items: center;
+    background: var(--antracite);
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    height: 56px;
+  }
+
+  .cal-label .lab-meta {
+    font-size: 10px;
+    color: var(--marmo);
+    margin-left: 8px;
+    letter-spacing: 0.3px;
+  }
+
+  .cal-cell {
+    height: 56px;
+    border-right: 1px solid var(--carbon);
+    border-bottom: 1px solid var(--carbon);
+    position: relative;
+  }
+
+  .cal-cell.today {
+    background: rgba(107, 31, 31, 0.06);
+  }
+
+  .cal-cell.weekend {
+    background: rgba(255, 255, 255, 0.01);
+  }
+
+  .cal-cell.today.weekend {
+    background: rgba(107, 31, 31, 0.08);
+  }
+
+  .cal-booking {
+    margin: 8px 2px;
+    padding: 0 10px;
+    background: var(--bordeaux);
+    border-radius: 2px;
+    font-size: 11px;
+    color: var(--off-white);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    letter-spacing: 0.2px;
+    height: 40px;
+    z-index: 2;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .cal-booking:hover {
+    background: var(--bordeaux-hover);
+  }
+
+  .cal-booking .b-name {
+    font-weight: 500;
+  }
+
+  .cal-booking .b-ch {
+    margin-left: 6px;
+    opacity: 0.7;
+    font-size: 9.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .cal-booking.direct {
+    background: var(--bordeaux);
+    border-left: 3px solid var(--off-white);
+  }
+
+  /* Timeline (Oggi) */
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 70px 100px 1fr 130px 90px;
+    gap: 16px;
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--antracite);
+    align-items: center;
+  }
+
+  .timeline-row:hover {
+    background: var(--carbon);
+  }
+
+  .t-time {
+    font-family: 'Fraunces', serif;
+    font-size: 15px;
+    color: var(--off-white);
+  }
+
+  .t-type {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 2px;
+    display: inline-block;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .t-checkin { background: var(--bordeaux); color: var(--off-white); }
+  .t-checkout { background: var(--border); color: var(--off-white); }
+  .t-task { background: transparent; color: var(--marmo); border: 1px solid var(--border); }
+
+  .t-detail { color: var(--off-white); font-size: 13px; }
+  .t-detail-sub { color: var(--marmo); font-size: 11px; margin-top: 3px; }
+
+  .t-unit {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--off-white);
+  }
+
+  .t-channel {
+    font-size: 10px;
+    color: var(--marmo);
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  /* Nav foot */
+  .nav-foot {
+    display: flex;
+    gap: 32px;
+    padding-top: 24px;
+    margin-top: 8px;
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+  }
+
+  .nav-foot a {
+    color: var(--marmo);
+    text-decoration: none;
+    padding-bottom: 6px;
+    transition: color 0.2s;
+  }
+
+  .nav-foot a:hover { color: var(--off-white); }
+
+  .nav-foot a.active {
+    color: var(--off-white);
+    border-bottom: 1px solid var(--bordeaux);
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 10.5px;
+    color: var(--marmo);
+    letter-spacing: 0.3px;
+  }
+
+  .leg-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .leg-chip {
+    width: 14px;
+    height: 10px;
+    border-radius: 1px;
+  }
+
+  .leg-chip.booking { background: var(--bordeaux); }
+  .leg-chip.direct { background: var(--bordeaux); border-left: 2px solid var(--off-white); }
+  .leg-chip.empty {
+    background: var(--carbon);
+    border: 1px solid var(--border);
+  }
+  .leg-chip.today { background: rgba(107, 31, 31, 0.4); }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .wrap { padding: 16px 14px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .kpi { padding: 14px; }
+    .kpi-value { font-size: 30px; }
+    .timeline-row {
+      grid-template-columns: 1fr;
+      gap: 6px;
+      padding: 14px 8px;
+    }
+    .t-channel, .t-unit { text-align: left; }
+    .meta { gap: 12px; flex-wrap: wrap; }
+    .meta > span:first-child { display: none; }
+    .section-actions { flex-wrap: wrap; gap: 6px; }
+    .range-btn { padding: 4px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2 L22 20 L2 20 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+        <path d="M12 6 L18 18 L6 18 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+        <path d="M12 10 L15 16 L9 16 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+      </svg>
+      <span class="brand-title">Cockpit</span>
+    </div>
+    <div class="meta">
+      <span>Venerdì 26 giugno</span>
+      <span><span class="sync-dot"></span>Sync 2m fa</span>
+      <button class="logout-btn">Esci</button>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-label">Check-in oggi</div>
+      <div class="kpi-value">2</div>
+      <div class="kpi-detail accent">App 1, App 3</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Check-out oggi</div>
+      <div class="kpi-value">1</div>
+      <div class="kpi-detail">App 5</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Occupate ora</div>
+      <div class="kpi-value">3 / 5</div>
+      <div class="kpi-detail">Libere App 1, 3</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Task aperti</div>
+      <div class="kpi-value">4</div>
+      <div class="kpi-detail">2 oggi, 2 domani</div>
+    </div>
+  </div>
+
+  <!-- Calendar -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Calendario</h2>
+      <div class="section-actions">
+        <button class="range-btn">7 giorni</button>
+        <button class="range-btn active">14 giorni</button>
+        <button class="range-btn">30 giorni</button>
+      </div>
+    </div>
+
+    <div class="cal-wrap">
+      <div class="cal-grid">
+
+        <!-- Header row -->
+        <div class="cal-corner"></div>
+        <div class="cal-h today"><span class="day-name">Ven</span><span class="day-num">26</span></div>
+        <div class="cal-h weekend"><span class="day-name">Sab</span><span class="day-num">27</span></div>
+        <div class="cal-h weekend"><span class="day-name">Dom</span><span class="day-num">28</span></div>
+        <div class="cal-h"><span class="day-name">Lun</span><span class="day-num">29</span></div>
+        <div class="cal-h"><span class="day-name">Mar</span><span class="day-num">30</span></div>
+        <div class="cal-h"><span class="day-name">Mer</span><span class="day-num">1 lug</span></div>
+        <div class="cal-h"><span class="day-name">Gio</span><span class="day-num">2</span></div>
+        <div class="cal-h"><span class="day-name">Ven</span><span class="day-num">3</span></div>
+        <div class="cal-h weekend"><span class="day-name">Sab</span><span class="day-num">4</span></div>
+        <div class="cal-h weekend"><span class="day-name">Dom</span><span class="day-num">5</span></div>
+        <div class="cal-h"><span class="day-name">Lun</span><span class="day-num">6</span></div>
+        <div class="cal-h"><span class="day-name">Mar</span><span class="day-num">7</span></div>
+        <div class="cal-h"><span class="day-name">Mer</span><span class="day-num">8</span></div>
+        <div class="cal-h"><span class="day-name">Gio</span><span class="day-num">9</span></div>
+
+        <!-- Row App 1 -->
+        <div class="cal-label" style="grid-row: 2;">Santopaolo 1<span class="lab-meta">90mq, 6</span></div>
+        <div class="cal-cell today" style="grid-column: 2; grid-row: 2;"></div>
+        <div class="cal-cell weekend" style="grid-column: 3; grid-row: 2;"></div>
+        <div class="cal-cell weekend" style="grid-column: 4; grid-row: 2;"></div>
+        <div class="cal-cell" style="grid-column: 5; grid-row: 2;"></div>
+        <div class="cal-cell" style="grid-column: 6; grid-row: 2;"></div>
+        <div class="cal-cell" style="grid-column: 7; grid-row: 2;"></div>
+        <div class="cal-cell" style="grid-column: 8; grid-row: 2;"></div>
+        <div class="cal-cell" style="grid-column: 9; grid-row: 2;"></div>
+        <div class="cal-cell weekend" style="grid-column: 10; grid-row: 2;"></div>
+        <div class="cal-cell weekend" style="grid-column: 11; grid-row: 2;"></div>
+        <div class="cal-cell" style="grid-column: 12; grid-row: 2;"></div>
+        <div class="cal-cell" style="grid-column: 13; grid-row: 2;"></div>
+        <div class="cal-cell" style="grid-column: 14; grid-row: 2;"></div>
+        <div class="cal-cell" style="grid-column: 15; grid-row: 2;"></div>
+        <div class="cal-booking" style="grid-column: 2 / 9; grid-row: 2;">
+          <span class="b-name">O'Connor +5, 7 notti</span><span class="b-ch">Airbnb</span>
+        </div>
+
+        <!-- Row App 2 -->
+        <div class="cal-label" style="grid-row: 3;">Santopaolo 2<span class="lab-meta">60mq, 2</span></div>
+        <div class="cal-cell today" style="grid-column: 2; grid-row: 3;"></div>
+        <div class="cal-cell weekend" style="grid-column: 3; grid-row: 3;"></div>
+        <div class="cal-cell weekend" style="grid-column: 4; grid-row: 3;"></div>
+        <div class="cal-cell" style="grid-column: 5; grid-row: 3;"></div>
+        <div class="cal-cell" style="grid-column: 6; grid-row: 3;"></div>
+        <div class="cal-cell" style="grid-column: 7; grid-row: 3;"></div>
+        <div class="cal-cell" style="grid-column: 8; grid-row: 3;"></div>
+        <div class="cal-cell" style="grid-column: 9; grid-row: 3;"></div>
+        <div class="cal-cell weekend" style="grid-column: 10; grid-row: 3;"></div>
+        <div class="cal-cell weekend" style="grid-column: 11; grid-row: 3;"></div>
+        <div class="cal-cell" style="grid-column: 12; grid-row: 3;"></div>
+        <div class="cal-cell" style="grid-column: 13; grid-row: 3;"></div>
+        <div class="cal-cell" style="grid-column: 14; grid-row: 3;"></div>
+        <div class="cal-cell" style="grid-column: 15; grid-row: 3;"></div>
+        <div class="cal-booking" style="grid-column: 2 / 3; grid-row: 3;">
+          <span class="b-name">Bianchi</span>
+        </div>
+        <div class="cal-booking" style="grid-column: 3 / 7; grid-row: 3;">
+          <span class="b-name">S. Russo, 4n</span><span class="b-ch">Booking</span>
+        </div>
+        <div class="cal-booking" style="grid-column: 9 / 13; grid-row: 3;">
+          <span class="b-name">Schneider, 4n</span><span class="b-ch">Booking</span>
+        </div>
+
+        <!-- Row App 3 -->
+        <div class="cal-label" style="grid-row: 4;">Santopaolo 3<span class="lab-meta">70mq, 4</span></div>
+        <div class="cal-cell today" style="grid-column: 2; grid-row: 4;"></div>
+        <div class="cal-cell weekend" style="grid-column: 3; grid-row: 4;"></div>
+        <div class="cal-cell weekend" style="grid-column: 4; grid-row: 4;"></div>
+        <div class="cal-cell" style="grid-column: 5; grid-row: 4;"></div>
+        <div class="cal-cell" style="grid-column: 6; grid-row: 4;"></div>
+        <div class="cal-cell" style="grid-column: 7; grid-row: 4;"></div>
+        <div class="cal-cell" style="grid-column: 8; grid-row: 4;"></div>
+        <div class="cal-cell" style="grid-column: 9; grid-row: 4;"></div>
+        <div class="cal-cell weekend" style="grid-column: 10; grid-row: 4;"></div>
+        <div class="cal-cell weekend" style="grid-column: 11; grid-row: 4;"></div>
+        <div class="cal-cell" style="grid-column: 12; grid-row: 4;"></div>
+        <div class="cal-cell" style="grid-column: 13; grid-row: 4;"></div>
+        <div class="cal-cell" style="grid-column: 14; grid-row: 4;"></div>
+        <div class="cal-cell" style="grid-column: 15; grid-row: 4;"></div>
+        <div class="cal-booking" style="grid-column: 2 / 7; grid-row: 4;">
+          <span class="b-name">L. Martin +3, 5n</span><span class="b-ch">Vrbo</span>
+        </div>
+        <div class="cal-booking direct" style="grid-column: 11 / 15; grid-row: 4;">
+          <span class="b-name">Rossi +2, 4n</span><span class="b-ch">Diretto</span>
+        </div>
+
+        <!-- Row App 4 -->
+        <div class="cal-label" style="grid-row: 5;">Santopaolo 4<span class="lab-meta">60mq, 4</span></div>
+        <div class="cal-cell today" style="grid-column: 2; grid-row: 5;"></div>
+        <div class="cal-cell weekend" style="grid-column: 3; grid-row: 5;"></div>
+        <div class="cal-cell weekend" style="grid-column: 4; grid-row: 5;"></div>
+        <div class="cal-cell" style="grid-column: 5; grid-row: 5;"></div>
+        <div class="cal-cell" style="grid-column: 6; grid-row: 5;"></div>
+        <div class="cal-cell" style="grid-column: 7; grid-row: 5;"></div>
+        <div class="cal-cell" style="grid-column: 8; grid-row: 5;"></div>
+        <div class="cal-cell" style="grid-column: 9; grid-row: 5;"></div>
+        <div class="cal-cell weekend" style="grid-column: 10; grid-row: 5;"></div>
+        <div class="cal-cell weekend" style="grid-column: 11; grid-row: 5;"></div>
+        <div class="cal-cell" style="grid-column: 12; grid-row: 5;"></div>
+        <div class="cal-cell" style="grid-column: 13; grid-row: 5;"></div>
+        <div class="cal-cell" style="grid-column: 14; grid-row: 5;"></div>
+        <div class="cal-cell" style="grid-column: 15; grid-row: 5;"></div>
+        <div class="cal-booking" style="grid-column: 2 / 3; grid-row: 5;">
+          <span class="b-name">Becker</span>
+        </div>
+        <div class="cal-booking" style="grid-column: 4 / 10; grid-row: 5;">
+          <span class="b-name">Dubois +3, 6n</span><span class="b-ch">Vrbo</span>
+        </div>
+        <div class="cal-booking" style="grid-column: 13 / 15; grid-row: 5;">
+          <span class="b-name">Brown +1, 2n</span><span class="b-ch">Booking</span>
+        </div>
+
+        <!-- Row App 5 -->
+        <div class="cal-label" style="grid-row: 6;">Santopaolo 5<span class="lab-meta">45mq, 2</span></div>
+        <div class="cal-cell today" style="grid-column: 2; grid-row: 6;"></div>
+        <div class="cal-cell weekend" style="grid-column: 3; grid-row: 6;"></div>
+        <div class="cal-cell weekend" style="grid-column: 4; grid-row: 6;"></div>
+        <div class="cal-cell" style="grid-column: 5; grid-row: 6;"></div>
+        <div class="cal-cell" style="grid-column: 6; grid-row: 6;"></div>
+        <div class="cal-cell" style="grid-column: 7; grid-row: 6;"></div>
+        <div class="cal-cell" style="grid-column: 8; grid-row: 6;"></div>
+        <div class="cal-cell" style="grid-column: 9; grid-row: 6;"></div>
+        <div class="cal-cell weekend" style="grid-column: 10; grid-row: 6;"></div>
+        <div class="cal-cell weekend" style="grid-column: 11; grid-row: 6;"></div>
+        <div class="cal-cell" style="grid-column: 12; grid-row: 6;"></div>
+        <div class="cal-cell" style="grid-column: 13; grid-row: 6;"></div>
+        <div class="cal-cell" style="grid-column: 14; grid-row: 6;"></div>
+        <div class="cal-cell" style="grid-column: 15; grid-row: 6;"></div>
+        <div class="cal-booking" style="grid-column: 2 / 3; grid-row: 6;">
+          <span class="b-name">Schmidt</span>
+        </div>
+        <div class="cal-booking direct" style="grid-column: 5 / 9; grid-row: 6;">
+          <span class="b-name">Lefebvre, 4n</span><span class="b-ch">Diretto</span>
+        </div>
+        <div class="cal-booking" style="grid-column: 12 / 15; grid-row: 6;">
+          <span class="b-name">Costa +1, 3n</span><span class="b-ch">Airbnb</span>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="leg-item"><div class="leg-chip booking"></div>Prenotazione OTA</div>
+      <div class="leg-item"><div class="leg-chip direct"></div>Prenotazione diretta</div>
+      <div class="leg-item"><div class="leg-chip empty"></div>Libero</div>
+      <div class="leg-item"><div class="leg-chip today"></div>Oggi</div>
+    </div>
+  </div>
+
+  <!-- Oggi -->
+  <div class="section">
+    <div class="section-header">
+      <h2>Oggi</h2>
+      <span class="section-counter">7 eventi</span>
+    </div>
+
+    <div class="timeline-row">
+      <span class="t-time">09:00</span>
+      <span class="t-type t-task">Task</span>
+      <div>
+        <div class="t-detail">Lavanderia, ritiro biancheria</div>
+        <div class="t-detail-sub">Mario Lavanderia, via dei Mille</div>
+      </div>
+      <span class="t-unit">Tutte</span>
+      <span class="t-channel">Manuale</span>
+    </div>
+
+    <div class="timeline-row">
+      <span class="t-time">11:00</span>
+      <span class="t-type t-checkout">Check-out</span>
+      <div>
+        <div class="t-detail">Anna Schmidt + 1 ospite</div>
+        <div class="t-detail-sub">3 notti, totale 540€</div>
+      </div>
+      <span class="t-unit">Santopaolo 5</span>
+      <span class="t-channel">Booking</span>
+    </div>
+
+    <div class="timeline-row">
+      <span class="t-time">11:30</span>
+      <span class="t-type t-task">Task</span>
+      <div>
+        <div class="t-detail">Pulizie post check-out</div>
+        <div class="t-detail-sub">Squadra Gaetano, prevista 1h</div>
+      </div>
+      <span class="t-unit">Santopaolo 5</span>
+      <span class="t-channel">Manuale</span>
+    </div>
+
+    <div class="timeline-row">
+      <span class="t-time">15:00</span>
+      <span class="t-type t-checkin">Check-in</span>
+      <div>
+        <div class="t-detail">James O'Connor + 5 ospiti</div>
+        <div class="t-detail-sub">7 notti, totale 2.450€, codice OTA 4892JN</div>
+      </div>
+      <span class="t-unit">Santopaolo 1</span>
+      <span class="t-channel">Airbnb</span>
+    </div>
+
+    <div class="timeline-row">
+      <span class="t-time">16:00</span>
+      <span class="t-type t-checkin">Check-in</span>
+      <div>
+        <div class="t-detail">Lucas Martin + 3 ospiti</div>
+        <div class="t-detail-sub">5 notti, totale 1.180€, codice OTA VRB-9921</div>
+      </div>
+      <span class="t-unit">Santopaolo 3</span>
+      <span class="t-channel">Vrbo</span>
+    </div>
+
+    <div class="timeline-row">
+      <span class="t-time">18:00</span>
+      <span class="t-type t-task">Task</span>
+      <div>
+        <div class="t-detail">Tasse soggiorno, registrare 8 ospiti</div>
+        <div class="t-detail-sub">Portale alloggiatiweb, scadenza 24h</div>
+      </div>
+      <span class="t-unit">App 1, 3</span>
+      <span class="t-channel">Manuale</span>
+    </div>
+
+    <div class="timeline-row">
+      <span class="t-time">20:00</span>
+      <span class="t-type t-task">Task</span>
+      <div>
+        <div class="t-detail">Promemoria, cambio codice App 2</div>
+        <div class="t-detail-sub">Ospite arriva sabato 27</div>
+      </div>
+      <span class="t-unit">Santopaolo 2</span>
+      <span class="t-channel">Manuale</span>
+    </div>
+  </div>
+
+  <!-- Nav foot -->
+  <div class="nav-foot">
+    <a href="#" class="active">Home</a>
+    <a href="#">Calendario</a>
+    <a href="#">Prenotazioni</a>
+    <a href="#">Task</a>
+  </div>
+
+</div>
+
+</body>
+</html>

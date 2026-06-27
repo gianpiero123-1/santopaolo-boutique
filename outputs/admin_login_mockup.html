@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santopaolo Cockpit — Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --nero: #0E0E0E; --antracite: #1C1C1C; --carbon: #141414;
+    --border: #2A2A2A; --off-white: #F5F2EC; --marmo: #8A8580;
+    --bordeaux: #6B1F1F; --bordeaux-hover: #8A2A2A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--nero); color: var(--off-white);
+    font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5;
+    min-height: 100vh;
+  }
+  body {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px;
+    position: relative;
+  }
+
+  /* Soft background gradient */
+  body::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center top, rgba(107, 31, 31, 0.08) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .logo-stack {
+    text-align: center; margin-bottom: 32px; position: relative;
+  }
+
+  .logo-mark { margin-bottom: 18px; }
+
+  .logo-word {
+    font-family: 'Fraunces', serif;
+    font-size: 28px; font-weight: 600;
+    letter-spacing: 6px;
+    color: var(--off-white);
+    margin-bottom: 6px;
+  }
+
+  .logo-tagline {
+    font-family: 'Fraunces', serif;
+    font-size: 10.5px;
+    letter-spacing: 4px;
+    color: var(--marmo);
+    text-transform: uppercase;
+  }
+
+  .logo-divider {
+    width: 60px; height: 1px;
+    background: var(--bordeaux);
+    margin: 14px auto 0;
+  }
+
+  .login-card {
+    background: var(--antracite);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 38px 36px;
+    width: 100%; max-width: 420px;
+    position: relative;
+  }
+
+  .card-head {
+    text-align: center; margin-bottom: 30px;
+    padding-bottom: 22px; border-bottom: 1px solid var(--border);
+  }
+
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-size: 22px; font-weight: 500;
+    color: var(--off-white); margin-bottom: 8px;
+  }
+
+  .card-sub {
+    font-size: 12px; color: var(--marmo);
+    letter-spacing: 0.3px;
+  }
+
+  .field { margin-bottom: 20px; }
+
+  .field-label {
+    display: block; font-size: 10px; color: var(--marmo);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 9px;
+  }
+
+  .field-input {
+    width: 100%; background: var(--nero);
+    border: 1px solid var(--border); color: var(--off-white);
+    font-size: 14px; padding: 12px 14px; border-radius: 2px;
+    font-family: inherit; letter-spacing: 0.5px;
+    transition: border-color 0.15s;
+  }
+  .field-input::placeholder { color: var(--marmo); letter-spacing: 0.3px; }
+  .field-input:focus { outline: none; border-color: var(--bordeaux); }
+
+  .field-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 14px; font-size: 11.5px; color: var(--marmo);
+  }
+  .field-row a { color: var(--marmo); text-decoration: none; }
+  .field-row a:hover { color: var(--off-white); }
+  .remember {
+    display: flex; align-items: center; gap: 8px; cursor: pointer;
+  }
+  .remember input { accent-color: var(--bordeaux); }
+
+  .submit-btn {
+    width: 100%; background: var(--bordeaux); color: var(--off-white);
+    border: none; padding: 14px 18px; border-radius: 2px;
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    cursor: pointer; font-family: inherit; font-weight: 500;
+    transition: background 0.15s;
+    margin-top: 8px;
+  }
+  .submit-btn:hover { background: var(--bordeaux-hover); }
+
+  .card-footer {
+    margin-top: 26px; padding-top: 22px;
+    border-top: 1px solid var(--carbon);
+    text-align: center; font-size: 10.5px; color: var(--marmo);
+    letter-spacing: 0.4px;
+  }
+  .card-footer a { color: var(--marmo); text-decoration: none; }
+  .card-footer a:hover { color: var(--off-white); }
+
+  .page-footer {
+    margin-top: 28px; font-size: 10px;
+    color: var(--marmo); letter-spacing: 1px; text-transform: uppercase;
+    text-align: center;
+  }
+  .page-footer .dot { margin: 0 8px; color: var(--border); }
+
+  @media (max-width: 480px) {
+    .login-card { padding: 28px 22px; }
+    .logo-word { font-size: 22px; letter-spacing: 4px; }
+    .card-title { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-stack">
+  <div class="logo-mark">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2 L22 20 L2 20 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+      <path d="M12 6 L18 18 L6 18 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+      <path d="M12 10 L15 16 L9 16 Z" stroke="#6B1F1F" stroke-width="1.5" fill="none"/>
+    </svg>
+  </div>
+  <div class="logo-word">SANTOPAOLO</div>
+  <div class="logo-tagline">Boutique Apartments</div>
+  <div class="logo-divider"></div>
+</div>
+
+<div class="login-card">
+
+  <div class="card-head">
+    <div class="card-title">Cockpit</div>
+    <div class="card-sub">Area riservata, accesso solo proprietà</div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Password</label>
+    <input type="password" class="field-input" placeholder="••••••••••••">
+  </div>
+
+  <div class="field-row">
+    <label class="remember">
+      <input type="checkbox" checked>
+      <span>Resta connesso 30 giorni</span>
+    </label>
+  </div>
+
+  <button class="submit-btn">Entra</button>
+
+  <div class="card-footer">
+    Accesso protetto, sessione cifrata
+  </div>
+
+</div>
+
+<div class="page-footer">
+  Santopaolo Boutique Apartments
+  <span class="dot">·</span>
+  Chiaia, Napoli
+  <span class="dot">·</span>
+  v1.0
+</div>
+
+</body>
+</html>
