@@ -178,10 +178,17 @@ export class KalisiClient {
 
     const res = await fetch(ordersUrl, {
       headers: {
-        Accept: 'application/json',
+        Accept: 'application/json, text/javascript, */*; q=0.01',
+        'X-Requested-With': 'XMLHttpRequest',
+        Referer: this.url('/admin/orders'),
         Cookie: this.sessionCookie ?? '',
       },
     });
+
+    // ---- verbose debug logging ----
+    console.log(`[kalisi] fetchOrders URL: ${ordersUrl}`);
+    console.log(`[kalisi] fetchOrders status: ${res.status}`);
+    console.log(`[kalisi] fetchOrders content-type: ${res.headers.get('content-type') ?? '(none)'}`);
 
     if (res.status === 401 || res.status === 403) {
       // Session rejected mid-flight. Do NOT auto re-login/retry within the same
@@ -193,7 +200,29 @@ export class KalisiClient {
       throw new Error(`Kalisi fetchOrders failed: HTTP ${res.status}`);
     }
 
-    const payload = (await res.json()) as { data?: unknown };
+    // Read the raw body first so we can log it before parsing.
+    const bodyText = await res.text();
+    console.log(`[kalisi] fetchOrders body (first 800 chars): ${bodyText.slice(0, 800)}`);
+
+    let payload: { data?: unknown };
+    try {
+      payload = JSON.parse(bodyText) as { data?: unknown };
+    } catch (err) {
+      console.log(`[kalisi] fetchOrders JSON.parse failed: ${err instanceof Error ? err.message : String(err)}`);
+      throw new Error('Kalisi fetchOrders: response was not valid JSON');
+    }
+
+    console.log(
+      `[kalisi] fetchOrders payload top-level keys: ${
+        payload && typeof payload === 'object' ? Object.keys(payload).join(', ') || '(none)' : '(not an object)'
+      }`,
+    );
+    console.log(
+      `[kalisi] fetchOrders data: ${
+        Array.isArray(payload?.data) ? `array length=${payload.data.length}` : `not an array (${typeof payload?.data})`
+      }`,
+    );
+
     const rows = Array.isArray(payload?.data) ? (payload.data as RawOrder[]) : [];
 
     return rows
