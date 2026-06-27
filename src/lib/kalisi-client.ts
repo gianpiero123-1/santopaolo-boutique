@@ -227,6 +227,7 @@ export class KalisiClient {
 
     console.log('[kalisi] sample record keys:', rows.length > 0 ? Object.keys(rows[0]).join(', ') : '(empty)');
     console.log('[kalisi] sample record 0 (first 500 chars):', JSON.stringify(rows[0]).slice(0, 500));
+    console.log('[kalisi] sample checkin_date raw:', rows[0]?.checkin_date, 'checkout_date raw:', rows[0]?.checkout_date);
 
     return rows
       .map((raw) => this.normalizeOrder(raw))
@@ -239,23 +240,23 @@ export class KalisiClient {
    * is not strongly typed. Returns null if the row lacks an id or valid dates.
    */
   normalizeOrder(raw: RawOrder): NormalizedOrder | null {
-    const kalisiId = toInt(pick(raw, ['id', 'order_id', 'reference_id']));
+    const kalisiId = toInt(pick(raw, ['id', 'order_id', 'reservation_id']));
     if (kalisiId == null) {
-      console.log('[kalisi] skipped order, missing id or dates:', { id: raw.id, hasCheckin: !!raw.check_in, hasCheckout: !!raw.check_out });
+      console.log('[kalisi] skipped order, missing id or dates:', { id: raw.id, hasCheckin: !!raw.checkin_date, hasCheckout: !!raw.checkout_date });
       return null;
     }
 
     // apartment_id often arrives as an HTML link like /admin/apartments/16799.
     const apartmentId =
       extractApartmentId(raw['apartment']) ??
-      toInt(pick(raw, ['apartment_id', 'property_id', 'listing_id', 'accommodation_id'])) ??
+      toInt(pick(raw, ['apartment_id', 'property_id'])) ??
       0;
 
-    // Dates may also arrive wrapped in HTML, so strip before parsing.
-    const checkin = parseDDMMYYYY(stripHtml(pick(raw, ['check_in', 'checkin', 'check_in_date', 'arrival'])));
-    const checkout = parseDDMMYYYY(stripHtml(pick(raw, ['check_out', 'checkout', 'check_out_date', 'departure'])));
+    // Dates may arrive as HTML and in DD/MM/YYYY or ISO form, so strip + flex-parse.
+    const checkin = parseFlexibleDate(stripHtml(pick(raw, ['checkin_date', 'check_in', 'checkin', 'arrival'])));
+    const checkout = parseFlexibleDate(stripHtml(pick(raw, ['checkout_date', 'check_out', 'checkout', 'departure'])));
     if (!checkin || !checkout) {
-      console.log('[kalisi] skipped order, missing id or dates:', { id: raw.id, hasCheckin: !!raw.check_in, hasCheckout: !!raw.check_out });
+      console.log('[kalisi] skipped order, missing id or dates:', { id: raw.id, hasCheckin: !!raw.checkin_date, hasCheckout: !!raw.checkout_date });
       return null;
     }
 
@@ -265,15 +266,15 @@ export class KalisiClient {
       kalisi_id: kalisiId,
       apartment_id: apartmentId,
       apartment_label: apartmentLabel(apartmentId),
-      guest_name: stripHtml(pick(raw, ['client_full_name', 'guest_name', 'customer_name', 'client_name'])) || 'Ospite',
-      guest_count: toInt(stripHtml(pick(raw, ['guest_count', 'guests', 'pax', 'number_of_guests']))) ?? 1,
+      guest_name: stripHtml(pick(raw, ['client_full_name', 'guest_name', 'customer_name'])) || 'Ospite',
+      guest_count: toInt(stripHtml(pick(raw, ['guests_num', 'guest_count', 'guests', 'pax']))) ?? 1,
       guest_phone: stripHtml(pick(raw, ['customer_phone', 'guest_phone', 'phone'])) || null,
       guest_email: stripHtml(pick(raw, ['customer_email', 'guest_email', 'email'])) || null,
       checkin_date: toISODate(checkin),
       checkout_date: toISODate(checkout),
-      ota: normalizeChannel(stripHtml(pick(raw, ['ota', 'channel', 'source', 'portal']))),
-      ota_booking_code: stripHtml(pick(raw, ['code', 'ota_booking_code', 'channel_reference', 'booking_code', 'reservation_code'])) || null,
-      total_amount: parseAmount(stripHtml(pick(raw, ['total_amount', 'total', 'amount', 'price', 'total_price']))),
+      ota: normalizeChannel(stripHtml(pick(raw, ['ota', 'source', 'channel', 'portal']))),
+      ota_booking_code: stripHtml(pick(raw, ['ota_booking_code', 'code', 'channel_reference', 'booking_code'])) || null,
+      total_amount: parseAmount(stripHtml(pick(raw, ['total_amount', 'total', 'amount', 'price']))),
       commission: parseAmount(stripHtml(pick(raw, ['commission', 'channel_commission', 'fee']))),
       status: cancelled ? 'cancelled' : normalizeStatus(stripHtml(pick(raw, ['status', 'state', 'order_status']))),
       raw_payload: raw,
@@ -385,4 +386,16 @@ function extractApartmentId(raw: unknown): number | null {
   const s = String(raw);
   const m = s.match(/\/admin\/apartments\/(\d+)/);
   return m ? parseInt(m[1], 10) : null;
+}
+
+/** Parse a date that may be DD/MM/YYYY or ISO YYYY-MM-DD. */
+function parseFlexibleDate(s: string): Date | null {
+  if (!s) return null;
+  const ddmm = parseDDMMYYYY(s);
+  if (ddmm) return ddmm;
+  if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+    const d = new Date(s);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+  return null;
 }
