@@ -391,6 +391,14 @@ function extractApartmentId(raw: unknown): number | null {
 /** Parse a date that may be DD/MM/YYYY or ISO YYYY-MM-DD. */
 function parseFlexibleDate(s: string): Date | null {
   if (!s) return null;
+  const ddmmyy = s.match(/^(\d{2})\/(\d{2})\/(\d{2})$/);
+  if (ddmmyy) {
+    const day = parseInt(ddmmyy[1], 10);
+    const month = parseInt(ddmmyy[2], 10);
+    const year = 2000 + parseInt(ddmmyy[3], 10);
+    const d = new Date(Date.UTC(year, month - 1, day));
+    if (!isNaN(d.getTime())) return d;
+  }
   const ddmm = parseDDMMYYYY(s);
   if (ddmm) return ddmm;
   if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
