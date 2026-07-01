@@ -6,6 +6,15 @@ import apartmentsData from '../../data/apartments.json';
 
 const lang = 'en';
 const t = useTranslations(lang);
+
+// Mapping appartamento -> ID booking engine Italianway (allineato a apartments/[slug].astro)
+const italianwayIds: Record<number, string> = {
+  1: '16799',
+  2: '16784',
+  3: '16788',
+  4: '15813',
+  5: '16786',
+};
 ---
 
 <BaseLayout
@@ -54,7 +63,7 @@ const t = useTranslations(lang);
             </div>
             <p class="text-brand-muted text-sm leading-relaxed">{apt.description_en}</p>
           </div>
-          <BookingWidget smoobuPropertyId={apt.smoobuPropertyId} lang={lang} />
+          <BookingWidget italianwayId={italianwayIds[apt.id]} maxGuests={apt.max_guests} lang={lang} />
         </div>
       ))}
     </div>

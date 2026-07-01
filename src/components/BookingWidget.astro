@@ -38,7 +38,12 @@ const t = {
 const formId = `booking-${italianwayId}`;
 ---
 
-<div class="rounded-sm border border-[#2A2A2A] bg-[#1C1C1C] p-6 space-y-5">
+<div
+  class="rounded-sm border border-[#2A2A2A] bg-[#1C1C1C] p-6 space-y-5"
+  data-booking-widget
+  data-base-url={baseUrl}
+  data-locale={localeParam}
+>
   <p class="text-xs uppercase tracking-wider text-[#8A8580] font-inter">
     {t.title}
   </p>
@@ -101,33 +106,43 @@ const formId = `booking-${italianwayId}`;
   >
     {t.whatsapp}
   </a>
+
+  <script is:inline>
+    // Scoped per-instance: find this widget's own root via currentScript so
+    // multiple BookingWidgets on one page (e.g. /book) never collide.
+    (function () {
+      const root = document.currentScript.closest('[data-booking-widget]');
+      if (!root) return;
+
+      const form = root.querySelector('form');
+      const baseUrl = root.dataset.baseUrl;
+      const localeParam = root.dataset.locale;
+
+      form?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const fd = new FormData(form);
+        const params = new URLSearchParams();
+        params.set('locale', localeParam);
+        const ci = fd.get('from_date');
+        const co = fd.get('to_date');
+        const g = fd.get('guests');
+        if (ci) params.set('from_date', ci);
+        if (co) params.set('to_date', co);
+        if (g) params.set('guests', g);
+        const url = `${baseUrl}?${params.toString()}`;
+        window.open(url, '_blank', 'noopener');
+      });
+
+      const ci = root.querySelector('[name="from_date"]');
+      const co = root.querySelector('[name="to_date"]');
+      ci?.addEventListener('change', () => {
+        if (ci.value) {
+          const d = new Date(ci.value);
+          d.setDate(d.getDate() + 1);
+          co.min = d.toISOString().split('T')[0];
+          if (co.value && co.value <= ci.value) co.value = co.min;
+        }
+      });
+    })();
+  </script>
 </div>
-
-<script define:vars={{ formId, baseUrl, localeParam }}>
-  document.getElementById(formId)?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const fd = new FormData(form);
-    const params = new URLSearchParams();
-    params.set('locale', localeParam);
-    const ci = fd.get('from_date');
-    const co = fd.get('to_date');
-    const g = fd.get('guests');
-    if (ci) params.set('from_date', ci);
-    if (co) params.set('to_date', co);
-    if (g) params.set('guests', g);
-    const url = `${baseUrl}?${params.toString()}`;
-    window.open(url, '_blank', 'noopener');
-  });
-
-  const ci = document.getElementById(`${formId}-checkin`);
-  const co = document.getElementById(`${formId}-checkout`);
-  ci?.addEventListener('change', () => {
-    if (ci.value) {
-      const d = new Date(ci.value);
-      d.setDate(d.getDate() + 1);
-      co.min = d.toISOString().split('T')[0];
-      if (co.value && co.value <= ci.value) co.value = co.min;
-    }
-  });
-</script>

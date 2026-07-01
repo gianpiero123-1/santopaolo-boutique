@@ -12,149 +12,52 @@ const t = useTranslations(lang);
   lang={lang}
 >
   <section class="section-padding border-b border-brand-border">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <p class="nav-link text-brand-accent mb-3">Santopaolo Boutique Apartments</p>
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-accent mb-3">CONTATTI</p>
       <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">
-        {t.contact.title}
+        Parliamone direttamente
       </h1>
-      <p class="text-brand-muted text-lg max-w-xl">{t.contact.subtitle}</p>
+      <p class="text-brand-muted text-lg max-w-xl">
+        Prenotazioni, informazioni sugli appartamenti, richieste concierge. Scrivi o chiama, ti rispondo io.
+      </p>
     </div>
   </section>
 
   <section class="section-padding bg-brand-bg">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-        <!-- Form -->
-        <div>
-          <form class="space-y-5" novalidate>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div class="space-y-2">
-                <label for="name" class="nav-link text-brand-muted text-xs block">
-                  {t.contact.form.name}
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  autocomplete="name"
-                  class="w-full bg-brand-bg2 border border-brand-border text-brand-text px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors"
-                  placeholder="Mario Rossi"
-                />
-              </div>
-              <div class="space-y-2">
-                <label for="email" class="nav-link text-brand-muted text-xs block">
-                  {t.contact.form.email}
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  autocomplete="email"
-                  class="w-full bg-brand-bg2 border border-brand-border text-brand-text px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors"
-                  placeholder="mario@email.com"
-                />
-              </div>
-            </div>
-
-            <div class="space-y-2">
-              <label for="phone" class="nav-link text-brand-muted text-xs block">
-                {t.contact.form.phone}
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                autocomplete="tel"
-                class="w-full bg-brand-bg2 border border-brand-border text-brand-text px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors"
-                placeholder="+39 333 000 0000"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label for="subject" class="nav-link text-brand-muted text-xs block">
-                {t.contact.form.subject}
-              </label>
-              <input
-                type="text"
-                id="subject"
-                name="subject"
-                class="w-full bg-brand-bg2 border border-brand-border text-brand-text px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors"
-                placeholder="Informazioni appartamento"
-              />
-            </div>
-
-            <div class="space-y-2">
-              <label for="message" class="nav-link text-brand-muted text-xs block">
-                {t.contact.form.message}
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows="5"
-                class="w-full bg-brand-bg2 border border-brand-border text-brand-text px-4 py-3 text-sm focus:outline-none focus:border-brand-accent transition-colors resize-none"
-                placeholder="Il vostro messaggio..."
-              ></textarea>
-            </div>
-
-            <div class="flex items-center justify-between">
-              <p class="text-brand-muted text-xs">{t.contact.form.note}</p>
-              <button type="submit" class="btn-solid">
-                {t.contact.form.send}
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Contact info -->
-        <div class="space-y-8 lg:pt-4">
-          <div class="space-y-5">
-            <div class="space-y-1">
-              <p class="nav-link text-brand-muted text-xs">Email</p>
-              <a href={`mailto:${t.contact.info.email}`} class="text-brand-text hover:text-brand-accent transition-colors">
-                {t.contact.info.email}
-              </a>
-            </div>
-            <div class="space-y-1">
-              <p class="nav-link text-brand-muted text-xs">Telefono</p>
-              <a href={`tel:${t.contact.info.phone.replace(/\s/g, '')}`} class="text-brand-text hover:text-brand-accent transition-colors">
-                {t.contact.info.phone}
-              </a>
-            </div>
-            <div class="space-y-1">
-              <p class="nav-link text-brand-muted text-xs">WhatsApp</p>
-              <a
-                href="https://wa.me/393313225577"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-brand-accent hover:opacity-80 transition-opacity"
-              >
-                Scrivi su WhatsApp →
-              </a>
-            </div>
-            <div class="space-y-1">
-              <p class="nav-link text-brand-muted text-xs">Indirizzo</p>
-              <p class="text-brand-text">{t.contact.info.address}</p>
-            </div>
-            <div class="space-y-1">
-              <p class="nav-link text-brand-muted text-xs">Instagram</p>
-              <a
-                href="https://www.instagram.com/santopaoloboutiqueapartments"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-brand-text hover:text-brand-accent transition-colors"
-              >
-                @santopaoloboutiqueapartments
-              </a>
-            </div>
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row gap-6 md:gap-8">
+        <!-- WhatsApp -->
+        <a
+          href="https://wa.me/393313225577"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex-1 flex flex-col gap-5 p-8 md:p-10 rounded-2xl border border-[#1C1C1C] hover:border-[#6B1F1F] transition-colors"
+        >
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F2EC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+          </svg>
+          <div class="space-y-2">
+            <p class="font-display text-brand-muted text-xs tracking-[0.2em] uppercase">WhatsApp</p>
+            <p class="font-display text-brand-text text-2xl md:text-3xl">+39 331 322 5577</p>
+            <p class="text-brand-muted text-sm">Risposta rapida, in italiano o inglese</p>
           </div>
+        </a>
 
-          <hr class="divider" />
-
-          <!-- Map placeholder -->
-          <div class="bg-brand-bg2 border border-brand-border flex items-center justify-center" style="height: 240px;">
-            <p class="text-brand-muted text-sm">Mappa, Chiaia, Napoli</p>
+        <!-- Email -->
+        <a
+          href="mailto:gianpiero@santopaoloboutiqueapartments.com"
+          class="flex-1 flex flex-col gap-5 p-8 md:p-10 rounded-2xl border border-[#1C1C1C] hover:border-[#6B1F1F] transition-colors"
+        >
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F5F2EC" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
+          <div class="space-y-2">
+            <p class="font-display text-brand-muted text-xs tracking-[0.2em] uppercase">Email</p>
+            <p class="font-display text-brand-text text-xl md:text-2xl break-all">gianpiero@santopaoloboutiqueapartments.com</p>
+            <p class="text-brand-muted text-sm">Ti rispondo entro 24 ore</p>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   </section>
