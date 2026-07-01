@@ -2,8 +2,6 @@
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import { createServerSupabase } from '../../lib/supabase-client';
 
-export const prerender = false;
-
 const supabase = createServerSupabase();
 
 // ==== Filters from query params ====
