@@ -510,23 +510,34 @@ function parseGuestListRow(row: any): GuestListRow {
  */
 export async function fetchGuestsList(cookies: string, length = 500): Promise<GuestListRow[]> {
   const base = kalisiBase();
+
+  const fetchGuests = (url: string) =>
+    fetch(url, {
+      headers: {
+        'Cookie': cookies,
+        'Accept': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'User-Agent': 'Mozilla/5.0 (compatible; SantopaoloCockpit/1.0)',
+      },
+    });
+
   const params = new URLSearchParams({
     'draw': '1',
     'start': '0',
     'length': String(length),
-    'order[0][column]': '6',
-    'order[0][dir]': 'desc',
-    'search[value]': '',
-    'search[regex]': 'false',
   });
-  const res = await fetch(`${base}/admin/guests?${params.toString()}`, {
-    headers: {
-      'Cookie': cookies,
-      'Accept': 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'User-Agent': 'Mozilla/5.0 (compatible; SantopaoloCockpit/1.0)',
-    },
-  });
+
+  let res = await fetchGuests(`${base}/admin/guests?${params.toString()}`);
+
+  // Fallback: some Kalisi instances reject the DataTables params with a 500.
+  // Retry once with NO params before giving up.
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    console.log(`[kalisi] fetchGuestsList HTTP ${res.status}, body: ${body.slice(0, 300)}`);
+    console.log('[kalisi] fetchGuestsList retrying with no params');
+    res = await fetchGuests(`${base}/admin/guests`);
+  }
+
   if (!res.ok) {
     const body = await res.text().catch(() => '');
     throw new Error(`Guests list HTTP ${res.status}: ${body.slice(0, 200)}`);
