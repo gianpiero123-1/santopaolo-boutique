@@ -1,0 +1,514 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createServerSupabase } from '../../lib/supabase-client';
+
+export const prerender = false;
+
+const supabase = createServerSupabase();
+
+// ==== Filters from query params ====
+const url = new URL(Astro.request.url);
+const defaultFrom = '2026-04-01';
+const defaultTo = new Date().toISOString().slice(0, 10);
+const from = url.searchParams.get('from') || defaultFrom;
+const to = url.searchParams.get('to') || defaultTo;
+const aptFilter = url.searchParams.get('apt');
+const otaFilter = url.searchParams.get('ota');
+
+// ==== Fetch bookings ====
+let q = supabase
+  .from('bookings_cache')
+  .select('kalisi_id, apartment_id, apartment_label, ota, total_amount, checkin_date, checkout_date, nights, guest_name, guest_count, status')
+  .gte('checkin_date', from)
+  .lte('checkin_date', to);
+if (aptFilter) q = q.eq('apartment_id', parseInt(aptFilter, 10));
+if (otaFilter) q = q.eq('ota', otaFilter);
+const { data: rawBookings } = await q;
+const bookings = (rawBookings ?? []).filter((b) => b.status !== 'cancelled');
+
+// ==== Fetch guests linked to these bookings ====
+const bookingIds = bookings.map((b) => b.kalisi_id).filter(Boolean);
+let guests: any[] = [];
+if (bookingIds.length > 0) {
+  const { data } = await supabase
+    .from('guests')
+    .select('citizenship, residence_country, residence_city, preferred_language, order_kalisi_id')
+    .in('order_kalisi_id', bookingIds)
+    .eq('is_head', true);
+  guests = data ?? [];
+}
+
+// ==== KPIs ====
+const totalRevenue = bookings.reduce((s, b) => s + Number(b.total_amount ?? 0), 0);
+const totalNights = bookings.reduce((s, b) => s + Number(b.nights ?? 0), 0);
+const adr = totalNights > 0 ? totalRevenue / totalNights : 0;
+const daysInPeriod = Math.max(
+  1,
+  Math.round((new Date(to).getTime() - new Date(from).getTime()) / 86400000)
+);
+const totalPossibleNights = daysInPeriod * 5;
+const occupancy = totalPossibleNights > 0 ? Math.min(100, (totalNights / totalPossibleNights) * 100) : 0;
+
+// ==== Monthly revenue ====
+const monthlyMap = new Map<string, number>();
+for (const b of bookings) {
+  const m = String(b.checkin_date).slice(0, 7);
+  monthlyMap.set(m, (monthlyMap.get(m) ?? 0) + Number(b.total_amount ?? 0));
+}
+const monthlyLabels = Array.from(monthlyMap.keys()).sort();
+const monthlyValues = monthlyLabels.map((m) => Math.round(monthlyMap.get(m) ?? 0));
+const monthlyLabelsHuman = monthlyLabels.map((m) => {
+  const [, mm] = m.split('-');
+  const names = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'];
+  return names[parseInt(mm, 10) - 1] ?? m;
+});
+
+// ==== By OTA (count) ====
+const otaMap = new Map<string, number>();
+for (const b of bookings) {
+  const ota = b.ota || 'Diretto';
+  otaMap.set(ota, (otaMap.get(ota) ?? 0) + 1);
+}
+const otaSorted = Array.from(otaMap.entries()).sort((a, b) => b[1] - a[1]);
+const otaLabels = otaSorted.map(([l]) => l);
+const otaValues = otaSorted.map(([, v]) => v);
+
+// ==== By apartment (revenue) ====
+const aptMap = new Map<string, number>();
+for (const b of bookings) {
+  const label = b.apartment_label || `App ${b.apartment_id}`;
+  aptMap.set(label, (aptMap.get(label) ?? 0) + Number(b.total_amount ?? 0));
+}
+const aptSorted = Array.from(aptMap.entries()).sort((a, b) => a[0].localeCompare(b[0]));
+const aptLabels = aptSorted.map(([l]) => l);
+const aptValues = aptSorted.map(([, v]) => Math.round(v));
+
+// ==== By nationality (top 5 + Altri) ====
+const natMap = new Map<string, number>();
+for (const g of guests) {
+  const nat = g.citizenship || 'Sconosciuto';
+  natMap.set(nat, (natMap.get(nat) ?? 0) + 1);
+}
+const natSorted = Array.from(natMap.entries()).sort((a, b) => b[1] - a[1]);
+const natTop = natSorted.slice(0, 5);
+const otherNat = natSorted.slice(5).reduce((s, [, v]) => s + v, 0);
+const natFinal = otherNat > 0 ? [...natTop, ['Altri', otherNat] as [string, number]] : natTop;
+const natLabels = natFinal.map(([l]) => l);
+const natValues = natFinal.map(([, v]) => v);
+
+// ==== Data for client ====
+const chartData = {
+  kpis: {
+    revenue: Math.round(totalRevenue),
+    occupancy: Math.round(occupancy),
+    adr: Math.round(adr),
+    bookings: bookings.length,
+    totalGuests: guests.length,
+  },
+  monthly: { labels: monthlyLabelsHuman, values: monthlyValues },
+  ota: { labels: otaLabels, values: otaValues },
+  apartment: { labels: aptLabels, values: aptValues },
+  nationality: { labels: natLabels, values: natValues },
+};
+
+// ==== Format helpers ====
+const fmtEuro = (n: number) => {
+  if (n >= 1000) return '€' + (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+  return '€' + n;
+};
+---
+
+<AdminLayout title="Statistiche" activePage="stats">
+  <div class="stats-root">
+    <!-- Header -->
+    <div class="stats-header">
+      <div>
+        <p class="stats-eyebrow">Cockpit</p>
+        <h1 class="stats-title">Statistiche</h1>
+      </div>
+      <details class="stats-filters">
+        <summary>Filtri</summary>
+        <form method="get" class="stats-filter-form">
+          <label>
+            <span>Da</span>
+            <input type="date" name="from" value={from} />
+          </label>
+          <label>
+            <span>A</span>
+            <input type="date" name="to" value={to} />
+          </label>
+          <label>
+            <span>Appartamento</span>
+            <select name="apt">
+              <option value="">Tutti</option>
+              <option value="16799" selected={aptFilter === '16799'}>Santopaolo 1</option>
+              <option value="16784" selected={aptFilter === '16784'}>Santopaolo 2</option>
+              <option value="16788" selected={aptFilter === '16788'}>Santopaolo 3</option>
+              <option value="15813" selected={aptFilter === '15813'}>Santopaolo 4</option>
+              <option value="16786" selected={aptFilter === '16786'}>Santopaolo 5</option>
+            </select>
+          </label>
+          <label>
+            <span>OTA</span>
+            <select name="ota">
+              <option value="">Tutte</option>
+              {otaLabels.map((o) => (
+                <option value={o} selected={otaFilter === o}>{o}</option>
+              ))}
+            </select>
+          </label>
+          <button type="submit">Applica</button>
+          <a href="/admin/stats" class="stats-reset">Reset</a>
+        </form>
+      </details>
+    </div>
+
+    <!-- KPI row -->
+    <div class="stats-kpi-row">
+      <div class="stats-card">
+        <p class="stats-label">Revenue</p>
+        <p class="stats-kpi">{fmtEuro(chartData.kpis.revenue)}</p>
+        <p class="stats-sub">{bookings.length} prenotazioni</p>
+      </div>
+      <div class="stats-card">
+        <p class="stats-label">Occupancy</p>
+        <p class="stats-kpi">{chartData.kpis.occupancy}%</p>
+        <p class="stats-sub">{totalNights} notti</p>
+      </div>
+      <div class="stats-card">
+        <p class="stats-label">ADR</p>
+        <p class="stats-kpi">€{chartData.kpis.adr}</p>
+        <p class="stats-sub">media notte</p>
+      </div>
+      <div class="stats-card">
+        <p class="stats-label">Ospiti</p>
+        <p class="stats-kpi">{chartData.kpis.totalGuests}</p>
+        <p class="stats-sub">capi ordine</p>
+      </div>
+    </div>
+
+    <!-- Revenue chart -->
+    <div class="stats-card stats-chart-card">
+      <p class="stats-label">Revenue mensile</p>
+      <div class="stats-chart-wrap" style="height: 220px;">
+        <canvas id="revChart" role="img" aria-label="Revenue mensile in euro"></canvas>
+      </div>
+    </div>
+
+    <!-- Two donuts -->
+    <div class="stats-two-col">
+      <div class="stats-card stats-chart-card">
+        <p class="stats-label">Per OTA</p>
+        <div class="stats-chart-wrap" style="height: 240px;">
+          <canvas id="otaChart" role="img" aria-label="Distribuzione bookings per OTA"></canvas>
+        </div>
+      </div>
+      <div class="stats-card stats-chart-card">
+        <p class="stats-label">Nazionalità</p>
+        <div class="stats-chart-wrap" style="height: 240px;">
+          <canvas id="natChart" role="img" aria-label="Distribuzione ospiti per nazionalità"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Apartment bar -->
+    <div class="stats-card stats-chart-card">
+      <p class="stats-label">Revenue per appartamento</p>
+      <div class="stats-chart-wrap" style="height: 220px;">
+        <canvas id="aptChart" role="img" aria-label="Revenue per appartamento"></canvas>
+      </div>
+    </div>
+
+    {bookings.length === 0 && (
+      <div class="stats-empty">
+        Nessuna prenotazione nel periodo selezionato.
+      </div>
+    )}
+  </div>
+</AdminLayout>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" is:inline></script>
+<script is:inline define:vars={{ chartData }}>
+  window.addEventListener('load', () => {
+    if (typeof Chart === 'undefined') return;
+    Chart.defaults.color = '#8A8580';
+    Chart.defaults.borderColor = '#2A2A2A';
+    Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+    Chart.defaults.font.size = 11;
+
+    const C = {
+      teal: '#3ECFB0',
+      blue: '#60A5FA',
+      amber: '#FBBF24',
+      coral: '#F87171',
+      purple: '#A78BFA',
+      green: '#4ADE80',
+    };
+    const palette = [C.teal, C.blue, C.amber, C.coral, C.purple, C.green];
+
+    // Revenue line
+    const revEl = document.getElementById('revChart');
+    if (revEl && chartData.monthly.values.length > 0) {
+      new Chart(revEl, {
+        type: 'line',
+        data: {
+          labels: chartData.monthly.labels,
+          datasets: [{
+            data: chartData.monthly.values,
+            borderColor: C.teal,
+            backgroundColor: 'rgba(62, 207, 176, 0.08)',
+            tension: 0.35,
+            fill: true,
+            borderWidth: 2,
+            pointBackgroundColor: C.teal,
+            pointBorderColor: '#0E0E0E',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#8A8580' } },
+            y: { grid: { color: '#1F1F1F' }, ticks: { color: '#8A8580', callback: (v) => '€' + (v / 1000).toFixed(0) + 'k' } },
+          },
+        },
+      });
+    }
+
+    // OTA donut
+    const otaEl = document.getElementById('otaChart');
+    if (otaEl && chartData.ota.values.length > 0) {
+      new Chart(otaEl, {
+        type: 'doughnut',
+        data: {
+          labels: chartData.ota.labels,
+          datasets: [{
+            data: chartData.ota.values,
+            backgroundColor: chartData.ota.labels.map((_, i) => palette[i % palette.length]),
+            borderColor: '#1C1C1C',
+            borderWidth: 3,
+            hoverOffset: 6,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '62%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: '#F5F2EC', font: { size: 10 }, boxWidth: 8, boxHeight: 8, padding: 8, usePointStyle: true, pointStyle: 'rect' },
+            },
+          },
+        },
+      });
+    }
+
+    // Nationality donut
+    const natEl = document.getElementById('natChart');
+    if (natEl && chartData.nationality.values.length > 0) {
+      new Chart(natEl, {
+        type: 'doughnut',
+        data: {
+          labels: chartData.nationality.labels,
+          datasets: [{
+            data: chartData.nationality.values,
+            backgroundColor: chartData.nationality.labels.map((_, i) => palette[i % palette.length]),
+            borderColor: '#1C1C1C',
+            borderWidth: 3,
+            hoverOffset: 6,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '62%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: '#F5F2EC', font: { size: 10 }, boxWidth: 8, boxHeight: 8, padding: 6, usePointStyle: true, pointStyle: 'rect' },
+            },
+          },
+        },
+      });
+    }
+
+    // Apartment bar
+    const aptEl = document.getElementById('aptChart');
+    if (aptEl && chartData.apartment.values.length > 0) {
+      new Chart(aptEl, {
+        type: 'bar',
+        data: {
+          labels: chartData.apartment.labels,
+          datasets: [{
+            data: chartData.apartment.values,
+            backgroundColor: chartData.apartment.labels.map((_, i) => palette[i % palette.length]),
+            borderRadius: 4,
+            borderSkipped: false,
+            barThickness: 18,
+          }],
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: '#1F1F1F' }, ticks: { color: '#8A8580', callback: (v) => '€' + (v / 1000).toFixed(0) + 'k' } },
+            y: { grid: { display: false }, ticks: { color: '#F5F2EC', font: { size: 11 } } },
+          },
+        },
+      });
+    }
+  });
+</script>
+
+<style is:global>
+  .stats-root {
+    background: #0E0E0E;
+    color: #F5F2EC;
+    padding: 24px;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    gap: 16px;
+  }
+  .stats-eyebrow {
+    font-size: 11px;
+    color: #8A8580;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 4px;
+  }
+  .stats-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 28px;
+    margin: 0;
+    color: #F5F2EC;
+    letter-spacing: -0.01em;
+  }
+  .stats-filters summary {
+    background: transparent;
+    color: #F5F2EC;
+    border: 1px solid #8A8580;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .stats-filters summary::-webkit-details-marker { display: none; }
+  .stats-filters[open] summary {
+    background: #6B1F1F;
+    border-color: #6B1F1F;
+  }
+  .stats-filter-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    background: #1C1C1C;
+    padding: 16px;
+    border-radius: 10px;
+    margin-top: 12px;
+    align-items: end;
+  }
+  .stats-filter-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: #8A8580;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .stats-filter-form input, .stats-filter-form select {
+    background: #0E0E0E;
+    color: #F5F2EC;
+    border: 1px solid #2A2A2A;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .stats-filter-form button {
+    background: #6B1F1F;
+    color: #F5F2EC;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .stats-filter-form button:hover { background: #8A2A2A; }
+  .stats-reset {
+    color: #8A8580;
+    text-decoration: none;
+    font-size: 12px;
+    align-self: center;
+    padding: 10px;
+  }
+  .stats-reset:hover { color: #F5F2EC; }
+  .stats-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .stats-card {
+    background: #1C1C1C;
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .stats-label {
+    font-size: 11px;
+    color: #8A8580;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 10px;
+    font-weight: 400;
+  }
+  .stats-kpi {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0;
+    color: #F5F2EC;
+    letter-spacing: -0.01em;
+  }
+  .stats-sub {
+    font-size: 11px;
+    color: #8A8580;
+    margin: 6px 0 0;
+  }
+  .stats-chart-card { margin-bottom: 16px; }
+  .stats-chart-wrap { position: relative; width: 100%; }
+  .stats-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .stats-empty {
+    background: #1C1C1C;
+    color: #8A8580;
+    padding: 40px;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  @media (max-width: 720px) {
+    .stats-kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .stats-two-col { grid-template-columns: 1fr; }
+  }
+</style>

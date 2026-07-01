@@ -372,10 +372,15 @@ function normalizeStatus(raw: string): BookingStatus {
   return 'confirmed';
 }
 
-/** Strip HTML tags and collapse whitespace, returning the plain text. */
+/** Strip HTML tags, decode common entities, and collapse whitespace. */
 function stripHtml(s: unknown): string {
   if (s == null) return '';
-  return String(s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  return String(s)
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /** Extract an apartment id from an HTML link like /admin/apartments/16799. */
@@ -404,4 +409,163 @@ function parseFlexibleDate(s: string): Date | null {
     return Number.isNaN(d.getTime()) ? null : d;
   }
   return null;
+}
+
+// ==== GUESTS ====
+
+/**
+ * Log in and return the raw session cookie header. Standalone convenience for
+ * the guest sync endpoints, which fetch Kalisi anagrafica pages directly rather
+ * than going through the order-normalizing KalisiClient methods.
+ */
+export async function loginKalisi(): Promise<string> {
+  const client = createKalisiClient();
+  await client.login();
+  if (!client.sessionCookie) {
+    throw new Error('Kalisi login: no session cookie after login');
+  }
+  return client.sessionCookie;
+}
+
+/** Base URL for direct anagrafica fetches (no trailing slash). */
+function kalisiBase(): string {
+  return (env('KALISI_BASE_URL') || 'https://napartments.italianway.house').replace(/\/$/, '');
+}
+
+const HEAD_TYPOLOGIES = ['Capo famiglia', 'Capo gruppo', 'Ospite singolo'];
+
+const GUEST_LABEL_MAP: Record<string, string> = {
+  'Nome': 'first_name',
+  'Cognome': 'last_name',
+  'Email': 'email',
+  'Telefono': 'phone',
+  'Codice Fiscale': 'tax_code',
+  'Sesso': 'gender',
+  'Luogo di nascita': 'birth_place',
+  'Nazione di nascita': 'birth_country',
+  'Cittadinanza': 'citizenship',
+  'Nazione di residenza': 'residence_country',
+  'Citta di residenza': 'residence_city',
+  'Città di residenza': 'residence_city',
+  'Indirizzo di residenza': 'residence_address',
+  'Cap': 'residence_postal_code',
+  'CAP': 'residence_postal_code',
+  'Lingua preferita': 'preferred_language',
+  'Tipo Documento': 'doc_type',
+  'Numero documento': 'doc_number',
+  'Luogo di rilascio': 'doc_issue_place',
+};
+
+/** Extract an order id from an HTML link like /admin/orders/12345. */
+function extractOrderKalisiId(html: string): number | null {
+  const m = html.match(/\/admin\/orders\/(\d+)/);
+  return m ? parseInt(m[1], 10) : null;
+}
+
+/** Strip the internal booking code suffix from an apartment label. */
+function cleanApartmentLabel(html: string): string {
+  const raw = stripHtml(html);
+  return raw.replace(/\s+NA-F839-[A-Z0-9]+\s*$/i, '').trim();
+}
+
+/** Parse a DD/MM/YY(YY) guest date into YYYY-MM-DD, reusing the shared parser. */
+function guestDateToISO(s: string | null | undefined): string | null {
+  const d = parseFlexibleDate(stripHtml(s));
+  return d ? toISODate(d) : null;
+}
+
+export interface GuestListRow {
+  kalisi_guest_id: number;
+  first_name: string;
+  last_name: string;
+  order_code: string;
+  order_kalisi_id: number | null;
+  apartment_id: number | null;
+  apartment_label: string;
+  typology: string;
+  is_head: boolean;
+  checkin_date: string | null;
+  checkout_date: string | null;
+}
+
+function parseGuestListRow(row: any): GuestListRow {
+  return {
+    kalisi_guest_id: row.id,
+    first_name: stripHtml(row.first_name),
+    last_name: stripHtml(row.last_name),
+    order_code: stripHtml(row.order_code),
+    order_kalisi_id: extractOrderKalisiId(row.order_code ?? ''),
+    apartment_id: extractApartmentId(row.apartment_name ?? ''),
+    apartment_label: cleanApartmentLabel(row.apartment_name ?? ''),
+    typology: row.typology ?? '',
+    is_head: HEAD_TYPOLOGIES.includes(row.typology),
+    checkin_date: guestDateToISO(row.from),
+    checkout_date: guestDateToISO(row.to),
+  };
+}
+
+/**
+ * Fetch full guests list from Kalisi anagrafica (DataTables endpoint).
+ * Adjusts `length` to fetch everything in one shot.
+ */
+export async function fetchGuestsList(cookies: string, length = 500): Promise<GuestListRow[]> {
+  const base = kalisiBase();
+  const params = new URLSearchParams({
+    'draw': '1',
+    'start': '0',
+    'length': String(length),
+    'order[0][column]': '6',
+    'order[0][dir]': 'desc',
+    'search[value]': '',
+    'search[regex]': 'false',
+  });
+  const res = await fetch(`${base}/admin/guests?${params.toString()}`, {
+    headers: {
+      'Cookie': cookies,
+      'Accept': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      'User-Agent': 'Mozilla/5.0 (compatible; SantopaoloCockpit/1.0)',
+    },
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => '');
+    throw new Error(`Guests list HTTP ${res.status}: ${body.slice(0, 200)}`);
+  }
+  const json = await res.json();
+  if (!Array.isArray(json?.data)) throw new Error('Guests list, missing data array');
+  return json.data.map(parseGuestListRow);
+}
+
+/**
+ * Fetch and parse a single guest detail HTML page.
+ * Returns a partial guest record with fields extracted from the entity-info__item grid.
+ */
+export async function fetchGuestDetail(cookies: string, guestId: number): Promise<Record<string, string>> {
+  const base = kalisiBase();
+  const res = await fetch(`${base}/admin/guests/${guestId}`, {
+    headers: {
+      'Cookie': cookies,
+      'Accept': 'text/html',
+      'User-Agent': 'Mozilla/5.0 (compatible; SantopaoloCockpit/1.0)',
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`Guest detail ${guestId} HTTP ${res.status}`);
+  }
+  const html = await res.text();
+  return parseGuestDetailHtml(html);
+}
+
+function parseGuestDetailHtml(html: string): Record<string, string> {
+  // Match: <div class="entity-info__item"> ... <div class="... item__label ...">LABEL</div> <div class="... item__value ...">VALUE</div>
+  const pattern = /<div\s+class="[^"]*entity-info__item[^"]*">[\s\S]*?<div\s+class="[^"]*item__label[^"]*">([\s\S]*?)<\/div>\s*<div\s+class="[^"]*item__value[^"]*">([\s\S]*?)<\/div>/g;
+  const result: Record<string, string> = {};
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(html)) !== null) {
+    const label = stripHtml(match[1]);
+    const value = stripHtml(match[2]);
+    const field = GUEST_LABEL_MAP[label];
+    if (field && value) result[field] = value;
+  }
+  return result;
 }
