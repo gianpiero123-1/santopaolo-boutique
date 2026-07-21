@@ -1,0 +1,409 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createServerSupabase } from '../../lib/supabase-client';
+import { getLastSync } from '../../lib/queries';
+import { today, toISODate } from '../../lib/dates';
+
+interface ExtraService {
+  id: string;
+  service_date: string;
+  client_name: string;
+  apartment: number;
+  service: string;
+  amount: number | null;
+  paid: boolean;
+  created_at: string;
+}
+
+const supabase = createServerSupabase();
+const todayISO = toISODate(today());
+
+const [{ data: rawServices, error }, lastSync] = await Promise.all([
+  supabase
+    .from('extra_services')
+    .select('*')
+    .order('service_date', { ascending: false })
+    .order('created_at', { ascending: false }),
+  getLastSync(supabase),
+]);
+
+const services = (rawServices ?? []) as ExtraService[];
+
+const total = services.reduce((s, r) => s + Number(r.amount ?? 0), 0);
+const unpaid = services.reduce((s, r) => s + (r.paid ? 0 : Number(r.amount ?? 0)), 0);
+
+/** 2026-07-21 -> 21/07/26 */
+function fmtDate(iso: string): string {
+  const [y, m, d] = iso.split('-');
+  return `${d}/${m}/${y.slice(2)}`;
+}
+
+function fmtAmount(n: number | null): string {
+  return Number(n ?? 0).toLocaleString('it-IT', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+---
+
+<AdminLayout title="Servizi Extra" activePage="extra" lastSync={lastSync}>
+
+  <div class="page-title-row">
+    <h1 class="page-title">Servizi Extra</h1>
+  </div>
+
+  {error && (
+    <div class="xs-error">Errore nel caricamento: {error.message}</div>
+  )}
+
+  <!-- Inserimento rapido -->
+  <form id="xs-form" class="xs-form">
+    <div class="xs-field">
+      <label class="field-label" for="xs-date">Data</label>
+      <input id="xs-date" name="service_date" type="date" class="field-input" value={todayISO} required />
+    </div>
+    <div class="xs-field xs-grow">
+      <label class="field-label" for="xs-client">Cliente</label>
+      <input id="xs-client" name="client_name" type="text" class="field-input" placeholder="Nome cliente" required />
+    </div>
+    <div class="xs-field xs-narrow">
+      <label class="field-label" for="xs-apt">App</label>
+      <select id="xs-apt" name="apartment" class="field-select">
+        {[1, 2, 3, 4, 5].map((n) => <option value={n}>{n}</option>)}
+      </select>
+    </div>
+    <div class="xs-field xs-grow">
+      <label class="field-label" for="xs-service">Servizio</label>
+      <input id="xs-service" name="service" type="text" class="field-input" placeholder="es. Transfer aeroporto" required />
+    </div>
+    <div class="xs-field xs-narrow">
+      <label class="field-label" for="xs-amount">Importo €</label>
+      <input id="xs-amount" name="amount" type="number" step="0.01" min="0" class="field-input" placeholder="0.00" required />
+    </div>
+    <div class="xs-field xs-check">
+      <label class="field-label" for="xs-paid">Pagato</label>
+      <input id="xs-paid" name="paid" type="checkbox" class="xs-checkbox" />
+    </div>
+    <div class="xs-field">
+      <button type="submit" class="btn-primary xs-submit">Aggiungi</button>
+    </div>
+  </form>
+
+  <p class="xs-feedback" id="xs-feedback" hidden></p>
+
+  <div class="table-wrap">
+    <table class="xs-table">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Cliente</th>
+          <th>App</th>
+          <th>Servizio</th>
+          <th class="xs-right">Importo €</th>
+          <th>Pagato</th>
+          <th aria-label="Azioni"></th>
+        </tr>
+      </thead>
+      <tbody id="xs-tbody">
+        {services.length === 0 && (
+          <tr class="empty-row xs-empty"><td colspan="7">Nessun servizio extra registrato.</td></tr>
+        )}
+        {services.map((r) => (
+          <tr data-id={r.id} data-amount={Number(r.amount ?? 0)} data-paid={r.paid ? '1' : '0'}>
+            <td class="row-dates">{fmtDate(r.service_date)}</td>
+            <td class="row-guest">{r.client_name}</td>
+            <td class="row-unit">{r.apartment}</td>
+            <td class="row-guest">{r.service}</td>
+            <td class="row-amount xs-right">{fmtAmount(r.amount)}</td>
+            <td>
+              <button
+                type="button"
+                class={`xs-badge js-toggle${r.paid ? ' paid' : ''}`}
+                data-id={r.id}
+                aria-label="Cambia stato pagamento"
+              >{r.paid ? 'Sì' : 'No'}</button>
+            </td>
+            <td class="xs-right">
+              <button type="button" class="row-actions js-delete" data-id={r.id} aria-label="Elimina servizio">×</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+      <tfoot>
+        <tr class="xs-total">
+          <td colspan="4">Totale</td>
+          <td class="xs-right" id="xs-total">{fmtAmount(total)}</td>
+          <td colspan="2"></td>
+        </tr>
+        <tr class="xs-total unpaid">
+          <td colspan="4">Da incassare</td>
+          <td class="xs-right" id="xs-unpaid">{fmtAmount(unpaid)}</td>
+          <td colspan="2"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+</AdminLayout>
+
+<script>
+  const tbody = document.getElementById('xs-tbody') as HTMLTableSectionElement;
+  const form = document.getElementById('xs-form') as HTMLFormElement;
+  const feedback = document.getElementById('xs-feedback') as HTMLParagraphElement;
+  const totalEl = document.getElementById('xs-total') as HTMLElement;
+  const unpaidEl = document.getElementById('xs-unpaid') as HTMLElement;
+
+  const fmtAmount = (n: number) =>
+    n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  /** 2026-07-21 -> 21/07/26 */
+  function fmtDate(iso: string): string {
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y.slice(2)}`;
+  }
+
+  function notify(message: string, isError = true) {
+    feedback.textContent = message;
+    feedback.hidden = false;
+    feedback.classList.toggle('error', isError);
+    if (!isError) setTimeout(() => { feedback.hidden = true; }, 2500);
+  }
+
+  /** Ricalcola i totali dalle righe presenti in tabella. */
+  function recalcTotals() {
+    let total = 0;
+    let unpaid = 0;
+    tbody.querySelectorAll('tr[data-id]').forEach((tr) => {
+      const row = tr as HTMLElement;
+      const amount = Number(row.dataset.amount ?? '0');
+      total += amount;
+      if (row.dataset.paid !== '1') unpaid += amount;
+    });
+    totalEl.textContent = fmtAmount(total);
+    unpaidEl.textContent = fmtAmount(unpaid);
+
+    const empty = tbody.querySelector('.xs-empty');
+    const hasRows = tbody.querySelector('tr[data-id]') !== null;
+    if (hasRows) empty?.remove();
+    else if (!empty) {
+      tbody.insertAdjacentHTML(
+        'beforeend',
+        '<tr class="empty-row xs-empty"><td colspan="7">Nessun servizio extra registrato.</td></tr>',
+      );
+    }
+  }
+
+  /** Markup di una riga, allineato a quello renderizzato dal server. */
+  function rowHtml(r: any): string {
+    const paid = r.paid === true;
+    const amount = Number(r.amount ?? 0);
+    return `<tr data-id="${r.id}" data-amount="${amount}" data-paid="${paid ? '1' : '0'}">
+      <td class="row-dates">${fmtDate(r.service_date)}</td>
+      <td class="row-guest">${escapeHtml(r.client_name)}</td>
+      <td class="row-unit">${r.apartment}</td>
+      <td class="row-guest">${escapeHtml(r.service)}</td>
+      <td class="row-amount xs-right">${fmtAmount(amount)}</td>
+      <td><button type="button" class="xs-badge js-toggle${paid ? ' paid' : ''}" data-id="${r.id}" aria-label="Cambia stato pagamento">${paid ? 'Sì' : 'No'}</button></td>
+      <td class="xs-right"><button type="button" class="row-actions js-delete" data-id="${r.id}" aria-label="Elimina servizio">×</button></td>
+    </tr>`;
+  }
+
+  function escapeHtml(s: string): string {
+    return String(s ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  /** Ricarica la lista dall'API e ridisegna il corpo tabella. */
+  async function refreshList() {
+    const res = await fetch('/api/extra-services');
+    if (!res.ok) return notify('Errore nel caricamento della lista');
+    const body = await res.json();
+    const rows = (body.services ?? []) as any[];
+    tbody.innerHTML = rows.length
+      ? rows.map(rowHtml).join('')
+      : '<tr class="empty-row xs-empty"><td colspan="7">Nessun servizio extra registrato.</td></tr>';
+    recalcTotals();
+  }
+
+  // ---- inserimento (senza reload) ----
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = form.querySelector('.xs-submit') as HTMLButtonElement;
+    const amountEl = document.getElementById('xs-amount') as HTMLInputElement;
+
+    const payload = {
+      service_date: (document.getElementById('xs-date') as HTMLInputElement).value,
+      client_name: (document.getElementById('xs-client') as HTMLInputElement).value.trim(),
+      apartment: Number((document.getElementById('xs-apt') as HTMLSelectElement).value),
+      service: (document.getElementById('xs-service') as HTMLInputElement).value.trim(),
+      amount: Number(amountEl.value),
+      paid: (document.getElementById('xs-paid') as HTMLInputElement).checked,
+    };
+
+    if (!payload.service_date || !payload.client_name || !payload.service || !Number.isFinite(payload.amount)) {
+      return notify('Compila tutti i campi');
+    }
+
+    btn.disabled = true;
+    try {
+      const res = await fetch('/api/extra-services', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        notify(err?.error ? `Errore: ${err.error}` : 'Errore nel salvataggio');
+      } else {
+        // Svuota solo i campi variabili: data e app restano per l'inserimento successivo.
+        (document.getElementById('xs-client') as HTMLInputElement).value = '';
+        (document.getElementById('xs-service') as HTMLInputElement).value = '';
+        amountEl.value = '';
+        (document.getElementById('xs-paid') as HTMLInputElement).checked = false;
+        await refreshList();
+        notify('Servizio aggiunto', false);
+      }
+    } catch {
+      notify('Errore di rete');
+    }
+    btn.disabled = false;
+  });
+
+  // ---- toggle pagato / elimina (delegati: le righe vengono ridisegnate) ----
+  tbody?.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+
+    const toggle = target.closest('.js-toggle') as HTMLButtonElement | null;
+    if (toggle) {
+      const row = toggle.closest('tr') as HTMLElement;
+      const next = row.dataset.paid !== '1';
+      toggle.disabled = true;
+      try {
+        const res = await fetch(`/api/extra-services/${toggle.dataset.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paid: next }),
+        });
+        if (!res.ok) {
+          notify('Errore nell aggiornamento');
+        } else {
+          row.dataset.paid = next ? '1' : '0';
+          toggle.textContent = next ? 'Sì' : 'No';
+          toggle.classList.toggle('paid', next);
+          recalcTotals();
+        }
+      } catch {
+        notify('Errore di rete');
+      }
+      toggle.disabled = false;
+      return;
+    }
+
+    const del = target.closest('.js-delete') as HTMLButtonElement | null;
+    if (del) {
+      const row = del.closest('tr') as HTMLElement;
+      const name = row.querySelector('.row-guest')?.textContent ?? 'questo servizio';
+      if (!confirm(`Eliminare il servizio di ${name}?`)) return;
+      del.disabled = true;
+      try {
+        const res = await fetch(`/api/extra-services/${del.dataset.id}`, { method: 'DELETE' });
+        if (!res.ok) {
+          notify('Errore nell eliminazione');
+          del.disabled = false;
+        } else {
+          row.remove();
+          recalcTotals();
+        }
+      } catch {
+        notify('Errore di rete');
+        del.disabled = false;
+      }
+    }
+  });
+</script>
+
+<style is:global>
+  /* ---- Servizi Extra ---- */
+  .xs-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 10px;
+    background: var(--antracite);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 16px;
+    margin-bottom: 18px;
+  }
+  .xs-field { display: flex; flex-direction: column; }
+  .xs-field .field-input,
+  .xs-field .field-select { width: 100%; }
+  .xs-grow { flex: 1 1 180px; min-width: 150px; }
+  .xs-narrow { flex: 0 0 110px; }
+  .xs-check { align-items: flex-start; }
+  .xs-checkbox {
+    width: 18px; height: 18px; margin-top: 8px;
+    accent-color: var(--bordeaux); cursor: pointer;
+  }
+  .xs-submit { padding: 10px 20px; white-space: nowrap; }
+
+  .xs-feedback {
+    font-size: 12px; color: var(--green); margin: -8px 0 14px;
+  }
+  .xs-feedback.error { color: var(--danger); }
+  .xs-error {
+    background: rgba(139, 68, 68, 0.12); border: 1px solid var(--danger);
+    color: var(--danger); padding: 12px 14px; border-radius: 3px;
+    font-size: 12.5px; margin-bottom: 16px;
+  }
+
+  .xs-table { min-width: 720px; }
+  .xs-table thead th {
+    background: var(--bordeaux);
+    color: var(--off-white);
+    border-bottom: 1px solid var(--bordeaux);
+  }
+  .xs-table td { vertical-align: middle; }
+  .xs-table tbody tr:nth-child(even) td { background: var(--carbon); }
+  .xs-table tbody tr:hover td { background: rgba(107, 31, 31, 0.12); }
+  .xs-right { text-align: right; }
+
+  .xs-badge {
+    display: inline-block; min-width: 42px; text-align: center;
+    padding: 4px 10px; border-radius: 2px; border: 1px solid var(--bordeaux);
+    background: var(--bordeaux); color: var(--off-white);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px;
+    font-family: inherit; cursor: pointer;
+  }
+  .xs-badge:hover { opacity: 0.85; }
+  .xs-badge:disabled { opacity: 0.5; cursor: default; }
+  .xs-badge.paid {
+    background: rgba(74, 222, 128, 0.14);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .xs-table tfoot .xs-total td {
+    background: var(--carbon);
+    border-top: 1px solid var(--border);
+    border-bottom: none;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--marmo); padding: 13px 14px;
+  }
+  .xs-table tfoot .xs-total td:nth-child(2) {
+    font-family: 'Fraunces', serif; font-size: 15px;
+    letter-spacing: 0; text-transform: none; color: var(--off-white);
+  }
+  .xs-table tfoot .xs-total.unpaid td { background: var(--bordeaux); color: var(--off-white); }
+  .xs-table tfoot .xs-total.unpaid td:nth-child(2) { color: var(--off-white); }
+
+  @media (max-width: 720px) {
+    .xs-form { gap: 8px; }
+    .xs-grow, .xs-narrow { flex: 1 1 100%; }
+  }
+</style>
