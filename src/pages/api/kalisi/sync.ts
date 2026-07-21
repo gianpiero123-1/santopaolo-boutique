@@ -1,12 +1,14 @@
 export const prerender = false;
+export const config = { maxDuration: 60 };
 
 import type { APIRoute } from 'astro';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createServerSupabase } from '../../../lib/supabase-client';
-import { createKalisiClient } from '../../../lib/kalisi-client';
+import { createKalisiClient, fetchOrderGuests, type KalisiClient } from '../../../lib/kalisi-client';
 import { sendTelegramMessage } from '../../../lib/telegram';
 import { formatNewBooking, formatSyncError } from '../../../lib/telegram-messages';
 import { env } from '../../../lib/env';
-import { today, addDays } from '../../../lib/dates';
+import { today, addDays, toISODate } from '../../../lib/dates';
 import type { Booking } from '../../../lib/constants';
 
 export const GET: APIRoute = async ({ request }) => {
@@ -118,11 +120,22 @@ export const GET: APIRoute = async ({ request }) => {
       }
     }
 
+    // Schedine ospiti (tassa di soggiorno). Non deve mai far fallire il sync.
+    let guestsResult: unknown = null;
+    try {
+      guestsResult = await syncBookingGuests(supabase, client);
+    } catch (guestsErr) {
+      const m = guestsErr instanceof Error ? guestsErr.message : String(guestsErr);
+      console.error('[kalisi] booking_guests sync failed:', m);
+      guestsResult = { ok: false, error: m };
+    }
+
     return json({
       ok: true,
       synced: orders.length,
       new: newOrders.length,
       updated: orders.length - newOrders.length,
+      guests: guestsResult,
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
@@ -152,6 +165,104 @@ export const GET: APIRoute = async ({ request }) => {
     return json({ ok: false, error: message }, 500);
   }
 };
+
+// ==== Schedine ospiti (booking_guests) ====
+
+/** Pausa fra le fetch a Kalisi, per non stressare il loro admin. */
+const GUESTS_RATE_LIMIT_MS = 500;
+
+/** Tetto di fetch per run: il backlog si smaltisce sulle run successive. */
+const GUESTS_MAX_PER_RUN = 40;
+
+/**
+ * Scarica le schedine ospiti da /admin/orders/{id}/guests per ogni prenotazione
+ * con check-out dal primo giorno del mese precedente in poi, e le salva in
+ * booking_guests. Le prenotazioni già registrate e ormai concluse vengono
+ * saltate: le loro schedine non cambiano più.
+ */
+async function syncBookingGuests(
+  supabase: SupabaseClient,
+  client: KalisiClient,
+): Promise<Record<string, unknown>> {
+  const todayDate = today();
+  const from = new Date(Date.UTC(todayDate.getUTCFullYear(), todayDate.getUTCMonth() - 1, 1));
+  const fromISO = toISODate(from);
+  const todayISO = toISODate(todayDate);
+
+  const { data: candidateRows, error: candidatesError } = await supabase
+    .from('bookings_cache')
+    .select('id, kalisi_id, checkout_date, status')
+    .gte('checkout_date', fromISO)
+    .order('checkin_date', { ascending: true });
+  if (candidatesError) throw new Error(`booking_guests candidates: ${candidatesError.message}`);
+
+  const candidates = (candidateRows ?? []).filter((b: any) => b.status !== 'cancelled');
+
+  // Chi ha già schedine salvate.
+  const withGuests = new Set<string>();
+  if (candidates.length) {
+    const { data: existingGuests } = await supabase
+      .from('booking_guests')
+      .select('booking_id')
+      .in('booking_id', candidates.map((b: any) => b.id));
+    for (const g of (existingGuests ?? []) as { booking_id: string }[]) withGuests.add(g.booking_id);
+  }
+
+  // Una prenotazione conclusa e già registrata non va più interrogata.
+  const pending = candidates.filter(
+    (b: any) => !(withGuests.has(b.id) && b.checkout_date < todayISO),
+  );
+
+  const batch = pending.slice(0, GUESTS_MAX_PER_RUN);
+  const result = {
+    candidates: candidates.length,
+    pending: pending.length,
+    fetched: 0,
+    with_guests: 0,
+    rows_upserted: 0,
+    not_registered: 0,
+    deferred: Math.max(0, pending.length - batch.length),
+    errors: [] as { kalisi_id: number; error: string }[],
+  };
+
+  for (const b of batch as any[]) {
+    try {
+      const guests = await fetchOrderGuests(client.sessionCookie ?? '', b.kalisi_id);
+      result.fetched += 1;
+
+      // Solo gli ospiti effettivamente registrati (birthdate valorizzato).
+      const registered = guests.filter((g) => g.birthdate !== null);
+      if (registered.length === 0) {
+        result.not_registered += 1;
+        continue;
+      }
+
+      const records = registered.map((g) => ({
+        booking_id: b.id,
+        first_name: g.first_name,
+        last_name: g.last_name,
+        birthdate: g.birthdate,
+      }));
+
+      const { error } = await supabase
+        .from('booking_guests')
+        .upsert(records, { onConflict: 'booking_id,first_name,last_name,birthdate' });
+      if (error) throw new Error(error.message);
+
+      result.with_guests += 1;
+      result.rows_upserted += records.length;
+    } catch (err) {
+      result.errors.push({
+        kalisi_id: b.kalisi_id,
+        error: err instanceof Error ? err.message : String(err),
+      });
+    }
+
+    await new Promise((r) => setTimeout(r, GUESTS_RATE_LIMIT_MS));
+  }
+
+  return result;
+}
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {

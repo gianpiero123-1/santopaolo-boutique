@@ -1,0 +1,340 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createServerSupabase } from '../../lib/supabase-client';
+import { getLastSync } from '../../lib/queries';
+import { today, toISODate, dateOnly, formatDayMonth } from '../../lib/dates';
+import {
+  computeTaxReport,
+  currentMonth,
+  monthLabel,
+  TAX_PER_NIGHT,
+  PAYING_AGE_MIN,
+  EXCLUDED_GUESTS,
+} from '../../lib/tax';
+
+// Le costanti TAX_PER_NIGHT / PAYING_AGE_MIN / EXCLUDED_GUESTS vivono in
+// src/lib/tax.ts, in cima al file: sono condivise con /api/tax/report così i
+// due non possono divergere. Modificare lì.
+
+const supabase = createServerSupabase();
+const todayISO = toISODate(today());
+
+const sp = Astro.url.searchParams;
+const month = /^\d{4}-\d{2}$/.test(sp.get('month') ?? '')
+  ? (sp.get('month') as string)
+  : currentMonth(todayISO);
+
+const report = await computeTaxReport(supabase, month);
+const lastSync = await getLastSync(supabase);
+
+const title = monthLabel(month);
+const titleCap = title.charAt(0).toUpperCase() + title.slice(1);
+
+const fmtDate = (iso: string) => formatDayMonth(dateOnly(iso));
+const fmtEuroInt = (n: number) => `${Math.round(n).toLocaleString('it-IT')}€`;
+---
+
+<AdminLayout title="Tassa di soggiorno" activePage="tax" lastSync={lastSync}>
+  <div class="tax-root">
+    <div class="tax-header">
+      <div>
+        <p class="tax-eyebrow">Cockpit</p>
+        <h1 class="tax-title">Tassa di soggiorno</h1>
+        <p class="tax-rule">
+          {fmtEuroInt(TAX_PER_NIGHT)} a notte per ospite dai {PAYING_AGE_MIN} anni in su al check-in
+        </p>
+      </div>
+      <div class="tax-actions">
+        <form method="get" class="tax-month-form">
+          <label>
+            <span>Mese</span>
+            <input type="month" name="month" value={month} />
+          </label>
+          <button type="submit">Mostra</button>
+        </form>
+        <button type="button" id="tax-send" class="tax-send">Invia report</button>
+      </div>
+    </div>
+
+    <div class="tax-kpi-row">
+      <div class="tax-card">
+        <p class="tax-label">Totale tassa</p>
+        <p class="tax-kpi">{fmtEuroInt(report.total_tax)}</p>
+        <p class="tax-sub">{titleCap}</p>
+      </div>
+      <div class="tax-card">
+        <p class="tax-label">Paganti × notti</p>
+        <p class="tax-kpi">{report.total_paying_nights}</p>
+        <p class="tax-sub">{report.rows.length} prenotazioni</p>
+      </div>
+      <div class="tax-card">
+        <p class="tax-label">Senza schedine</p>
+        <p class={`tax-kpi${report.unregistered.length > 0 ? ' warn' : ''}`}>
+          {report.unregistered.length}
+        </p>
+        <p class="tax-sub">
+          {report.unregistered.length === 0 ? 'tutte registrate' : 'da registrare'}
+        </p>
+      </div>
+    </div>
+
+    {report.rows.length === 0 ? (
+      <div class="tax-empty">Nessuna prenotazione con notti in {title}.</div>
+    ) : (
+      <div class="tax-table-wrap">
+        <table class="tax-table">
+          <thead>
+            <tr>
+              <th>Ospite</th>
+              <th>Appartamento</th>
+              <th>Check-in</th>
+              <th>Check-out</th>
+              <th class="num">Notti nel mese</th>
+              <th class="num">Paganti</th>
+              <th class="num">Esenti</th>
+              <th class="num">Tassa</th>
+            </tr>
+          </thead>
+          <tbody>
+            {report.rows.map((r) => (
+              <tr class={r.registered ? '' : 'unregistered'}>
+                <td>
+                  <span class="tax-guest">{r.guest_name}</span>
+                  {!r.registered && <span class="tax-badge">non registrati</span>}
+                </td>
+                <td>{r.apartment_label}</td>
+                <td>{fmtDate(r.checkin_date)}</td>
+                <td>{fmtDate(r.checkout_date)}</td>
+                <td class="num">{r.nights_in_month}</td>
+                <td class="num">{r.registered ? r.paying : '—'}</td>
+                <td class="num">{r.registered ? r.exempt : '—'}</td>
+                <td class="num strong">{r.tax === null ? '—' : fmtEuroInt(r.tax)}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr class="tax-total">
+              <td colspan="4">Totale {title}</td>
+              <td class="num">{report.rows.reduce((s, r) => s + r.nights_in_month, 0)}</td>
+              <td class="num">{report.total_paying_nights}</td>
+              <td class="num"></td>
+              <td class="num strong">{fmtEuroInt(report.total_tax)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    )}
+
+    {EXCLUDED_GUESTS.length > 0 && (
+      <p class="tax-note">Escluse dal calcolo: {EXCLUDED_GUESTS.join(', ')}.</p>
+    )}
+  </div>
+</AdminLayout>
+
+<script is:inline define:vars={{ month }}>
+  document.getElementById('tax-send')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Invio...';
+    try {
+      const res = await fetch(`/api/tax/report?month=${encodeURIComponent(month)}`);
+      const body = await res.json().catch(() => null);
+      btn.textContent = res.ok && body?.ok ? 'Inviato' : 'Errore';
+      if (!res.ok || !body?.ok) {
+        console.error('[tax] report failed:', body);
+      }
+    } catch (err) {
+      btn.textContent = 'Errore';
+      console.error('[tax] report failed:', err);
+    }
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = original;
+    }, 3000);
+  });
+</script>
+
+<style is:global>
+  .tax-root {
+    color: #F5F2EC;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  .tax-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .tax-eyebrow {
+    font-size: 11px;
+    color: #8A8580;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 4px;
+  }
+  .tax-title {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 28px;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .tax-rule {
+    font-size: 12px;
+    color: #8A8580;
+    margin: 6px 0 0;
+  }
+  .tax-actions {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .tax-month-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+  }
+  .tax-month-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 11px;
+    color: #8A8580;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .tax-month-form input {
+    background: #0E0E0E;
+    color: #F5F2EC;
+    border: 1px solid #2A2A2A;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .tax-month-form button,
+  .tax-send {
+    background: transparent;
+    color: #F5F2EC;
+    border: 1px solid #8A8580;
+    padding: 9px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .tax-month-form button:hover,
+  .tax-send:hover { border-color: #F5F2EC; }
+  .tax-send {
+    background: #6B1F1F;
+    border-color: #6B1F1F;
+  }
+  .tax-send:hover { background: #8A2A2A; border-color: #8A2A2A; }
+  .tax-send:disabled { opacity: 0.6; cursor: default; }
+
+  .tax-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .tax-card {
+    background: #1C1C1C;
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .tax-label {
+    font-size: 11px;
+    color: #8A8580;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0 0 10px;
+  }
+  .tax-kpi {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+  .tax-kpi.warn { color: #C8553D; }
+  .tax-sub {
+    font-size: 11px;
+    color: #8A8580;
+    margin: 6px 0 0;
+  }
+
+  .tax-table-wrap {
+    background: #1C1C1C;
+    border-radius: 10px;
+    overflow-x: auto;
+  }
+  .tax-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 760px;
+  }
+  .tax-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    color: #8A8580;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 14px 16px;
+    border-bottom: 1px solid #2A2A2A;
+    white-space: nowrap;
+  }
+  .tax-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid #2A2A2A;
+    white-space: nowrap;
+  }
+  .tax-table tbody tr:hover { background: #141414; }
+  .tax-table .num { text-align: right; }
+  .tax-table .strong { font-weight: 600; }
+  .tax-guest { color: #F5F2EC; }
+  .tax-table tr.unregistered td { color: #8A8580; }
+  .tax-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: rgba(200, 85, 61, 0.15);
+    color: #C8553D;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .tax-table tfoot .tax-total td {
+    background: #6B1F1F;
+    color: #F5F2EC;
+    font-weight: 600;
+    border-bottom: none;
+    padding: 15px 16px;
+  }
+  .tax-empty {
+    background: #1C1C1C;
+    color: #8A8580;
+    padding: 40px;
+    text-align: center;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  .tax-note {
+    font-size: 11px;
+    color: #8A8580;
+    margin: 14px 0 0;
+  }
+  @media (max-width: 720px) {
+    .tax-kpi-row { grid-template-columns: 1fr; }
+    .tax-header { flex-direction: column; align-items: stretch; }
+  }
+</style>

@@ -567,6 +567,83 @@ export async function fetchGuestDetail(cookies: string, guestId: number): Promis
   return parseGuestDetailHtml(html);
 }
 
+// ==== ORDER GUESTS (schedine per tassa di soggiorno) ====
+
+/** One guest form parsed from /admin/orders/{id}/guests. */
+export interface OrderGuestRow {
+  first_name: string;
+  last_name: string;
+  /** YYYY-MM-DD, or null if the form is still blank. */
+  birthdate: string | null;
+}
+
+/**
+ * Fetch and parse the per-order guest registration page. Each registered guest
+ * is rendered as its own <form> carrying guest[first_name] / guest[last_name] /
+ * guest[birthdate] inputs. Forms with a blank birthdate mean the guest has not
+ * been registered yet and are dropped by the caller.
+ */
+export async function fetchOrderGuests(cookies: string, orderId: number): Promise<OrderGuestRow[]> {
+  const base = kalisiBase();
+  const res = await fetch(`${base}/admin/orders/${orderId}/guests`, {
+    headers: {
+      Cookie: cookies,
+      Accept: 'text/html',
+      'User-Agent': 'Mozilla/5.0 (compatible; SantopaoloCockpit/1.0)',
+    },
+  });
+  if (!res.ok) {
+    throw new Error(`Order guests ${orderId} HTTP ${res.status}`);
+  }
+  return parseOrderGuestsHtml(await res.text());
+}
+
+/** Pull `name` -> `value` for every <input> in an HTML fragment. */
+function inputValues(fragment: string): Map<string, string> {
+  const values = new Map<string, string>();
+  const tagPattern = /<input\b[^>]*>/gi;
+  let tag: RegExpExecArray | null;
+  while ((tag = tagPattern.exec(fragment)) !== null) {
+    const name = tag[0].match(/\sname=["']([^"']+)["']/i)?.[1];
+    if (!name) continue;
+    const value = tag[0].match(/\svalue=["']([^"']*)["']/i)?.[1] ?? '';
+    // Keep the first non-empty occurrence; hidden duplicates come later.
+    if (!values.get(name)) values.set(name, decodeEntities(value).trim());
+  }
+  return values;
+}
+
+function decodeEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
+export function parseOrderGuestsHtml(html: string): OrderGuestRow[] {
+  // Split on form boundaries so each guest's inputs stay grouped.
+  const forms = html.split(/<form\b/i).slice(1);
+  const rows: OrderGuestRow[] = [];
+
+  for (const form of forms) {
+    const values = inputValues(form);
+    const firstName = values.get('guest[first_name]') ?? '';
+    const lastName = values.get('guest[last_name]') ?? '';
+    const birthdateRaw = values.get('guest[birthdate]') ?? '';
+
+    // A form with no guest fields at all is not a guest form (search, logout...).
+    if (!values.has('guest[first_name]') && !values.has('guest[last_name]')) continue;
+
+    const birthdate = /^\d{4}-\d{2}-\d{2}$/.test(birthdateRaw) ? birthdateRaw : null;
+    rows.push({ first_name: firstName, last_name: lastName, birthdate });
+  }
+
+  return rows;
+}
+
 function parseGuestDetailHtml(html: string): Record<string, string> {
   // Match: <div class="entity-info__item"> ... <div class="... item__label ...">LABEL</div> <div class="... item__value ...">VALUE</div>
   const pattern = /<div\s+class="[^"]*entity-info__item[^"]*">[\s\S]*?<div\s+class="[^"]*item__label[^"]*">([\s\S]*?)<\/div>\s*<div\s+class="[^"]*item__value[^"]*">([\s\S]*?)<\/div>/g;
