@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import BookingWidget from '../components/BookingWidget.astro';
-import { useTranslations } from '../i18n/index';
+import { useTranslations, pluralize } from '../i18n/index';
 import apartmentsData from '../data/apartments.json';
 
 const lang = 'it';
@@ -68,10 +68,10 @@ const italianwayIds: Record<number, string> = {
             <div class="flex flex-wrap gap-4 text-brand-muted text-xs nav-link">
               <span>{apt.size_sqm} {t.apartments.sqm}</span>
               <span>·</span>
-              <span>{apt.max_guests} {t.apartments.guests}</span>
+              <span>{pluralize(lang, apt.max_guests, 'guests')}</span>
               <span>·</span>
               <span>
-                {apt.bedrooms === 0 ? 'Studio' : `${apt.bedrooms} ${t.apartments.bedrooms}`}
+                {apt.bedrooms === 0 ? 'Studio' : pluralize(lang, apt.bedrooms, 'bedrooms')}
               </span>
             </div>
             <p class="text-brand-muted text-sm leading-relaxed">{apt.description_it}</p>

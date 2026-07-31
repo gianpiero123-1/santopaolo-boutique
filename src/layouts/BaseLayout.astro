@@ -3,7 +3,9 @@ import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
+import JsonLd from '../components/JsonLd.astro';
 import type { Lang } from '../i18n/index';
+import { buildPageGraph } from '../data/schema';
 
 interface Props {
   title: string;
@@ -11,6 +13,12 @@ interface Props {
   lang?: Lang;
   ogImage?: string;
   canonicalURL?: string;
+  /** Skips canonical + hreflang and asks crawlers not to index. For the 404. */
+  noindex?: boolean;
+  /** Overrides where the language toggle points, for pages with no counterpart. */
+  langSwitchHref?: string;
+  /** Slug of the unit on an apartment detail page, so the graph can name it. */
+  apartmentSlug?: string;
 }
 
 const {
@@ -19,16 +27,34 @@ const {
   lang = 'it',
   // TODO: create /public/og-image.png (1200×630) — bg #0E0E0E, logo 200px centered, "Santopaolo Boutique Apartments" Fraunces white 48px, "Chiaia, Napoli" Inter #8A8580 18px uppercase letter-spacing 0.3em
   ogImage = '/og-image.png',
-  canonicalURL = Astro.url.href,
+  canonicalURL: canonicalOverride,
+  noindex = false,
+  langSwitchHref,
+  apartmentSlug,
 } = Astro.props;
 
 const siteName = 'Santopaolo Boutique Apartments';
-const siteURL = (Astro.site?.href ?? 'https://chiaiboutique.com/').replace(/\/$/, '');
+const siteURL = (Astro.site?.href ?? 'https://www.santopaoloapartments.com/').replace(/\/$/, '');
+// Built from `site` rather than Astro.url so the canonical host stays www even
+// when a page is rendered on demand and the request arrives on the bare domain.
+const canonicalURL = canonicalOverride ?? `${siteURL}${Astro.url.pathname}`;
 const alternateLang = lang === 'it' ? 'en' : 'it';
 const alternatePath = lang === 'en'
   ? Astro.url.pathname.replace(/^\/en/, '') || '/'
   : `/en${Astro.url.pathname}`;
 const alternateURL = `${siteURL}${alternatePath}`;
+
+// One @graph per page, built here so no page can forget it or emit a second
+// block. Skipped on noindex routes (the 404), which have nothing to describe.
+const jsonLd = noindex
+  ? null
+  : buildPageGraph({
+      lang,
+      pathname: Astro.url.pathname,
+      title,
+      description,
+      apartmentSlug,
+    });
 ---
 
 <!doctype html>
@@ -40,12 +66,19 @@ const alternateURL = `${siteURL}${alternatePath}`;
 
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalURL} />
 
-    <!-- Hreflang -->
-    <link rel="alternate" hreflang="it" href={lang === 'it' ? canonicalURL : alternateURL} />
-    <link rel="alternate" hreflang="en" href={lang === 'en' ? canonicalURL : alternateURL} />
-    <link rel="alternate" hreflang="x-default" href={lang === 'it' ? canonicalURL : alternateURL} />
+    {noindex ? (
+      <meta name="robots" content="noindex, follow" />
+    ) : (
+      <Fragment>
+        <link rel="canonical" href={canonicalURL} />
+
+        <!-- Hreflang -->
+        <link rel="alternate" hreflang="it" href={lang === 'it' ? canonicalURL : alternateURL} />
+        <link rel="alternate" hreflang="en" href={lang === 'en' ? canonicalURL : alternateURL} />
+        <link rel="alternate" hreflang="x-default" href={lang === 'it' ? canonicalURL : alternateURL} />
+      </Fragment>
+    )}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -63,6 +96,9 @@ const alternateURL = `${siteURL}${alternatePath}`;
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${siteURL}${ogImage}`} />
 
+    <!-- Structured data -->
+    {jsonLd && <JsonLd data={jsonLd} />}
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -78,11 +114,11 @@ const alternateURL = `${siteURL}${alternatePath}`;
     <slot name="head" />
   </head>
   <body class="bg-brand-bg text-brand-text min-h-screen flex flex-col">
-    <Navbar lang={lang} />
+    <Navbar lang={lang} langSwitchHref={langSwitchHref} />
     <main class="flex-1">
       <slot />
     </main>
     <Footer lang={lang} />
-    <WhatsAppFloat phone="+393313225577" />
+    <WhatsAppFloat phone="+393313225577" lang={lang} />
   </body>
 </html>

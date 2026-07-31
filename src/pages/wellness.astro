@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { useTranslations, getLocalePath } from '../i18n/index';
+import { useTranslations } from '../i18n/index';
 import Lightbox from '../components/Lightbox.astro';
 
 const lang = 'it';
@@ -40,16 +40,30 @@ const gymImages = [
   { src: '/wellness/gym/gym-04.jpg', alt: 'Zona macchinari isotonici e TRX palestra Santopaolo Fitness, Chiaia Napoli' },
   { src: '/wellness/gym/gym-05.jpg', alt: 'Tapis roulant e manubri palestra Santopaolo con accesso al bagno turco visibile' },
   { src: '/wellness/gym/gym-06.jpg', alt: 'Sala fitness Santopaolo con macchinari, TV e porta blu di accesso al bagno turco' },
-  { src: '/wellness/gym/gym-07.jpg', alt: 'Rack manubri esagonali palestra Santopaolo, Chiaia: pesi professionali 5-40 kg' },
+  { src: '/wellness/gym/gym-07.jpg', alt: 'Rack manubri esagonali palestra Santopaolo, Chiaia: pesi professionali 5-40 kg', w: 768, h: 1152 },
   { src: '/wellness/gym/gym-08.jpg', alt: 'Palestra Santopaolo con parete a specchio, rack manubri e separatore arredo' },
+  { src: '/wellness/gym/gym-09.webp', src_sm: '/wellness/gym/gym-09-sm.webp', alt: 'Palestra Santopaolo con macchinari Precor, rack bilancieri e pareti a specchio', w: 1920, h: 1080 },
+  { src: '/wellness/gym/gym-10.webp', src_sm: '/wellness/gym/gym-10-sm.webp', alt: 'Palestra Santopaolo con tapis roulant, rack manubri e accesso al bagno turco', w: 1920, h: 1080 },
+  { src: '/wellness/gym/gym-11.webp', src_sm: '/wellness/gym/gym-11-sm.webp', alt: 'Ingresso della palestra Santopaolo al piano wellness, con zona pesi sullo sfondo', w: 1920, h: 1080 },
 ];
 
 const steamroomImages = [
   { src: '/wellness/steam/steam-01.jpg', alt: 'Doccia emozionale cromoterapia Santopaolo SPA con illuminazione rosa, piastrelle grigio pietra' },
-  { src: '/wellness/steam/steam-02.jpg', alt: 'Bagno turco Santopaolo con sedile in muratura, piastrelle nere verticali e luce cromoterapia rosa' },
-  { src: '/wellness/steam/steam-03.jpg', alt: 'Cabina doccia Santopaolo SPA in pietra grigia, porta vetro scorrevole' },
+  { src: '/wellness/steam/steam-02.jpg', alt: 'Bagno turco Santopaolo con sedile in muratura, piastrelle nere verticali e luce cromoterapia rosa', w: 768, h: 1152 },
+  { src: '/wellness/steam/steam-03.jpg', alt: 'Cabina doccia Santopaolo SPA in pietra grigia, porta vetro scorrevole', w: 768, h: 1152 },
   { src: '/wellness/steam/steam-04.jpg', alt: 'Interno doccia Santopaolo con rivestimento in pietra naturale e soffione a pioggia' },
+  { src: '/wellness/steam/steam-05.webp', src_sm: '/wellness/steam/steam-05-sm.webp', alt: 'Bagno turco Santopaolo con seduta in muratura e illuminazione cromoterapica', w: 768, h: 1152 },
 ];
+
+const garage = {
+  title: 'Garage coperto',
+  body: 'Garage interno coperto di oltre 1.000 mq, accesso 24 ore, adatto anche a SUV e van, con punto di ricarica per veicoli elettrici. Una disponibilità rara nel quartiere Chiaia.',
+  image: {
+    src: '/garage/garage-01.webp',
+    src_sm: '/garage/garage-01-sm.webp',
+    alt: 'Ingresso del garage coperto Santopaolo in Vico Santa Maria a Cappella Vecchia, Chiaia Napoli',
+  },
+};
 ---
 
 <BaseLayout
@@ -117,6 +131,28 @@ const steamroomImages = [
 
   <section class="section-padding border-t border-brand-border">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div class="aspect-[3/2] overflow-hidden bg-brand-bg2">
+          <img
+            src={garage.image.src_sm}
+            alt={garage.image.alt}
+            width="900"
+            height="600"
+            loading="lazy"
+            decoding="async"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div>
+          <h2 class="font-display text-2xl text-brand-text tracking-tight mb-4">{garage.title}</h2>
+          <p class="text-brand-muted leading-relaxed">{garage.body}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="max-w-xl">
         <h2 class="font-display text-2xl text-brand-text tracking-tight mb-6">Servizi aggiuntivi</h2>
         <ul class="space-y-3">
@@ -139,7 +175,12 @@ const steamroomImages = [
       <p class="text-brand-muted mb-8 max-w-lg mx-auto">
         Contattaci per pianificare le tue sessioni di personal training prima dell'arrivo.
       </p>
-      <a href={getLocalePath(lang, '/contact') + '?subject=personal-training'} class="btn-solid">
+      <a
+        href="https://wa.me/393313225577?text=Ciao!%20Vorrei%20prenotare%20una%20sessione%20di%20personal%20training."
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-solid"
+      >
         Richiedi una sessione
       </a>
     </div>

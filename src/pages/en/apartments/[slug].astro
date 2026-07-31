@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import BookingWidget from '../../../components/BookingWidget.astro';
-import { useTranslations, getLocalePath } from '../../../i18n/index';
+import { useTranslations, getLocalePath, pluralize } from '../../../i18n/index';
 import apartmentsData from '../../../data/apartments.json';
 import PhotoGallery from '../../../components/PhotoGallery.astro';
 
@@ -26,7 +26,9 @@ const italianwayIds: Record<number, string> = {
 };
 const italianwayId = italianwayIds[apartment.id];
 
-const bedroomsLabel = apartment.bedrooms === 0 ? 'Studio' : `${apartment.bedrooms} ${t.apartments.bedrooms}`;
+const bedroomsLabel = apartment.bedrooms === 0
+  ? 'Studio'
+  : pluralize(lang, apartment.bedrooms, 'bedrooms');
 
 const commonAmenities = [
   'Air conditioning',
@@ -49,6 +51,13 @@ const houseRules = [
   'City tax €6 per person per night, max 14 nights (payment at check-in)',
 ];
 
+// Gallery of the unit itself: grid uses the -sm files, the lightbox the full ones.
+const galleryImages = apartment.gallery.map(photo => ({
+  src: photo.src,
+  src_sm: photo.src_sm,
+  alt: photo.alt_en,
+}));
+
 const buildingImages = [
   { src: '/wellness/building/building-01.jpg', alt: 'Santopaolo building facade with green marble frame, entrance at Via Santa Maria a Cappella Vecchia' },
   { src: '/wellness/building/building-02.jpg', alt: 'Staircase B marble corridor, Santopaolo building, Chiaia Naples' },
@@ -65,11 +74,13 @@ const buildingImages = [
   title={`${apartment.name} — ${t.meta.siteName}`}
   description={apartment.description_en}
   lang={lang}
+  ogImage={apartment.hero_image}
+  apartmentSlug={apartment.slug}
 >
   <section class="w-full bg-brand-bg2 overflow-hidden" style="aspect-ratio: 16/7; min-height: 320px;">
     <img
       src={apartment.hero_image}
-      alt={apartment.name}
+      alt={galleryImages[0].alt}
       class="w-full h-full object-cover"
       loading="eager"
     />
@@ -86,11 +97,11 @@ const buildingImages = [
           <div class="flex flex-wrap gap-4 text-brand-muted text-xs nav-link">
             <span>{apartment.size_sqm} {t.apartments.sqm}</span>
             <span aria-hidden="true">·</span>
-            <span>{apartment.max_guests} {t.apartments.guests}</span>
+            <span>{pluralize(lang, apartment.max_guests, 'guests')}</span>
             <span aria-hidden="true">·</span>
             <span>{bedroomsLabel}</span>
             <span aria-hidden="true">·</span>
-            <span>{apartment.bathrooms} {t.apartments.bathrooms}</span>
+            <span>{pluralize(lang, apartment.bathrooms, 'bathrooms')}</span>
           </div>
           <h1 class="font-display text-4xl lg:text-5xl text-brand-text tracking-tight">
             {apartment.name}
@@ -115,29 +126,11 @@ const buildingImages = [
 
         <hr class="divider" />
 
-        <div class="space-y-4">
-          <h2 class="font-display text-2xl text-brand-text tracking-tight">Gallery</h2>
-          <div class="grid grid-cols-2 gap-2">
-            <div class="col-span-2 overflow-hidden" style="aspect-ratio: 16/7;">
-              <img
-                src={apartment.gallery[0]}
-                alt={`${apartment.name}, main view`}
-                class="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </div>
-            {apartment.gallery.slice(1, 5).map((url, i) => (
-              <div class="overflow-hidden" style="aspect-ratio: 4/3;">
-                <img
-                  src={url}
-                  alt={`${apartment.name}, photo ${i + 2}`}
-                  class="w-full h-full object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
+        <PhotoGallery
+          title="Gallery"
+          images={galleryImages}
+          lang={lang}
+        />
 
         <hr class="divider" />
 
@@ -145,6 +138,7 @@ const buildingImages = [
           title="The building, Vico Santa Maria a Cappella Vecchia 8b"
           subtitle="Entrance, lobby and common areas shared across all Santopaolo units."
           images={buildingImages}
+          lang={lang}
         />
 
         <hr class="divider" />

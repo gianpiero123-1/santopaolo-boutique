@@ -5,7 +5,10 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
-  site: 'https://santopaoloapartments.com',
+  // Must match the host the site is actually served on (www), otherwise every
+  // absolute URL we generate (canonical, og:url, hreflang, sitemap) points at a
+  // redirecting origin.
+  site: 'https://www.santopaoloapartments.com',
   // Public site stays static; /admin/* and /api/* opt into SSR via `export const prerender = false`.
   output: 'static',
   adapter: vercel(),

@@ -1,0 +1,11 @@
+---
+import type { JsonLdGraph } from '../data/schema';
+
+interface Props {
+  data: JsonLdGraph;
+}
+
+const { data } = Astro.props;
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(data)} is:inline />

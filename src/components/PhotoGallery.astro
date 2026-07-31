@@ -1,6 +1,12 @@
 ---
+import type { Lang } from '../i18n/index';
+import { useTranslations } from '../i18n/index';
+
 interface ImageItem {
+  /** Full-size file, opened in the lightbox. */
   src: string;
+  /** Downscaled file for the grid. Falls back to `src` when absent. */
+  src_sm?: string;
   alt: string;
 }
 
@@ -9,15 +15,22 @@ interface Props {
   subtitle?: string;
   images: ImageItem[];
   columns?: number;
+  lang?: Lang;
 }
 
-const { title, subtitle, images, columns = 3 } = Astro.props;
+const { title, subtitle, images, columns = 3, lang = 'it' } = Astro.props;
+const t = useTranslations(lang);
 const gridCols = columns === 2
   ? 'grid-cols-1 sm:grid-cols-2'
   : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3';
 ---
 
-<section class="space-y-5" data-photo-gallery>
+<section
+  class="space-y-5"
+  data-photo-gallery
+  data-label-dialog={t.gallery.dialogLabel}
+  data-label-close={t.gallery.close}
+>
   <div class="space-y-1">
     <h2 class="font-display text-2xl text-brand-text tracking-tight">{title}</h2>
     {subtitle && <p class="text-brand-muted text-sm">{subtitle}</p>}
@@ -31,15 +44,18 @@ const gridCols = columns === 2
         data-lightbox-trigger
         data-src={img.src}
         data-alt={img.alt}
-        aria-label={`Ingrandisci: ${img.alt}`}
+        aria-label={`${t.gallery.zoom}: ${img.alt}`}
       >
-        <div class="aspect-[4/3] overflow-hidden bg-brand-bg2">
+        {/* Fixed 3:2 box + object-cover: the set mixes landscape and portrait
+            shots, and a fixed ratio keeps the grid from opening gaps. */}
+        <div class="aspect-[3/2] overflow-hidden bg-brand-bg2">
           <img
-            src={img.src}
+            src={img.src_sm ?? img.src}
             alt={img.alt}
-            width="1200"
-            height="900"
+            width="900"
+            height="600"
             loading={i === 0 ? 'eager' : 'lazy'}
+            decoding="async"
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         </div>
@@ -52,17 +68,23 @@ const gridCols = columns === 2
   function initLightbox(): void {
     if (document.getElementById('pg-lightbox')) return;
 
+    // The dialog is built in JS, so its labels travel from the server via data
+    // attributes on the gallery rather than being hardcoded in one language.
+    const gallery = document.querySelector('[data-photo-gallery]') as HTMLElement | null;
+    const dialogLabel = gallery?.dataset.labelDialog;
+    const closeLabel = gallery?.dataset.labelClose;
+
     const lb = document.createElement('div');
     lb.id = 'pg-lightbox';
     lb.setAttribute('role', 'dialog');
     lb.setAttribute('aria-modal', 'true');
-    lb.setAttribute('aria-label', 'Foto ingrandita');
+    if (dialogLabel) lb.setAttribute('aria-label', dialogLabel);
     lb.style.cssText =
       'display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.92);' +
       'align-items:center;justify-content:center;';
 
     lb.innerHTML =
-      '<button id="pg-lb-close" aria-label="Chiudi" style="position:absolute;top:1.25rem;right:1.5rem;' +
+      '<button id="pg-lb-close" style="position:absolute;top:1.25rem;right:1.5rem;' +
       'color:#F5F2EC;background:none;border:none;cursor:pointer;padding:0.5rem;line-height:1;">' +
       '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" ' +
       'stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>' +
@@ -71,6 +93,9 @@ const gridCols = columns === 2
       'style="max-width:90vw;max-height:90vh;object-fit:contain;display:block;" />';
 
     document.body.appendChild(lb);
+    if (closeLabel) {
+      document.getElementById('pg-lb-close')?.setAttribute('aria-label', closeLabel);
+    }
 
     document.getElementById('pg-lb-close')?.addEventListener('click', closeLightbox);
     lb.addEventListener('click', (e: MouseEvent) => {

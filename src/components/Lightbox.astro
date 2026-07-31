@@ -1,8 +1,11 @@
 ---
 interface ImageItem {
+  /** Full-size file, opened in the lightbox. */
   src: string;
+  /** Downscaled file for the grid. Falls back to `src` when absent. */
+  src_sm?: string;
   alt: string;
-  full?: string;
+  /** True pixel size of `src`. PhotoSwipe needs it to show the shot uncropped. */
   w?: number;
   h?: number;
 }
@@ -29,18 +32,20 @@ const gridCols = columns === 2
   <div class:list={['pswp-gallery grid gap-2', gridCols]}>
     {images.map((img, i) => (
       <a
-        href={img.full ?? img.src}
-        data-pswp-width={img.w ?? 1200}
+        href={img.src}
+        data-pswp-width={img.w ?? 1600}
         data-pswp-height={img.h ?? 900}
         class="group relative overflow-hidden block focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent"
         aria-label={img.alt}
       >
-        <div class="aspect-[4/3] overflow-hidden bg-brand-bg2">
+        {/* Fixed 3:2 box + object-cover: the set mixes landscape and portrait
+            shots, and a fixed ratio keeps the grid from opening gaps. */}
+        <div class="aspect-[3/2] overflow-hidden bg-brand-bg2">
           <img
-            src={img.src}
+            src={img.src_sm ?? img.src}
             alt={img.alt}
-            width="1200"
-            height="900"
+            width="900"
+            height="600"
             loading={i === 0 ? 'eager' : 'lazy'}
             decoding="async"
             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"

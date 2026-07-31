@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../i18n/index';
+
+const lang = 'en';
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t.terms.title} — ${t.meta.siteName}`}
+  description={`${t.terms.title} for ${t.meta.siteName}`}
+  lang={lang}
+>
+  <section class="section-padding">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-muted text-xs mb-3">
+        {t.terms.updated}: 01 June 2025
+      </p>
+      <h1 class="font-display text-4xl lg:text-5xl text-brand-text tracking-tight mb-10">
+        {t.terms.title}
+      </h1>
+
+      <div class="space-y-8 text-brand-muted leading-relaxed">
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">1. Scope</h2>
+          <p>
+            These Terms govern your use of this website and of the booking services offered by
+            Santopaolo Boutique Apartments. By using the site you accept them in full.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">2. Bookings</h2>
+          <p>
+            A booking becomes binding once Santopaolo Boutique Apartments has confirmed it in writing
+            and the requested deposit has been paid. Deposits are non refundable unless we agree
+            otherwise in writing.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">3. Check-in / Check-out</h2>
+          <p>
+            Check-in: from 15:00. Check-out: by 11:00. Other times depend on availability and may
+            carry an additional charge.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">4. Cancellations</h2>
+          <p>
+            The cancellation policy that applies to each apartment is set out when you book.
+            Unless stated otherwise: free cancellation up to 7 days before check-in; a later
+            cancellation is charged at 100% of the stay.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">5. Use of the apartments</h2>
+          <p>
+            The apartments are for temporary residential use only. Events, parties and commercial
+            activities are not permitted. The maximum number of guests is the one shown on each
+            apartment page.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">6. Liability</h2>
+          <p>
+            Santopaolo Boutique Apartments accepts no liability for damage to guests' personal
+            belongings during the stay. Guests are responsible for any damage they cause to the
+            apartments and their fittings.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">7. Governing law</h2>
+          <p>
+            Any dispute falls under the exclusive jurisdiction of the Court of Naples.
+            Italian law applies.
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

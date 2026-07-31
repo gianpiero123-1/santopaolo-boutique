@@ -5,11 +5,13 @@ import { getAlternatePath } from '../i18n/index';
 interface Props {
   currentLang: Lang;
   currentPath: string;
+  /** Explicit target, for pages whose mirrored path does not exist (the 404). */
+  href?: string;
 }
 
-const { currentLang, currentPath } = Astro.props;
+const { currentLang, currentPath, href } = Astro.props;
 const alternateLang: Lang = currentLang === 'it' ? 'en' : 'it';
-const alternatePath = getAlternatePath(currentLang, currentPath);
+const alternatePath = href ?? getAlternatePath(currentLang, currentPath);
 const label = currentLang === 'it' ? 'EN' : 'IT';
 ---
 

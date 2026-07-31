@@ -41,21 +41,12 @@ const copy = t.footer.copy.replace('{year}', String(year));
           >
             {t.footer.social.instagram}
           </a>
-          <a
-            href="https://facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="nav-link hover:text-brand-text"
-            aria-label="Facebook"
-          >
-            {t.footer.social.facebook}
-          </a>
         </div>
       </div>
 
       <!-- Nav links -->
       <div class="space-y-3">
-        <p class="nav-link text-brand-text mb-4 text-xs">Navigation</p>
+        <p class="nav-link text-brand-text mb-4 text-xs">{t.footer.navTitle}</p>
         <ul class="space-y-2.5">
           <li><a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.apartments}</a></li>
           <li><a href={getLocalePath(lang, '/concierge')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.concierge}</a></li>
@@ -66,7 +57,7 @@ const copy = t.footer.copy.replace('{year}', String(year));
 
       <!-- Contact info -->
       <div class="space-y-3">
-        <p class="nav-link text-brand-text mb-4 text-xs">Contatti</p>
+        <p class="nav-link text-brand-text mb-4 text-xs">{t.footer.contactTitle}</p>
         <ul class="space-y-2.5">
           <li>
             <a href="mailto:gianpiero@santopaoloboutiqueapartments.com" class="text-brand-muted text-sm hover:text-brand-text transition-colors">

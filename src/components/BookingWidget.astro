@@ -1,4 +1,6 @@
 ---
+import { useTranslations, pluralize } from '../i18n/index';
+
 interface Props {
   italianwayId: string;
   maxGuests: number;
@@ -6,6 +8,8 @@ interface Props {
 }
 
 const { italianwayId, maxGuests, lang = 'it' } = Astro.props;
+const tr = useTranslations(lang);
+const whatsappHref = `https://wa.me/393313225577?text=${encodeURIComponent(tr.whatsapp.defaultMessage)}`;
 
 const slug = lang === 'it' ? 'appartamento-napoli' : 'apartment-naples';
 const baseUrl = `https://napartments.italianway.house/apartments/${italianwayId}-${slug}`;
@@ -22,7 +26,6 @@ const t = {
     guests: 'Ospiti',
     cta: 'Verifica e prenota',
     whatsapp: 'Prenota via WhatsApp',
-    guestLabel: (n: number) => n === 1 ? '1 ospite' : `${n} ospiti`
   },
   en: {
     title: 'Check real-time availability and rates.',
@@ -31,7 +34,6 @@ const t = {
     guests: 'Guests',
     cta: 'Check and book',
     whatsapp: 'Book via WhatsApp',
-    guestLabel: (n: number) => n === 1 ? '1 guest' : `${n} guests`
   }
 }[lang];
 
@@ -85,7 +87,7 @@ const formId = `booking-${italianwayId}`;
         class="w-full bg-[#0E0E0E] border border-[#2A2A2A] text-[#F5F2EC] px-3 py-2.5 text-sm font-inter focus:outline-none focus:border-[#6B1F1F] transition-colors"
       >
         {Array.from({ length: maxGuests }, (_, i) => i + 1).map((n) => (
-          <option value={n}>{t.guestLabel(n)}</option>
+          <option value={n}>{pluralize(lang, n, 'guests')}</option>
         ))}
       </select>
     </div>
@@ -99,7 +101,7 @@ const formId = `booking-${italianwayId}`;
   </form>
 
   <a
-    href="https://wa.me/393313225577"
+    href={whatsappHref}
     target="_blank"
     rel="noopener noreferrer"
     class="block w-full text-center border border-[#6B1F1F] text-[#6B1F1F] hover:bg-[#6B1F1F] hover:text-[#F5F2EC] uppercase tracking-wider text-xs font-inter py-3.5 transition-colors"

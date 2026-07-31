@@ -10,24 +10,24 @@ const lang = 'en';
 const t = useTranslations(lang);
 const featured = apartmentsData.slice(0, 3);
 const heroImages = [
-  apartmentsData[0].gallery[0],
-  apartmentsData[1].gallery[0],
-  apartmentsData[2].gallery[0],
-  apartmentsData[3].gallery[0],
-  apartmentsData[4].gallery[0],
-  apartmentsData[0].gallery[1],
-  apartmentsData[2].gallery[1],
+  apartmentsData[0].gallery[0].src_sm,
+  apartmentsData[1].gallery[0].src_sm,
+  apartmentsData[2].gallery[0].src_sm,
+  apartmentsData[3].gallery[0].src_sm,
+  apartmentsData[4].gallery[0].src_sm,
+  apartmentsData[0].gallery[1].src_sm,
+  apartmentsData[2].gallery[1].src_sm,
   '/wellness/gym/gym-01.jpg',
   '/wellness/steam/steam-01.jpg',
 ];
 
-// Mobile hero mosaic: gallery[0] of each apartment + wellness gym shot
+// Mobile hero mosaic: photo 01 of each apartment + wellness gym shot
 const mobileHeroCards = [
-  apartmentsData[0].gallery[0],
-  apartmentsData[1].gallery[0],
-  apartmentsData[2].gallery[0],
-  apartmentsData[3].gallery[0],
-  apartmentsData[4].gallery[0],
+  apartmentsData[0].gallery[0].src_sm,
+  apartmentsData[1].gallery[0].src_sm,
+  apartmentsData[2].gallery[0].src_sm,
+  apartmentsData[3].gallery[0].src_sm,
+  apartmentsData[4].gallery[0].src_sm,
   '/wellness/gym/gym-01.jpg',
 ];
 ---

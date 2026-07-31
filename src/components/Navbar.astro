@@ -1,13 +1,14 @@
 ---
 import type { Lang } from '../i18n/index';
-import { useTranslations, getLocalePath, getAlternatePath } from '../i18n/index';
+import { useTranslations, getLocalePath } from '../i18n/index';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
 interface Props {
   lang: Lang;
+  langSwitchHref?: string;
 }
 
-const { lang } = Astro.props;
+const { lang, langSwitchHref } = Astro.props;
 const t = useTranslations(lang);
 
 const currentPath = Astro.url.pathname;
@@ -63,6 +64,7 @@ function isActive(href: string): boolean {
         <LanguageSwitcher
           currentLang={lang}
           currentPath={currentPath}
+          href={langSwitchHref}
         />
         <a
           href={getLocalePath(lang, '/book')}

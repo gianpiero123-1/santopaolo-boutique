@@ -3,21 +3,25 @@ import apartments from '../data/apartments.json';
 
 interface Props {
   lang?: 'it' | 'en';
-  tagline?: string;
   btnPrimary?: string;
   btnPrimaryHref?: string;
   btnGhost?: string;
   btnGhostHref?: string;
+  // Accepted from the home pages but not rendered: this hero shows a fixed
+  // photo grid and the brand lockup rather than a headline block. Declared so
+  // callers type-check; see the note in the summary before wiring them up.
+  images?: string[];
+  eyebrow?: string;
+  titleHtml?: string;
+  tagline?: string;
 }
 
 const copy = {
   it: {
-    tagline: '5 appartamenti boutique nel cuore di Chiaia, Napoli',
     btnPrimary: 'Scopri gli appartamenti',
     btnGhost: 'Servizi concierge',
   },
   en: {
-    tagline: '5 boutique apartments in the heart of Chiaia, Naples',
     btnPrimary: 'Discover the apartments',
     btnGhost: 'Concierge services',
   },
@@ -25,7 +29,6 @@ const copy = {
 
 const {
   lang = 'it',
-  tagline,
   btnPrimary,
   btnPrimaryHref = '/apartments',
   btnGhost,
@@ -33,21 +36,21 @@ const {
 } = Astro.props;
 
 const t = copy[lang] ?? copy.it;
-const taglineText = tagline ?? t.tagline;
 const btnPrimaryText = btnPrimary ?? t.btnPrimary;
 const btnGhostText = btnGhost ?? t.btnGhost;
 
 // 8 photos for the background grid: 2 from unit 1, 2 from unit 2,
 // 1 from unit 3, 1 from unit 4, 2 from unit 5.
+// Decorative tiles behind the logo, so the -sm files are enough.
 const heroPhotos = [
-  apartments[0].gallery[0],
-  apartments[0].gallery[1],
-  apartments[1].gallery[0],
-  apartments[1].gallery[1],
-  apartments[2].gallery[0],
-  apartments[3].gallery[0],
-  apartments[4].gallery[0],
-  apartments[4].gallery[1],
+  apartments[0].gallery[0].src_sm,
+  apartments[0].gallery[1].src_sm,
+  apartments[1].gallery[0].src_sm,
+  apartments[1].gallery[1].src_sm,
+  apartments[2].gallery[0].src_sm,
+  apartments[3].gallery[0].src_sm,
+  apartments[4].gallery[0].src_sm,
+  apartments[4].gallery[1].src_sm,
 ];
 ---
 

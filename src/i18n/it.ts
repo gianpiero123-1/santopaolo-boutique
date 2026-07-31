@@ -38,8 +38,11 @@ const it = {
     from: 'Da',
     night: '/ notte',
     guests: 'ospiti',
+    guestsOne: 'ospite',
     bedrooms: 'camere',
+    bedroomsOne: 'camera',
     bathrooms: 'bagni',
+    bathroomsOne: 'bagno',
     sqm: 'mq',
     details: 'Dettagli →',
     book: 'Prenota',
@@ -86,6 +89,19 @@ const it = {
     selectApt: 'Scegli appartamento',
     smoobuNote: 'Verifica disponibilità e prezzi in tempo reale.',
   },
+  notFound: {
+    title: 'Pagina non trovata',
+    metaTitle: '404, Pagina non trovata',
+    description: 'La pagina che cercate non esiste.',
+    body: 'La pagina che cercate non esiste o è stata spostata. Tornate alla home o esplorate i nostri appartamenti.',
+    home: 'Torna alla home',
+    apartments: 'Gli appartamenti',
+  },
+  gallery: {
+    zoom: 'Ingrandisci',
+    dialogLabel: 'Foto ingrandita',
+    close: 'Chiudi',
+  },
   privacy: {
     title: 'Privacy Policy',
     updated: 'Ultimo aggiornamento',
@@ -96,6 +112,8 @@ const it = {
   },
   footer: {
     tagline: '5 appartamenti boutique nel cuore di Chiaia, Napoli.',
+    navTitle: 'Navigazione',
+    contactTitle: 'Contatti',
     links: {
       apartments: 'Appartamenti',
       concierge: 'Concierge',
@@ -107,8 +125,12 @@ const it = {
     copy: '© {year} Santopaolo Boutique Apartments. Tutti i diritti riservati.',
     social: {
       instagram: 'Instagram',
-      facebook: 'Facebook',
     },
+  },
+  whatsapp: {
+    label: 'WhatsApp',
+    ariaLabel: 'Scrivici su WhatsApp',
+    defaultMessage: 'Ciao! Vorrei informazioni sugli appartamenti Santopaolo Boutique.',
   },
   lang: {
     switch: 'EN',

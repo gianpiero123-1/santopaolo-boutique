@@ -40,8 +40,11 @@ const en: Translations = {
     from: 'From',
     night: '/ night',
     guests: 'guests',
+    guestsOne: 'guest',
     bedrooms: 'bedrooms',
+    bedroomsOne: 'bedroom',
     bathrooms: 'bathrooms',
+    bathroomsOne: 'bathroom',
     sqm: 'sqm',
     details: 'Details →',
     book: 'Book',
@@ -88,6 +91,19 @@ const en: Translations = {
     selectApt: 'Choose apartment',
     smoobuNote: 'Check availability and prices in real time.',
   },
+  notFound: {
+    title: 'Page not found',
+    metaTitle: '404, Page not found',
+    description: 'The page you are looking for does not exist.',
+    body: 'The page you are looking for does not exist, or it has been moved. Head back to the home page or explore our apartments.',
+    home: 'Back to home',
+    apartments: 'The apartments',
+  },
+  gallery: {
+    zoom: 'Enlarge',
+    dialogLabel: 'Enlarged photo',
+    close: 'Close',
+  },
   privacy: {
     title: 'Privacy Policy',
     updated: 'Last updated',
@@ -98,6 +114,8 @@ const en: Translations = {
   },
   footer: {
     tagline: '5 boutique apartments in the heart of Chiaia, Naples.',
+    navTitle: 'Navigation',
+    contactTitle: 'Contact',
     links: {
       apartments: 'Apartments',
       concierge: 'Concierge',
@@ -109,8 +127,12 @@ const en: Translations = {
     copy: '© {year} Santopaolo Boutique Apartments. All rights reserved.',
     social: {
       instagram: 'Instagram',
-      facebook: 'Facebook',
     },
+  },
+  whatsapp: {
+    label: 'WhatsApp',
+    ariaLabel: 'Message us on WhatsApp',
+    defaultMessage: 'Hello! I would like information about Santopaolo Boutique Apartments.',
   },
   lang: {
     switch: 'IT',

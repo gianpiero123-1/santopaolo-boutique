@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../i18n/index';
+
+const lang = 'en';
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t.privacy.title} — ${t.meta.siteName}`}
+  description={`${t.privacy.title} for ${t.meta.siteName}`}
+  lang={lang}
+>
+  <section class="section-padding">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-muted text-xs mb-3">
+        {t.privacy.updated}: 01 June 2025
+      </p>
+      <h1 class="font-display text-4xl lg:text-5xl text-brand-text tracking-tight mb-10">
+        {t.privacy.title}
+      </h1>
+
+      <div class="space-y-8 text-brand-muted leading-relaxed">
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">1. Data controller</h2>
+          <p>
+            Santopaolo Boutique Apartments, Naples, Italy<br />
+            Email: gianpiero@santopaoloboutiqueapartments.com
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">2. Information we collect</h2>
+          <p>
+            We only collect what you give us directly: your name, email address, phone number and
+            whatever you write in the contact form. We do not collect sensitive personal data.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">3. Why we process it</h2>
+          <p>
+            We use your details solely to answer your enquiries, manage your booking and arrange the
+            concierge services you have asked for.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">4. How long we keep it</h2>
+          <p>
+            Personal data is kept only as long as those purposes genuinely require, and in any case
+            no longer than 24 months after your last contact with us.
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">5. Your rights</h2>
+          <p>
+            Under the GDPR you have the right to access, correct, delete and port your data.
+            To exercise any of these rights, write to gianpiero@santopaoloboutiqueapartments.com
+          </p>
+        </section>
+
+        <section class="space-y-3">
+          <h2 class="font-display text-xl text-brand-text">6. Cookies</h2>
+          <p>
+            We use only the technical cookies the site needs in order to work. We do not use
+            profiling cookies or third party cookies for advertising.
+          </p>
+        </section>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

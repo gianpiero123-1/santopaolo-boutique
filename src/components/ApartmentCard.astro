@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/index';
-import { useTranslations, getLocalePath } from '../i18n/index';
+import { useTranslations, getLocalePath, pluralize } from '../i18n/index';
 
 interface Apartment {
   id: number;
@@ -11,6 +11,7 @@ interface Apartment {
   bathrooms: number;
   size_sqm: number;
   hero_image: string;
+  gallery: { src: string; src_sm: string; alt_it: string; alt_en: string }[];
   description_it: string;
   description_en: string;
 }
@@ -24,8 +25,12 @@ interface Props {
 const { apartment, lang, featured = false } = Astro.props;
 const t = useTranslations(lang);
 const href = getLocalePath(lang, `/apartments/${apartment.slug}`);
-const bedroomsLabel = apartment.bedrooms === 0 ? 'Studio' : `${apartment.bedrooms} ${t.apartments.bedrooms}`;
+const bedroomsLabel = apartment.bedrooms === 0
+  ? 'Studio'
+  : pluralize(lang, apartment.bedrooms, 'bedrooms');
 const description = lang === 'it' ? apartment.description_it : apartment.description_en;
+// The card shows photo 01, the same shot used for the hero and og:image.
+const coverAlt = lang === 'it' ? apartment.gallery[0].alt_it : apartment.gallery[0].alt_en;
 ---
 
 <article class="group border border-brand-border bg-brand-bg2 overflow-hidden">
@@ -33,7 +38,7 @@ const description = lang === 'it' ? apartment.description_it : apartment.descrip
     <div class:list={['relative overflow-hidden', { 'photo-placeholder': !featured, 'aspect-video w-full': featured }]}>
       <img
         src={apartment.hero_image}
-        alt={apartment.name}
+        alt={coverAlt}
         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         loading="lazy"
       />
@@ -45,7 +50,7 @@ const description = lang === 'it' ? apartment.description_it : apartment.descrip
       <div class="flex items-center gap-4 text-brand-muted text-xs nav-link">
         <span>{apartment.size_sqm} {t.apartments.sqm}</span>
         <span aria-hidden="true">·</span>
-        <span>{apartment.max_guests} {t.apartments.guests}</span>
+        <span>{pluralize(lang, apartment.max_guests, 'guests')}</span>
         <span aria-hidden="true">·</span>
         <span>{bedroomsLabel}</span>
       </div>

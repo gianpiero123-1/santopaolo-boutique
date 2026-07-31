@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { useTranslations, getLocalePath } from '../../i18n/index';
+import { useTranslations } from '../../i18n/index';
 import Lightbox from '../../components/Lightbox.astro';
 
 const lang = 'en';
@@ -40,16 +40,30 @@ const gymImages = [
   { src: '/wellness/gym/gym-04.jpg', alt: 'Weight machines and TRX station at Santopaolo Fitness, Chiaia Naples' },
   { src: '/wellness/gym/gym-05.jpg', alt: 'Treadmill and dumbbell rack at Santopaolo gym with steam room access door visible' },
   { src: '/wellness/gym/gym-06.jpg', alt: 'Santopaolo fitness room with machines, TV screen and blue steam room door' },
-  { src: '/wellness/gym/gym-07.jpg', alt: 'Hexagonal dumbbell rack at Santopaolo gym, Chiaia: professional weights 5-40 kg' },
+  { src: '/wellness/gym/gym-07.jpg', alt: 'Hexagonal dumbbell rack at Santopaolo gym, Chiaia: professional weights 5-40 kg', w: 768, h: 1152 },
   { src: '/wellness/gym/gym-08.jpg', alt: 'Santopaolo gym with full-height mirror wall, dumbbell rack and room divider' },
+  { src: '/wellness/gym/gym-09.webp', src_sm: '/wellness/gym/gym-09-sm.webp', alt: 'Santopaolo gym with Precor machines, barbell rack and mirrored walls', w: 1920, h: 1080 },
+  { src: '/wellness/gym/gym-10.webp', src_sm: '/wellness/gym/gym-10-sm.webp', alt: 'Santopaolo gym with treadmill, dumbbell rack and steam room access', w: 1920, h: 1080 },
+  { src: '/wellness/gym/gym-11.webp', src_sm: '/wellness/gym/gym-11-sm.webp', alt: 'Entrance to the Santopaolo gym on the wellness floor, weights area in the background', w: 1920, h: 1080 },
 ];
 
 const steamroomImages = [
   { src: '/wellness/steam/steam-01.jpg', alt: 'Santopaolo SPA chromotherapy shower with pink lighting and grey stone tiles' },
-  { src: '/wellness/steam/steam-02.jpg', alt: 'Santopaolo steam room with built-in bench, vertical black tiles and pink chromotherapy light' },
-  { src: '/wellness/steam/steam-03.jpg', alt: 'Santopaolo SPA shower cabin in grey stone with sliding glass door' },
+  { src: '/wellness/steam/steam-02.jpg', alt: 'Santopaolo steam room with built-in bench, vertical black tiles and pink chromotherapy light', w: 768, h: 1152 },
+  { src: '/wellness/steam/steam-03.jpg', alt: 'Santopaolo SPA shower cabin in grey stone with sliding glass door', w: 768, h: 1152 },
   { src: '/wellness/steam/steam-04.jpg', alt: 'Santopaolo shower interior with natural stone cladding and rain shower head' },
+  { src: '/wellness/steam/steam-05.webp', src_sm: '/wellness/steam/steam-05-sm.webp', alt: 'Santopaolo steam room with built-in bench and chromotherapy lighting', w: 768, h: 1152 },
 ];
+
+const garage = {
+  title: 'Covered garage',
+  body: 'Indoor covered garage of over 1,000 sqm, 24 hour access, suitable for SUVs and vans, with electric vehicle charging point. A rare amenity in the Chiaia district.',
+  image: {
+    src: '/garage/garage-01.webp',
+    src_sm: '/garage/garage-01-sm.webp',
+    alt: 'Entrance to the Santopaolo covered garage on Vico Santa Maria a Cappella Vecchia, Chiaia Naples',
+  },
+};
 ---
 
 <BaseLayout
@@ -117,6 +131,28 @@ const steamroomImages = [
 
   <section class="section-padding border-t border-brand-border">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div class="aspect-[3/2] overflow-hidden bg-brand-bg2">
+          <img
+            src={garage.image.src_sm}
+            alt={garage.image.alt}
+            width="900"
+            height="600"
+            loading="lazy"
+            decoding="async"
+            class="w-full h-full object-cover"
+          />
+        </div>
+        <div>
+          <h2 class="font-display text-2xl text-brand-text tracking-tight mb-4">{garage.title}</h2>
+          <p class="text-brand-muted leading-relaxed">{garage.body}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <div class="max-w-xl">
         <h2 class="font-display text-2xl text-brand-text tracking-tight mb-6">Additional services</h2>
         <ul class="space-y-3">
@@ -139,7 +175,12 @@ const steamroomImages = [
       <p class="text-brand-muted mb-8 max-w-lg mx-auto">
         Contact us to plan your personal training sessions before you arrive.
       </p>
-      <a href={getLocalePath(lang, '/contact') + '?subject=personal-training'} class="btn-solid">
+      <a
+        href="https://wa.me/393313225577?text=Hello!%20I%20would%20like%20to%20book%20a%20personal%20training%20session."
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-solid"
+      >
         Request a session
       </a>
     </div>
