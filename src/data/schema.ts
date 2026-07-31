@@ -310,7 +310,7 @@ export function buildWebSite(): JsonLdNode {
     url: `${SITE}/`,
     name: NAME,
     publisher: ref(ORGANIZATION_ID),
-    inLanguage: ['it-IT', 'en-GB'],
+    inLanguage: ['it', 'en'],
   };
 }
 
@@ -486,7 +486,7 @@ function buildWebPage(opts: PageGraphOptions, breadcrumbId: string | null): Json
     isPartOf: ref(WEBSITE_ID),
     about: ref(LODGING_ID),
     publisher: ref(ORGANIZATION_ID),
-    inLanguage: opts.lang === 'it' ? 'it-IT' : 'en-GB',
+    inLanguage: opts.lang,
   };
   if (breadcrumbId) node.breadcrumb = ref(breadcrumbId);
   if (opts.apartmentSlug) node.mainEntity = ref(accommodationId(opts.apartmentSlug));

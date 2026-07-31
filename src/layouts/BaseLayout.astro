@@ -39,6 +39,13 @@ const siteURL = (Astro.site?.href ?? 'https://www.santopaoloapartments.com/').re
 // when a page is rendered on demand and the request arrives on the bare domain.
 const canonicalURL = canonicalOverride ?? `${siteURL}${Astro.url.pathname}`;
 const alternateLang = lang === 'it' ? 'en' : 'it';
+// Language-only BCP 47 tags, deliberately identical to the sitemap's i18n
+// locales and to `inLanguage` in the JSON-LD graph. No region subtag: there is
+// a single version per language, so "en" reaches every English speaker rather
+// than only the UK. A region subtag would only be right with several regional
+// variants of the same language. Note og:locale below is a different spec and
+// keeps its it_IT / en_GB form on purpose.
+const BCP47: Record<Lang, string> = { it: 'it', en: 'en' };
 const alternatePath = lang === 'en'
   ? Astro.url.pathname.replace(/^\/en/, '') || '/'
   : `/en${Astro.url.pathname}`;
@@ -58,7 +65,7 @@ const jsonLd = noindex
 ---
 
 <!doctype html>
-<html lang={lang} class="scroll-smooth">
+<html lang={BCP47[lang]} class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -74,8 +81,8 @@ const jsonLd = noindex
         <link rel="canonical" href={canonicalURL} />
 
         <!-- Hreflang -->
-        <link rel="alternate" hreflang="it" href={lang === 'it' ? canonicalURL : alternateURL} />
-        <link rel="alternate" hreflang="en" href={lang === 'en' ? canonicalURL : alternateURL} />
+        <link rel="alternate" hreflang={BCP47.it} href={lang === 'it' ? canonicalURL : alternateURL} />
+        <link rel="alternate" hreflang={BCP47.en} href={lang === 'en' ? canonicalURL : alternateURL} />
         <link rel="alternate" hreflang="x-default" href={lang === 'it' ? canonicalURL : alternateURL} />
       </Fragment>
     )}
