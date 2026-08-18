@@ -1,0 +1,38 @@
+---
+/**
+ * Photo grid for the garage. Each slot renders the image when `src` is set
+ * and a dark labelled placeholder otherwise, so the photos can be dropped in
+ * one by one without touching the layout: add `src` (and `alt`) to the item
+ * in the page that renders this component.
+ */
+export interface GarageGridItem {
+  label: string;
+  src?: string;
+  alt?: string;
+}
+
+interface Props {
+  items: GarageGridItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+  {items.map(item => (
+    <li class="relative bg-brand-bg2 border border-brand-border overflow-hidden" style="aspect-ratio: 4 / 3;">
+      {item.src ? (
+        <img
+          src={item.src}
+          alt={item.alt ?? item.label}
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        />
+      ) : (
+        <span class="absolute bottom-3 left-3 right-3 text-[10px] uppercase tracking-wider text-brand-muted">
+          {item.label}
+        </span>
+      )}
+    </li>
+  ))}
+</ul>

@@ -46,6 +46,11 @@ export function getRequestPath(lang: Lang): string {
   return lang === 'en' ? '/en/request' : '/richiesta';
 }
 
+/** The guide hub is the other route pair with asymmetric slugs (/guida vs /en/guide). */
+export function getGuidePath(lang: Lang): string {
+  return lang === 'en' ? '/en/guide' : '/guida';
+}
+
 export function getAlternatePath(currentLang: Lang, currentPath: string): string {
   if (currentLang === 'en') {
     return currentPath.replace(/^\/en/, '') || '/';

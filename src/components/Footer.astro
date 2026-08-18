@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/index';
-import { useTranslations, getLocalePath, getRequestPath } from '../i18n/index';
+import { useTranslations, getLocalePath, getRequestPath, getGuidePath } from '../i18n/index';
 
 interface Props {
   lang: Lang;
@@ -50,6 +50,7 @@ const copy = t.footer.copy.replace('{year}', String(year));
         <ul class="space-y-2.5">
           <li><a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.apartments}</a></li>
           <li><a href={getLocalePath(lang, '/concierge')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.concierge}</a></li>
+          <li><a href={getGuidePath(lang)} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.guide}</a></li>
           <li><a href={getLocalePath(lang, '/contact')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.contact}</a></li>
           <li><a href={getRequestPath(lang)} class="text-brand-accent text-sm hover:opacity-80 transition-opacity">{t.footer.links.book}</a></li>
         </ul>

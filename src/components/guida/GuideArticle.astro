@@ -1,0 +1,174 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Lang } from '../../i18n/index';
+import { useTranslations, getLocalePath, getGuidePath } from '../../i18n/index';
+import { CLUSTER_LABELS, GUIDE_COPY, guideArticlePath, formatGuideDate } from '../../lib/guida';
+
+/** The guide article template, shared by /guida/[slug] and /en/guide/[slug]. */
+interface Props {
+  lang: Lang;
+  entry: CollectionEntry<'guida'>;
+}
+
+const { lang, entry } = Astro.props;
+const { data } = entry;
+const t = useTranslations(lang);
+const copy = GUIDE_COPY[lang];
+const otherLang: Lang = lang === 'it' ? 'en' : 'it';
+
+const { Content } = await render(entry);
+
+// Related cards resolve against the collection at build time: a slug with no
+// article yet is dropped instead of becoming a dead card.
+const siblings = await getCollection('guida', e => e.data.lang === lang);
+const related = data.related
+  .map(slug => siblings.find(e => e.data.slug === slug))
+  .filter((e): e is CollectionEntry<'guida'> => Boolean(e));
+
+// Hreflang only when the counterpart exists; the language toggle falls back
+// to the other language's hub for untranslated articles.
+const hasPair = Boolean(data.translationSlug);
+const alternatePath = hasPair
+  ? `${getGuidePath(otherLang)}/${data.translationSlug}/`
+  : undefined;
+const langSwitchHref = hasPair
+  ? `${getGuidePath(otherLang)}/${data.translationSlug}`
+  : getGuidePath(otherLang);
+
+const updatedDate = data.updatedDate ?? data.publishDate;
+const isoDate = (d: Date) => d.toISOString().split('T')[0];
+---
+
+<BaseLayout
+  title={`${data.title} — ${t.meta.siteName}`}
+  description={data.description}
+  lang={lang}
+  hasAlternate={hasPair}
+  alternatePath={alternatePath}
+  langSwitchHref={langSwitchHref}
+  breadcrumbLeafLabel={data.title}
+  guideArticle={{
+    headline: data.title,
+    answer: data.answer,
+    datePublished: isoDate(data.publishDate),
+    dateModified: data.updatedDate ? isoDate(data.updatedDate) : undefined,
+    mentions: data.mentions,
+  }}
+>
+  <article class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
+    <div class="max-w-[68ch] mx-auto space-y-8">
+      <nav aria-label={copy.breadcrumbLabel} class="text-brand-muted text-sm">
+        <a href={getLocalePath(lang, '/')} class="hover:text-brand-text transition-colors">Home</a>
+        <span aria-hidden="true" class="mx-1.5">·</span>
+        <a href={getGuidePath(lang)} class="hover:text-brand-text transition-colors">
+          {copy.hubTitle}
+        </a>
+        <span aria-hidden="true" class="mx-1.5">·</span>
+        <span class="text-brand-text">{data.title}</span>
+      </nav>
+
+      <h1 class="font-display text-3xl lg:text-5xl text-brand-text tracking-tight">
+        {data.title}
+      </h1>
+
+      <p class="bg-brand-bg2 border-l-2 border-brand-accent p-6 lg:p-8 text-lg leading-relaxed text-brand-text">
+        {data.answer}
+      </p>
+
+      <div class="guide-prose">
+        <Content />
+      </div>
+
+      {data.propertyLink && (
+        <p class="text-brand-muted text-sm">
+          <a
+            href={data.propertyLink.href}
+            class="text-brand-text underline underline-offset-4 decoration-brand-accent hover:opacity-80 transition-opacity"
+          >
+            {data.propertyLink.label}
+          </a>
+        </p>
+      )}
+
+      {related.length > 0 && (
+        <div class="pt-8 border-t border-brand-border space-y-5">
+          <h2 class="font-display text-2xl text-brand-text tracking-tight">{copy.related}</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {related.map(r => (
+              <a
+                href={guideArticlePath(lang, r.data.slug)}
+                class="block bg-brand-bg2 border border-brand-border p-5 space-y-2 hover:border-brand-accent transition-colors"
+              >
+                <p class="nav-link">{CLUSTER_LABELS[r.data.cluster][lang]}</p>
+                <p class="text-brand-text text-sm leading-snug">{r.data.title}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <p class="text-brand-muted text-xs">
+        {copy.updated} <time datetime={isoDate(updatedDate)}>{formatGuideDate(lang, updatedDate)}</time>
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style is:global>
+  /* MDX body: slotted content, so scoped styles would not reach it. */
+  .guide-prose {
+    color: #f5f2ec;
+    line-height: 1.7;
+  }
+
+  .guide-prose > * + * {
+    margin-top: 1.25rem;
+  }
+
+  .guide-prose h2 {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .guide-prose h3 {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .guide-prose a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: #6b1f1f;
+    transition: opacity 0.2s ease;
+  }
+
+  .guide-prose a:hover {
+    opacity: 0.8;
+  }
+
+  .guide-prose ul,
+  .guide-prose ol {
+    padding-left: 1.25rem;
+  }
+
+  .guide-prose li + li {
+    margin-top: 0.5rem;
+  }
+
+  .guide-prose ul li::marker {
+    color: #6b1f1f;
+  }
+
+  .guide-prose strong {
+    color: #f5f2ec;
+    font-weight: 500;
+  }
+
+  .guide-prose blockquote {
+    border-left: 2px solid #2a2a2a;
+    padding-left: 1.25rem;
+    color: #8a8580;
+  }
+</style>

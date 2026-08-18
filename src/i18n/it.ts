@@ -4,6 +4,7 @@ const it = {
     wellness: 'Wellness',
     concierge: 'Concierge',
     contact: 'Contatti',
+    operations: 'Operations',
     book: 'Prenota',
   },
   home: {
@@ -152,6 +153,7 @@ const it = {
     links: {
       apartments: 'Appartamenti',
       concierge: 'Concierge',
+      guide: 'Guida',
       contact: 'Contatti',
       book: 'Prenota',
       privacy: 'Privacy',

@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import JsonLd from '../components/JsonLd.astro';
 import type { Lang } from '../i18n/index';
-import { buildPageGraph } from '../data/schema';
+import { buildPageGraph, type GuideArticleGraphOptions } from '../data/schema';
 import Analytics from '@vercel/analytics/astro';
 
 interface Props {
@@ -14,7 +14,10 @@ interface Props {
   lang?: Lang;
   ogImage?: string;
   canonicalURL?: string;
-  /** Skips canonical + hreflang and asks crawlers not to index. For the 404. */
+  /**
+   * Skips canonical + hreflang and asks crawlers not to index (noindex,follow).
+   * For the 404 and the Operations stub pages.
+   */
   noindex?: boolean;
   /** Overrides where the language toggle points, for pages with no counterpart. */
   langSwitchHref?: string;
@@ -23,8 +26,19 @@ interface Props {
    * slugs differ across languages (/richiesta vs /en/request).
    */
   alternatePath?: string;
+  /**
+   * False on pages with no counterpart in the other language (an untranslated
+   * guide article): skips the hreflang links so they never point at a 404.
+   */
+  hasAlternate?: boolean;
   /** Slug of the unit on an apartment detail page, so the graph can name it. */
   apartmentSlug?: string;
+  /** CollectionPage on listing hubs (the guide index); WebPage everywhere else. */
+  pageType?: 'WebPage' | 'CollectionPage';
+  /** Names the final breadcrumb segment when it is a dynamic slug. */
+  breadcrumbLeafLabel?: string;
+  /** Adds Article + FAQPage nodes to the graph on guide article pages. */
+  guideArticle?: GuideArticleGraphOptions;
 }
 
 const {
@@ -37,7 +51,11 @@ const {
   noindex = false,
   langSwitchHref,
   alternatePath: alternatePathOverride,
+  hasAlternate = true,
   apartmentSlug,
+  pageType,
+  breadcrumbLeafLabel,
+  guideArticle,
 } = Astro.props;
 
 const siteName = 'Santopaolo Boutique Apartments';
@@ -68,6 +86,9 @@ const jsonLd = noindex
       title,
       description,
       apartmentSlug,
+      pageType,
+      breadcrumbLeafLabel,
+      guideArticle,
     });
 ---
 
@@ -87,10 +108,14 @@ const jsonLd = noindex
       <Fragment>
         <link rel="canonical" href={canonicalURL} />
 
-        <!-- Hreflang -->
-        <link rel="alternate" hreflang={BCP47.it} href={lang === 'it' ? canonicalURL : alternateURL} />
-        <link rel="alternate" hreflang={BCP47.en} href={lang === 'en' ? canonicalURL : alternateURL} />
-        <link rel="alternate" hreflang="x-default" href={lang === 'it' ? canonicalURL : alternateURL} />
+        {hasAlternate && (
+          <Fragment>
+            <!-- Hreflang -->
+            <link rel="alternate" hreflang={BCP47.it} href={lang === 'it' ? canonicalURL : alternateURL} />
+            <link rel="alternate" hreflang={BCP47.en} href={lang === 'en' ? canonicalURL : alternateURL} />
+            <link rel="alternate" hreflang="x-default" href={lang === 'it' ? canonicalURL : alternateURL} />
+          </Fragment>
+        )}
       </Fragment>
     )}
 

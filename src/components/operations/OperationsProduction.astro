@@ -1,0 +1,145 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BriefForm from './BriefForm.astro';
+import GarageGrid from './GarageGrid.astro';
+import type { Lang } from '../../i18n/index';
+import { getLocalePath } from '../../i18n/index';
+import { OPS_COPY } from '../../lib/operations';
+
+/** The Production & Corporate page, shared by /operations/production and the EN route. */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = OPS_COPY[lang];
+const p = c.production;
+
+// Garage photos, in the order of p.photoLabels: entrance, lanes, van bay,
+// loading area, storage area, pedestrian access, video surveillance,
+// configurable open space. Set a path (and alt if the label is not enough)
+// to replace a placeholder with the real photo.
+const GARAGE_PHOTOS: { src?: string; alt?: string }[] = [
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+  {},
+];
+
+const garageItems = p.photoLabels.map((label, index) => ({
+  label,
+  ...GARAGE_PHOTOS[index],
+}));
+
+const specBorder = 'border-[#8A8580]/20';
+---
+
+<BaseLayout title={p.seo.title} description={p.seo.description} lang={lang}>
+  <!-- 1. Hero -->
+  <section class="section-padding border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="nav-link mb-3">{p.hero.eyebrow}</p>
+      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-5 max-w-4xl">
+        {p.hero.h1}
+      </h1>
+      <p class="text-brand-muted text-lg max-w-2xl mb-8">{p.hero.sub}</p>
+      <a href="#brief" class="btn-solid inline-block hover:bg-brand-accent-hover hover:opacity-100">
+        {p.hero.cta}
+      </a>
+    </div>
+  </section>
+
+  <!-- 2. Spec table -->
+  <section class="section-padding">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <div class="max-w-3xl">
+        <table class={`w-full border ${specBorder} text-sm`}>
+          <tbody>
+            {p.specs.map(spec => (
+              <tr class={`border-b ${specBorder} last:border-b-0`}>
+                <th
+                  scope="row"
+                  class={`text-left align-top font-normal text-brand-muted text-[10px] uppercase tracking-wider px-4 py-3.5 border-r ${specBorder} w-2/5 sm:w-1/3`}
+                >
+                  {spec.label}
+                </th>
+                <td class="text-brand-text px-4 py-3.5">{spec.value}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="text-brand-muted text-xs mt-4 leading-relaxed">{p.specNote}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Capabilities -->
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+        {p.capabilitiesTitle}
+      </h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {p.capabilities.map(capability => (
+          <li class="bg-brand-bg2 border border-brand-border p-6 space-y-2">
+            <h3 class="font-display text-xl not-italic text-brand-text tracking-tight">
+              {capability.title}
+            </h3>
+            <p class="text-brand-muted text-sm leading-relaxed">{capability.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 4. Why the ZTL matters -->
+  <section class="bg-brand-bg2 border-y border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16 space-y-4">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{p.ztlTitle}</h2>
+      <p class="text-brand-text text-lg leading-relaxed max-w-3xl">{p.ztlText}</p>
+    </div>
+  </section>
+
+  <!-- 5. The apartments -->
+  <section class="section-padding">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-4">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+        {p.apartmentsTitle}
+      </h2>
+      <p class="text-brand-muted text-base leading-relaxed max-w-3xl">{p.apartmentsText}</p>
+      <p>
+        <a
+          href={getLocalePath(lang, '/apartments')}
+          class="text-brand-text text-sm underline underline-offset-4 decoration-brand-accent hover:opacity-80 transition-opacity"
+        >
+          {p.apartmentsLink}
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- 6. Garage photos -->
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+        {p.photosTitle}
+      </h2>
+      <GarageGrid items={garageItems} />
+    </div>
+  </section>
+
+  <!-- 7. Who uses this base -->
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-4">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{p.whoTitle}</h2>
+      <p class="text-brand-muted text-base leading-relaxed max-w-3xl">{p.whoText}</p>
+    </div>
+  </section>
+
+  <!-- 8. Brief form, extended with the production-specific fields -->
+  <BriefForm lang={lang} extended />
+</BaseLayout>

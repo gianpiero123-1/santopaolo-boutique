@@ -4,6 +4,7 @@ import BookingWidget from '../../../components/BookingWidget.astro';
 import { useTranslations, getLocalePath, pluralize } from '../../../i18n/index';
 import apartmentsData from '../../../data/apartments.json';
 import PhotoGallery from '../../../components/PhotoGallery.astro';
+import FromGuide from '../../../components/guida/FromGuide.astro';
 
 export async function getStaticPaths() {
   return apartmentsData.map(apt => ({
@@ -150,6 +151,15 @@ const buildingImages = [
             <p class="text-brand-muted text-xs nav-link">CIR: {apartment.cir}</p>
           </div>
         </div>
+
+        <FromGuide
+          lang={lang}
+          slugs={[
+            'where-to-park-in-chiaia',
+            'getting-to-chiaia-from-the-station',
+            'why-book-direct',
+          ]}
+        />
       </div>
 
       <aside class="lg:col-span-1">

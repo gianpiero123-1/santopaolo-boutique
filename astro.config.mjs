@@ -2,11 +2,18 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel';
 
 // Routes that carry `noindex` and must therefore stay out of the sitemap:
-// /404 and the whole authenticated admin area (AdminLayout sets noindex,nofollow).
-const NOINDEX_ROUTES = [/^\/404\/?$/, /^\/admin(\/|$)/];
+// /404, the whole authenticated admin area (AdminLayout sets noindex,nofollow)
+// and the Operations stub pages (OperationsStub sets noindex,follow until the
+// real content lands; /operations and /operations/production stay indexable).
+const NOINDEX_ROUTES = [
+  /^\/404\/?$/,
+  /^\/admin(\/|$)/,
+  /^\/(en\/)?operations\/(private-stays|local-desk|partners)\/?$/,
+];
 
 export default defineConfig({
   // Must match the host the site is actually served on (www), otherwise every
@@ -36,6 +43,7 @@ export default defineConfig({
     },
   },
   integrations: [
+    mdx(),
     sitemap({
       // Pairs each IT page with its /en/ counterpart as xhtml:link alternate.
       // Keys must match the locale segments used by the routing above; `it` has

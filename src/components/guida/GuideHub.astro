@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Lang } from '../../i18n/index';
+import { useTranslations, getGuidePath } from '../../i18n/index';
+import { CLUSTER_ORDER, CLUSTER_LABELS, GUIDE_COPY, guideArticlePath } from '../../lib/guida';
+
+/** The guide hub, shared by /guida and /en/guide. */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const copy = GUIDE_COPY[lang];
+const otherLang: Lang = lang === 'it' ? 'en' : 'it';
+
+const entries = await getCollection('guida', e => e.data.lang === lang);
+
+const clusters = CLUSTER_ORDER.map(cluster => ({
+  label: CLUSTER_LABELS[cluster][lang],
+  items: entries
+    .filter(e => e.data.cluster === cluster)
+    .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime()),
+})).filter(group => group.items.length > 0);
+---
+
+<BaseLayout
+  title={`${copy.hubTitle} — ${t.meta.siteName}`}
+  description={copy.hubDescription}
+  lang={lang}
+  pageType="CollectionPage"
+  alternatePath={`${getGuidePath(otherLang)}/`}
+  langSwitchHref={getGuidePath(otherLang)}
+>
+  <section class="section-padding border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-accent mb-3">Santopaolo Boutique Apartments</p>
+      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">
+        {copy.hubTitle}
+      </h1>
+      <p class="text-brand-muted text-lg max-w-2xl">{copy.hubIntro}</p>
+    </div>
+  </section>
+
+  <section class="section-padding">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-12 lg:space-y-16">
+      {clusters.map(group => (
+        <div class="space-y-5">
+          <h2 class="font-display text-2xl lg:text-3xl text-brand-text tracking-tight">
+            {group.label}
+          </h2>
+          <ul class="space-y-2.5">
+            {group.items.map(entry => (
+              <li>
+                <a
+                  href={guideArticlePath(lang, entry.data.slug)}
+                  class="text-brand-muted text-sm hover:text-brand-text transition-colors"
+                >
+                  {entry.data.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

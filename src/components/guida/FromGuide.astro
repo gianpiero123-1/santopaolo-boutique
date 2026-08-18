@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '../../i18n/index';
+import { GUIDE_COPY, guideArticlePath } from '../../lib/guida';
+
+/**
+ * "Dalla guida" block for the apartment pages: a hardcoded list of slugs,
+ * resolved against the collection at build time so a slug whose article does
+ * not exist yet is dropped instead of linking to a 404. Renders nothing,
+ * divider included, when no slug resolves.
+ */
+interface Props {
+  lang: Lang;
+  slugs: string[];
+}
+
+const { lang, slugs } = Astro.props;
+
+const entries = await getCollection(
+  'guida',
+  e => e.data.lang === lang && slugs.includes(e.data.slug)
+);
+const links = slugs
+  .map(slug => entries.find(e => e.data.slug === slug))
+  .filter((e): e is CollectionEntry<'guida'> => Boolean(e));
+---
+
+{links.length > 0 && (
+  <Fragment>
+    <hr class="divider" />
+
+    <div class="space-y-5">
+      <h2 class="font-display text-2xl text-brand-text tracking-tight">
+        {GUIDE_COPY[lang].fromGuide}
+      </h2>
+      <ul class="space-y-2.5">
+        {links.map(entry => (
+          <li>
+            <a
+              href={guideArticlePath(lang, entry.data.slug)}
+              class="text-brand-muted text-sm hover:text-brand-text transition-colors"
+            >
+              {entry.data.title}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </Fragment>
+)}

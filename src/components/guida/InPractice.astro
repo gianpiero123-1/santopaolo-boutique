@@ -1,0 +1,51 @@
+---
+import type { Lang } from '../../i18n/index';
+
+/**
+ * "In pratica" block, imported by the MDX articles that need it. The slot
+ * takes markdown (typically a short list of concrete steps).
+ */
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'it' } = Astro.props;
+const title = lang === 'en' ? 'In practice' : 'In pratica';
+---
+
+<aside class="bg-brand-bg2 border border-brand-border p-6 lg:p-8 my-8 space-y-4">
+  <p class="nav-link text-brand-text">{title}</p>
+  <div class="in-practice-body text-brand-muted text-sm leading-relaxed">
+    <slot />
+  </div>
+</aside>
+
+<style is:global>
+  .in-practice-body > * + * {
+    margin-top: 0.625rem;
+  }
+
+  .in-practice-body ul {
+    list-style: none;
+  }
+
+  .in-practice-body li {
+    position: relative;
+    padding-left: 1.125rem;
+  }
+
+  .in-practice-body li + li {
+    margin-top: 0.625rem;
+  }
+
+  .in-practice-body li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.625rem;
+    width: 4px;
+    height: 4px;
+    border-radius: 9999px;
+    background-color: #6b1f1f;
+  }
+</style>

@@ -414,6 +414,15 @@ const SEGMENT_LABELS: Record<string, Record<Lang, string>> = {
   book: { it: 'Prenota', en: 'Book' },
   privacy: { it: 'Privacy Policy', en: 'Privacy Policy' },
   terms: { it: 'Termini e Condizioni', en: 'Terms & Conditions' },
+  // The guide is the route pair with asymmetric slugs, so both segments map.
+  guida: { it: 'Guida', en: 'Guide' },
+  guide: { it: 'Guida', en: 'Guide' },
+  // The Operations B2B area. The brand name stays identical in both languages.
+  operations: { it: 'Operations', en: 'Operations' },
+  'private-stays': { it: 'Soggiorni privati', en: 'Private Stays' },
+  production: { it: 'Produzioni e aziende', en: 'Production & Corporate' },
+  'local-desk': { it: 'Operazioni locali', en: 'Local Operations' },
+  partners: { it: 'Partner', en: 'Partners' },
 };
 
 const HOME_LABEL: Record<Lang, string> = { it: 'Home', en: 'Home' };
@@ -426,9 +435,14 @@ function segmentLabel(segment: string, lang: Lang): string | null {
 
 /**
  * Home > … > current page, with item URLs in the language being rendered.
- * Returns null on the home page, which has no trail of its own.
+ * Returns null on the home page, which has no trail of its own. `leafLabel`
+ * names the final segment when it is dynamic (a guide article's title).
  */
-export function buildBreadcrumbList(lang: Lang, pathname: string): JsonLdNode | null {
+export function buildBreadcrumbList(
+  lang: Lang,
+  pathname: string,
+  leafLabel?: string
+): JsonLdNode | null {
   const neutral = neutralPath(pathname);
   if (neutral === '/') return null;
 
@@ -443,9 +457,10 @@ export function buildBreadcrumbList(lang: Lang, pathname: string): JsonLdNode | 
   ];
 
   let walked = '';
-  for (const segment of segments) {
+  for (const [index, segment] of segments.entries()) {
     walked += `/${segment}`;
-    const name = segmentLabel(segment, lang);
+    const isLeaf = index === segments.length - 1;
+    const name = segmentLabel(segment, lang) ?? (isLeaf ? leafLabel ?? null : null);
     // An unmapped segment means a new route was added without a label; skip it
     // rather than emitting a raw slug as a crumb.
     if (!name) continue;
@@ -466,6 +481,19 @@ export function buildBreadcrumbList(lang: Lang, pathname: string): JsonLdNode | 
 
 /* -------------------------------------------------------------- assembly */
 
+/** Extra nodes for a guide article page: one Article plus one FAQPage. */
+export interface GuideArticleGraphOptions {
+  /** The question, verbatim: the page H1 and the FAQ Question name. */
+  headline: string;
+  /** The direct answer, becomes the FAQ acceptedAnswer. */
+  answer: string;
+  /** ISO dates (YYYY-MM-DD). dateModified falls back to datePublished. */
+  datePublished: string;
+  dateModified?: string;
+  /** `@id`s of entity-graph nodes the article is about (lodging, places). */
+  mentions?: string[];
+}
+
 export interface PageGraphOptions {
   lang: Lang;
   pathname: string;
@@ -473,12 +501,17 @@ export interface PageGraphOptions {
   description: string;
   /** Slug of the unit when rendering an apartment detail page. */
   apartmentSlug?: string;
+  /** CollectionPage on listing hubs (the guide index); WebPage everywhere else. */
+  pageType?: 'WebPage' | 'CollectionPage';
+  /** Names the final breadcrumb segment when it is a dynamic slug. */
+  breadcrumbLeafLabel?: string;
+  guideArticle?: GuideArticleGraphOptions;
 }
 
 function buildWebPage(opts: PageGraphOptions, breadcrumbId: string | null): JsonLdNode {
   const url = absoluteUrl(opts.pathname);
   const node: JsonLdNode = {
-    '@type': 'WebPage',
+    '@type': opts.pageType ?? 'WebPage',
     '@id': `${url}#webpage`,
     url,
     name: opts.title,
@@ -491,6 +524,45 @@ function buildWebPage(opts: PageGraphOptions, breadcrumbId: string | null): Json
   if (breadcrumbId) node.breadcrumb = ref(breadcrumbId);
   if (opts.apartmentSlug) node.mainEntity = ref(accommodationId(opts.apartmentSlug));
   return node;
+}
+
+/**
+ * Article node for a guide page. Author and publisher reference the existing
+ * Organization node rather than defining anything new.
+ */
+function buildGuideArticle(opts: PageGraphOptions, article: GuideArticleGraphOptions): JsonLdNode {
+  const url = absoluteUrl(opts.pathname);
+  const node: JsonLdNode = {
+    '@type': 'Article',
+    '@id': `${url}#article`,
+    headline: article.headline,
+    description: opts.description,
+    inLanguage: opts.lang,
+    datePublished: article.datePublished,
+    dateModified: article.dateModified ?? article.datePublished,
+    author: ref(ORGANIZATION_ID),
+    publisher: ref(ORGANIZATION_ID),
+    mainEntityOfPage: ref(`${url}#webpage`),
+  };
+  if (article.mentions?.length) node.mentions = article.mentions.map(ref);
+  return node;
+}
+
+/** One Question per guide page: the title asks, the answer block answers. */
+function buildGuideFaq(opts: PageGraphOptions, article: GuideArticleGraphOptions): JsonLdNode {
+  const url = absoluteUrl(opts.pathname);
+  return {
+    '@type': 'FAQPage',
+    '@id': `${url}#faq`,
+    inLanguage: opts.lang,
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: article.headline,
+        acceptedAnswer: { '@type': 'Answer', text: article.answer },
+      },
+    ],
+  };
 }
 
 /**
@@ -525,7 +597,7 @@ function dedupeById(nodes: JsonLdNode[]): JsonLdNode[] {
  * their own page, which carries the full description.
  */
 export function buildPageGraph(opts: PageGraphOptions): JsonLdGraph {
-  const breadcrumb = buildBreadcrumbList(opts.lang, opts.pathname);
+  const breadcrumb = buildBreadcrumbList(opts.lang, opts.pathname, opts.breadcrumbLeafLabel);
 
   const nodes: JsonLdNode[] = [
     buildOrganization(),
@@ -538,6 +610,11 @@ export function buildPageGraph(opts: PageGraphOptions): JsonLdGraph {
     ),
     buildWebPage(opts, breadcrumb ? (breadcrumb['@id'] as string) : null),
   ];
+
+  if (opts.guideArticle) {
+    nodes.push(buildGuideArticle(opts, opts.guideArticle));
+    nodes.push(buildGuideFaq(opts, opts.guideArticle));
+  }
 
   if (breadcrumb) nodes.push(breadcrumb);
 

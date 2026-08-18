@@ -6,6 +6,7 @@ const en: Translations = {
     wellness: 'Wellness',
     concierge: 'Concierge',
     contact: 'Contact',
+    operations: 'Operations',
     book: 'Book',
   },
   home: {
@@ -154,6 +155,7 @@ const en: Translations = {
     links: {
       apartments: 'Apartments',
       concierge: 'Concierge',
+      guide: 'Guide',
       contact: 'Contact',
       book: 'Book',
       privacy: 'Privacy',

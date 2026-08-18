@@ -1,0 +1,148 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import OpsIcon from './OpsIcon.astro';
+import BriefForm from './BriefForm.astro';
+import type { Lang } from '../../i18n/index';
+import { OPS_COPY, opsPath } from '../../lib/operations';
+
+/** The Operations B2B hub, shared by /operations and /en/operations. */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = OPS_COPY[lang];
+---
+
+<BaseLayout title={c.seo.title} description={c.seo.description} lang={lang}>
+  <!-- 1. Hero -->
+  <section class="section-padding border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="nav-link mb-3">{c.hero.eyebrow}</p>
+      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-5 max-w-4xl">
+        {c.hero.h1}
+      </h1>
+      <p class="text-brand-muted text-lg max-w-2xl mb-8">{c.hero.sub}</p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="#brief" class="btn-solid text-center hover:bg-brand-accent-hover hover:opacity-100">
+          {c.hero.ctaPrimary}
+        </a>
+        <a href="#solutions" class="btn-outline text-center hover:bg-brand-accent-hover hover:border-brand-accent-hover hover:text-brand-text">
+          {c.hero.ctaSecondary}
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Fact bar -->
+  <section class="border-b border-brand-border bg-brand-bg2">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <ul class="flex gap-8 overflow-x-auto py-5 lg:grid lg:grid-cols-6 lg:gap-4 lg:overflow-visible">
+        {c.facts.map(fact => (
+          <li class="nav-link whitespace-nowrap flex-shrink-0 lg:whitespace-normal lg:text-center">
+            {fact}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 3. Solutions -->
+  <section id="solutions" class="section-padding scroll-mt-32">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+        {c.solutionsTitle}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6">
+        {c.solutions.map(solution => (
+          <a
+            href={solution.href}
+            class="block bg-brand-bg2 border border-brand-border p-6 lg:p-8 space-y-3 hover:border-brand-accent-hover transition-colors"
+          >
+            <h3 class="font-display text-2xl text-brand-text tracking-tight">{solution.title}</h3>
+            <p class="text-brand-muted text-sm leading-relaxed">{solution.text}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Who we serve -->
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{c.whoTitle}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16">
+        {c.who.map(column => (
+          <div class="space-y-3">
+            <h3 class="nav-link text-brand-text">{column.title}</h3>
+            <p class="text-brand-muted text-sm leading-relaxed max-w-md">{column.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Service categories -->
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
+        {c.categoriesTitle}
+      </h2>
+      <ul class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {c.categories.map(category => (
+          <li class="bg-brand-bg2 border border-brand-border p-5 space-y-3">
+            <span class="block text-brand-muted"><OpsIcon name={category.icon} /></span>
+            <p class="text-brand-text text-sm leading-snug">{category.label}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 6. Why Santopaolo -->
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{c.whyTitle}</h2>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
+        {c.why.map(point => (
+          <li class="space-y-1.5">
+            <h3 class="font-display text-xl not-italic text-brand-text tracking-tight">{point.title}</h3>
+            <p class="text-brand-muted text-sm leading-relaxed">{point.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- 7. How it works -->
+  <section class="section-padding border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{c.howTitle}</h2>
+      <ol class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {c.how.map((step, index) => (
+          <li class="space-y-3">
+            <p class="font-display text-3xl text-brand-accent">{String(index + 1).padStart(2, '0')}</p>
+            <h3 class="font-display text-xl not-italic text-brand-text tracking-tight">{step.title}</h3>
+            <p class="text-brand-muted text-sm leading-relaxed">{step.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 8. Partner strip -->
+  <section class="bg-brand-bg2 border-y border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16 flex flex-col lg:flex-row lg:items-center gap-8 lg:justify-between">
+      <p class="text-brand-text text-lg leading-relaxed max-w-2xl">{c.partnerStrip.text}</p>
+      <a
+        href={opsPath(lang, 'partners')}
+        class="btn-outline text-center flex-shrink-0 hover:bg-brand-accent-hover hover:border-brand-accent-hover hover:text-brand-text"
+      >
+        {c.partnerStrip.cta}
+      </a>
+    </div>
+  </section>
+
+  <!-- 9. Brief form -->
+  <BriefForm lang={lang} />
+</BaseLayout>
