@@ -12,134 +12,169 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const c = OPS_COPY[lang];
-const p = c.production;
+const p = OPS_COPY[lang].production;
 
-// Garage photos, in the order of p.photoLabels: entrance, lanes, van bay,
-// loading area, storage area, pedestrian access, video surveillance,
-// configurable open space. Set a path (and alt if the label is not enough)
-// to replace a placeholder with the real photo.
-const GARAGE_PHOTOS: { src?: string; alt?: string }[] = [
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-];
+// Garage photos, in the order of p.spaces.labels: vehicle access, lanes,
+// van bay, handling area, warehouse. Set a path (and alt if the label is not
+// enough) to replace a placeholder with the real photo.
+const GARAGE_PHOTOS: { src?: string; alt?: string }[] = [{}, {}, {}, {}, {}];
 
-const garageItems = p.photoLabels.map((label, index) => ({
+const garageItems = p.spaces.labels.map((label, index) => ({
   label,
   ...GARAGE_PHOTOS[index],
 }));
 
-const specBorder = 'border-[#8A8580]/20';
+// Type scale of this page: Fraunces 200 for display sizes, Fraunces 300 for
+// the capability row titles, Inter 300 at 17px for body copy, IBM Plex Mono
+// 400 for eyebrows, numbering and technical labels only.
+const mono = 'font-mono text-[11px] tracking-[0.2em] uppercase';
+const sectionTitle =
+  'font-display font-extralight text-[clamp(30px,3.4vw,46px)] leading-[1.1] tracking-[-0.02em] text-brand-text';
+const body = 'font-light text-[17px] leading-[1.7] text-brand-text2';
+const hairline = 'border-[#8A8580]/18';
+
+// Per-stat divider classes: vertical rules between the two mobile columns and
+// between all four desktop columns, with no boxes and no background.
+const statCell = [
+  'pr-5 sm:pr-8',
+  `border-l ${hairline} pl-5 sm:pl-8 lg:pr-8`,
+  `lg:border-l ${hairline} pr-5 sm:pr-8 lg:pl-8`,
+  `border-l ${hairline} pl-5 sm:pl-8`,
+];
 ---
 
 <BaseLayout title={p.seo.title} description={p.seo.description} lang={lang}>
   <!-- 1. Hero -->
-  <section class="section-padding border-b border-brand-border">
+  <section class="pt-14 pb-10 md:pt-24 md:pb-20">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <p class="nav-link mb-3">{p.hero.eyebrow}</p>
-      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-5 max-w-4xl">
+      <p class={`${mono} text-brand-muted mb-6`}>
+        {p.hero.eyebrow.split('/').map((part, index) => (
+          <Fragment>
+            {index > 0 && <span class="text-brand-accent">/</span>}{part}
+          </Fragment>
+        ))}
+      </p>
+      <h1
+        class="font-display font-extralight text-[clamp(40px,5vw,76px)] leading-[1.06] tracking-[-0.02em] text-brand-text max-w-5xl mb-6"
+      >
         {p.hero.h1}
       </h1>
-      <p class="text-brand-muted text-lg max-w-2xl mb-8">{p.hero.sub}</p>
-      <a href="#brief" class="btn-solid inline-block hover:bg-brand-accent-hover hover:opacity-100">
-        {p.hero.cta}
-      </a>
-    </div>
-  </section>
-
-  <!-- 2. Spec table -->
-  <section class="section-padding">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <div class="max-w-3xl">
-        <table class={`w-full border ${specBorder} text-sm`}>
-          <tbody>
-            {p.specs.map(spec => (
-              <tr class={`border-b ${specBorder} last:border-b-0`}>
-                <th
-                  scope="row"
-                  class={`text-left align-top font-normal text-brand-muted text-[10px] uppercase tracking-wider px-4 py-3.5 border-r ${specBorder} w-2/5 sm:w-1/3`}
-                >
-                  {spec.label}
-                </th>
-                <td class="text-brand-text px-4 py-3.5">{spec.value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p class="text-brand-muted text-xs mt-4 leading-relaxed">{p.specNote}</p>
+      <p class={`${body} max-w-2xl mb-10`}>{p.hero.sub}</p>
+      <div class="flex flex-wrap gap-4">
+        <a href="#brief" class="btn-solid hover:bg-brand-accent-hover hover:opacity-100">
+          {p.hero.ctaPrimary}
+        </a>
+        <!-- Disabled until the technical sheet PDF exists. -->
+        <a
+          href="#"
+          aria-disabled="true"
+          tabindex="-1"
+          class="inline-block border border-brand-muted/40 text-brand-muted px-8 py-3 font-sans font-medium uppercase tracking-[0.05em] text-xs pointer-events-none"
+        >
+          {p.hero.ctaSecondary}
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- 3. Capabilities -->
-  <section class="section-padding border-t border-brand-border">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
-      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
-        {p.capabilitiesTitle}
-      </h2>
-      <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {p.capabilities.map(capability => (
-          <li class="bg-brand-bg2 border border-brand-border p-6 space-y-2">
-            <h3 class="font-display text-xl not-italic text-brand-text tracking-tight">
-              {capability.title}
-            </h3>
-            <p class="text-brand-muted text-sm leading-relaxed">{capability.text}</p>
+  <!-- 2. Stat band -->
+  <section class="py-14 md:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <ul class="grid grid-cols-2 lg:grid-cols-4 gap-y-12 lg:gap-y-0">
+        {p.stats.map((stat, index) => (
+          <li class={statCell[index]}>
+            <p
+              class="font-display font-extralight text-[clamp(46px,5vw,72px)] leading-none tracking-[-0.02em] text-brand-text"
+            >
+              {stat.value.split('/').map((part, partIndex) => (
+                <Fragment>
+                  {partIndex > 0 && <span class="text-brand-accent">/</span>}{part}
+                </Fragment>
+              ))}
+              {stat.unit && <span class="text-[19px] text-brand-muted">{stat.unit}</span>}
+            </p>
+            <p class={`${mono} text-brand-muted mt-3`}>{stat.label}</p>
           </li>
         ))}
       </ul>
     </div>
   </section>
 
-  <!-- 4. Why the ZTL matters -->
-  <section class="bg-brand-bg2 border-y border-brand-border">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16 space-y-4">
-      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{p.ztlTitle}</h2>
-      <p class="text-brand-text text-lg leading-relaxed max-w-3xl">{p.ztlText}</p>
+  <!-- 3. Scope of works -->
+  <section class="py-14 md:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class={`${mono} text-brand-muted mb-4`}>{p.scope.eyebrow}</p>
+      <h2 class={`${sectionTitle} max-w-3xl mb-12 md:mb-16`}>{p.scope.title}</h2>
+      <ul>
+        {p.scope.items.map((item, index) => (
+          <li
+            class={`border-t ${hairline} py-8 md:py-10 grid grid-cols-[26px_1fr] gap-x-5 md:gap-x-10`}
+          >
+            <span class={`${mono} text-brand-muted pt-2`}>
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <div>
+              <h3 class="font-display font-light text-[26px] leading-snug tracking-[-0.01em] text-brand-text">
+                {item.title}
+              </h3>
+              <p class={`${body} mt-3 max-w-2xl`}>{item.text}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
-  <!-- 5. The apartments -->
-  <section class="section-padding">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-4">
-      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
-        {p.apartmentsTitle}
-      </h2>
-      <p class="text-brand-muted text-base leading-relaxed max-w-3xl">{p.apartmentsText}</p>
-      <p>
-        <a
-          href={getLocalePath(lang, '/apartments')}
-          class="text-brand-text text-sm underline underline-offset-4 decoration-brand-accent hover:opacity-80 transition-opacity"
-        >
-          {p.apartmentsLink}
-        </a>
-      </p>
+  <!-- 4. Technical data, full-width band -->
+  <section class="bg-brand-bg2 py-14 md:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class={`${mono} text-brand-muted mb-4`}>{p.tech.eyebrow}</p>
+      <h2 class={`${sectionTitle} max-w-3xl mb-10 md:mb-14`}>{p.tech.title}</h2>
+      <dl class="grid md:grid-cols-2 gap-x-12 lg:gap-x-20">
+        {p.tech.rows.map(row => (
+          <div class={`flex items-baseline justify-between gap-6 border-b ${hairline} py-4`}>
+            <dt class="font-mono text-[11.5px] tracking-[0.2em] uppercase text-brand-muted">
+              {row.label}
+            </dt>
+            <dd class="text-[15px] text-brand-text text-right">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <div class="mt-12 md:mt-16 border-l-2 border-brand-accent pl-4">
+        <p class={`${body} max-w-2xl`}>{p.tech.note}</p>
+      </div>
     </div>
   </section>
 
-  <!-- 6. Garage photos -->
-  <section class="section-padding border-t border-brand-border">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
-      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">
-        {p.photosTitle}
-      </h2>
+  <!-- 5. The spaces -->
+  <section class="py-14 md:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class={`${mono} text-brand-muted mb-4`}>{p.spaces.eyebrow}</p>
+      <h2 class={`${sectionTitle} mb-10 md:mb-14`}>{p.spaces.title}</h2>
       <GarageGrid items={garageItems} />
     </div>
   </section>
 
-  <!-- 7. Who uses this base -->
-  <section class="section-padding border-t border-brand-border">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-4">
-      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{p.whoTitle}</h2>
-      <p class="text-brand-muted text-base leading-relaxed max-w-3xl">{p.whoText}</p>
+  <!-- 6. The apartments -->
+  <section class="py-14 md:py-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <h2 class={`${sectionTitle} mb-6`}>{p.apartmentsTitle}</h2>
+      <p class={`${body} max-w-3xl mb-6`}>{p.apartmentsText}</p>
+      <a
+        href={getLocalePath(lang, '/apartments')}
+        class="text-brand-text text-sm underline underline-offset-4 decoration-brand-accent hover:opacity-80 transition-opacity"
+      >
+        {p.apartmentsLink}
+      </a>
     </div>
   </section>
 
-  <!-- 8. Brief form, extended with the production-specific fields -->
-  <BriefForm lang={lang} extended />
+  <!-- 7. Closing statement, then the extended brief form -->
+  <section class="pt-14 md:pt-24">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <h2 class={`${sectionTitle} max-w-4xl mb-5`}>{p.closing.title}</h2>
+      <p class={body}>{p.closing.line}</p>
+    </div>
+  </section>
+  <BriefForm lang={lang} extended showHeading={false} />
 </BaseLayout>

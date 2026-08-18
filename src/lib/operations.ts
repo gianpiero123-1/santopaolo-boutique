@@ -77,21 +77,39 @@ interface OpsCopy {
   stubs: Record<OpsStubSlug, OpsStubCopy>;
   production: {
     seo: { title: string; description: string };
-    hero: { eyebrow: string; h1: string; sub: string; cta: string };
-    specs: { label: string; value: string }[];
-    specNote: string;
-    capabilitiesTitle: string;
-    capabilities: { title: string; text: string }[];
-    ztlTitle: string;
-    ztlText: string;
+    hero: {
+      /** Rendered with the slash in the brand accent colour. */
+      eyebrow: string;
+      h1: string;
+      sub: string;
+      ctaPrimary: string;
+      ctaSecondary: string;
+    };
+    /** Stat band; a slash in `value` renders in the accent, `unit` smaller and muted. */
+    stats: { value: string; unit?: string; label: string }[];
+    scope: {
+      eyebrow: string;
+      title: string;
+      /** Four wide rows, numbered 01-04 from their index. */
+      items: { title: string; text: string }[];
+    };
+    tech: {
+      eyebrow: string;
+      title: string;
+      rows: { label: string; value: string }[];
+      /** The accent-bordered aside under the data rows. */
+      note: string;
+    };
+    spaces: {
+      eyebrow: string;
+      title: string;
+      /** Labels of the five garage photo slots, in grid order. */
+      labels: string[];
+    };
     apartmentsTitle: string;
     apartmentsText: string;
     apartmentsLink: string;
-    photosTitle: string;
-    /** Labels of the eight garage photo slots, in grid order. */
-    photoLabels: string[];
-    whoTitle: string;
-    whoText: string;
+    closing: { title: string; line: string };
   };
 }
 
@@ -234,75 +252,70 @@ export const OPS_COPY: Record<Lang, OpsCopy> = {
       seo: {
         title: 'Base per produzioni a Napoli, alloggio, parcheggio e deposito',
         description:
-          'Alloggio troupe fino a 18 persone, garage coperto di 1.000 mq con 150 posti, deposito e carico coperto, nel centro di Napoli.',
+          'Ricettività fino a 18 persone, 150 posti auto al coperto, 1.000 mq configurabili a magazzino, a Chiaia, Napoli.',
       },
       hero: {
-        eyebrow: 'Santopaolo Production & Corporate',
-        h1: 'Una base nel centro di Napoli per produzioni, aziende e team temporanei.',
-        sub: 'Alloggio per la troupe, 150 posti auto coperti, deposito e carico al coperto, dentro la ZTL di Chiaia.',
-        cta: 'Inviaci il tuo brief',
+        eyebrow: 'Santopaolo / Production & Corporate',
+        h1: 'Ricettività, rimessaggio e magazzino sotto un solo tetto.',
+        sub: 'Diciotto posti letto su un unico livello. Centocinquanta posti auto al coperto al piano sottostante. Mille metri quadri configurabili a magazzino. Chiaia, Napoli.',
+        ctaPrimary: 'Trasmetti il brief',
+        ctaSecondary: 'Scheda tecnica in PDF',
       },
-      specs: [
-        { label: 'Superficie coperta', value: '1.000 mq' },
-        { label: 'Posti auto', value: 'fino a 150' },
-        { label: 'Altezza massima', value: '3 m' },
-        { label: 'Accesso', value: '24 ore, 365 giorni' },
-        { label: 'Larghezza mezzi', value: 'nessuna limitazione' },
-        { label: 'Carico e scarico', value: 'al coperto, in sede' },
-        { label: 'Videosorveglianza', value: 'sì, copertura totale' },
-        { label: 'Zona', value: 'dentro la ZTL di Chiaia, centro di Napoli' },
-        { label: 'Alloggio', value: '5 appartamenti, stesso edificio, fino a 18 persone' },
+      stats: [
+        { value: '150', label: 'posti al coperto' },
+        { value: '1.000', unit: 'mq', label: 'superficie coperta' },
+        { value: '18', label: 'ricettività' },
+        { value: '24/7', label: 'accesso continuativo' },
       ],
-      specNote:
-        'I mezzi oltre 3 m di altezza non entrano. Tutto sotto quella quota passa, inclusi van passo lungo e furgoni.',
-      capabilitiesTitle: 'Cosa puoi fare qui',
-      capabilities: [
-        {
-          title: 'Alloggio troupe',
-          text: 'Cinque appartamenti su un piano, fino a 18 persone, housekeeping incluso.',
-        },
-        {
-          title: 'Parcheggio mezzi',
-          text: 'Van tecnici, auto di produzione e transfer dei talent, al coperto e videosorvegliati.',
-        },
-        {
-          title: 'Deposito attrezzature',
-          text: 'Aree dedicate configurabili in base alla dimensione del progetto.',
-        },
-        {
-          title: 'Carico coperto',
-          text: 'Scarichi all’interno, niente permessi su strada, niente rischio meteo.',
-        },
-        {
-          title: 'Ricezione materiali',
-          text: 'Riceviamo e firmiamo le consegne in tua assenza.',
-        },
-        {
-          title: 'Base temporanea',
-          text: 'Un punto fisso in città per tutta la durata delle riprese.',
-        },
-      ],
-      ztlTitle: 'Perché la ZTL conta',
-      ztlText:
-        'Chiaia è zona a traffico limitato. In centro la maggior parte dei mezzi di produzione parcheggia lontano dal set, o non parcheggia. Il nostro garage è sotto gli appartamenti, dentro la zona. Troupe, mezzi e attrezzature restano nello stesso punto.',
+      scope: {
+        eyebrow: '01 — Ambiti operativi',
+        title: 'Cosa copriamo in fase di lavorazione',
+        items: [
+          {
+            title: 'Ospitalità cast e maestranze',
+            text: 'Cinque unità sullo stesso pianerottolo, ricettività fino a diciotto persone, pulizie e cambio biancheria compresi.',
+          },
+          {
+            title: 'Rimessaggio mezzi scena e di reparto',
+            text: 'Van, mezzi tecnici e vetture per il trasporto cast, al coperto e sotto videosorveglianza continuativa.',
+          },
+          {
+            title: 'Magazzino e stoccaggio attrezzature',
+            text: 'Aree perimetrate e dimensionate sul volume e sulla durata della lavorazione.',
+          },
+          {
+            title: 'Movimentazione e presa in carico forniture',
+            text: 'Carico e scarico all’interno della struttura, ricezione delle consegne in assenza del referente di produzione.',
+          },
+        ],
+      },
+      tech: {
+        eyebrow: '02 — Dati tecnici',
+        title: 'Quello che serve prima del sopralluogo',
+        rows: [
+          { label: 'Sagoma limite', value: '3 m in altezza' },
+          { label: 'Spazio di manovra', value: 'Senza vincoli' },
+          { label: 'Movimentazione', value: 'Interna, al coperto' },
+          { label: 'Videosorveglianza', value: 'Integrale, continuativa' },
+          { label: 'Ricettività', value: '5 unità, unico livello' },
+          { label: 'Ubicazione', value: 'Chiaia, Napoli' },
+        ],
+        note: 'A Chiaia la disponibilità di posti auto al coperto è pressoché nulla. Qui se ne contano centocinquanta, al livello sottostante gli alloggi. La sagoma limite è di tre metri in altezza, al di sotto transita qualsiasi mezzo, van a passo lungo compresi.',
+      },
+      spaces: {
+        eyebrow: '03 — Gli spazi',
+        title: 'L’autorimessa',
+        labels: ['Accesso carrabile', 'Corsie', 'Stallo van', 'Area movimentazione', 'Magazzino'],
+      },
       apartmentsTitle: 'Gli appartamenti',
       apartmentsText:
         'Cinque unità sullo stesso piano, da 45 a 90 mq, fino a 18 persone. Un’unità con due camere e due bagni, quattro con una camera, un bagno e divano letto matrimoniale. Palestra e bagno turco al piano wellness.',
       apartmentsLink: 'Vedi gli appartamenti',
-      photosTitle: 'Il garage',
-      photoLabels: [
-        'Ingresso',
-        'Corsie',
-        'Posto van',
-        'Area carico',
-        'Area deposito',
-        'Accesso pedonale',
-        'Videosorveglianza',
-        'Spazio libero configurabile',
-      ],
-      whoTitle: 'Chi ci usa',
-      whoText:
-        'Produzioni film e TV, spot pubblicitari, produzioni moda, eventi, team tecnici, aziende di installazione, personale aziendale in trasferta, equipaggi di yacht.',
+      closing: {
+        title:
+          'Trasmetteteci il piano di lavorazione. Vi restituiamo configurazione, disponibilità e preventivo.',
+        line: 'Riscontro entro ventiquattro ore lavorative.',
+      },
     },
   },
   en: {
@@ -443,75 +456,70 @@ export const OPS_COPY: Record<Lang, OpsCopy> = {
       seo: {
         title: 'Production base in Naples, accommodation, parking and storage',
         description:
-          'Crew accommodation for up to 18, 1,000 sqm covered garage with 150 spaces, storage and covered loading, in central Naples.',
+          'Sleeping capacity for up to 18, 150 covered parking spaces, 1,000 sqm configurable as storage, in Chiaia, Naples.',
       },
       hero: {
-        eyebrow: 'Santopaolo Production & Corporate',
-        h1: 'A central Naples base for productions, companies and temporary teams.',
-        sub: 'Crew accommodation, 150 covered parking spaces, storage and covered loading, inside the restricted traffic zone of Chiaia.',
-        cta: 'Send us your brief',
+        eyebrow: 'Santopaolo / Production & Corporate',
+        h1: 'Crew accommodation, vehicle storage and warehousing under one roof.',
+        sub: 'Eighteen beds on a single floor. One hundred and fifty covered parking spaces on the level below. One thousand square metres configurable as storage. Chiaia, Naples.',
+        ctaPrimary: 'Send your brief',
+        ctaSecondary: 'Technical sheet as PDF',
       },
-      specs: [
-        { label: 'Covered area', value: '1,000 sqm' },
-        { label: 'Parking spaces', value: 'up to 150' },
-        { label: 'Maximum height', value: '3 m' },
-        { label: 'Access', value: '24 hours, 365 days' },
-        { label: 'Vehicle width', value: 'no restriction' },
-        { label: 'Loading and unloading', value: 'covered, on site' },
-        { label: 'Surveillance', value: 'yes, full coverage' },
-        { label: 'Zone', value: 'inside Chiaia ZTL, central Naples' },
-        { label: 'Accommodation', value: '5 apartments, same building, up to 18 people' },
+      stats: [
+        { value: '150', label: 'covered spaces' },
+        { value: '1,000', unit: 'sqm', label: 'covered area' },
+        { value: '18', label: 'sleeping capacity' },
+        { value: '24/7', label: 'continuous access' },
       ],
-      specNote:
-        'Vehicles above 3 m in height cannot enter. Everything below that clears, including long wheelbase vans and panel vans.',
-      capabilitiesTitle: 'What you can do here',
-      capabilities: [
-        {
-          title: 'Crew accommodation',
-          text: 'Five apartments on one floor, up to 18 people, housekeeping included.',
-        },
-        {
-          title: 'Vehicle parking',
-          text: 'Technical vans, production cars and talent transport, covered and monitored.',
-        },
-        {
-          title: 'Equipment storage',
-          text: 'Dedicated areas configurable by project size.',
-        },
-        {
-          title: 'Covered loading',
-          text: 'Unload inside, no street permits, no weather risk.',
-        },
-        {
-          title: 'Equipment reception',
-          text: 'We receive and sign for deliveries in your absence.',
-        },
-        {
-          title: 'Temporary base',
-          text: 'A fixed point in the city for the length of the shoot.',
-        },
-      ],
-      ztlTitle: 'Why the ZTL matters',
-      ztlText:
-        'Chiaia is a restricted traffic zone. Most production vehicles in central Naples park far from the location, or not at all. Our garage sits under the apartments, inside the zone. Crew, vehicles and equipment stay in the same place.',
+      scope: {
+        eyebrow: '01 — Scope of works',
+        title: 'What we cover during production',
+        items: [
+          {
+            title: 'Cast and crew accommodation',
+            text: 'Five units on the same landing, capacity up to eighteen, housekeeping and linen included.',
+          },
+          {
+            title: 'Production and department vehicle storage',
+            text: 'Vans, technical vehicles and cast transport, covered and under continuous surveillance.',
+          },
+          {
+            title: 'Equipment warehousing',
+            text: 'Enclosed areas sized on the volume and duration of the shoot.',
+          },
+          {
+            title: 'Load-in and delivery handling',
+            text: 'Loading and unloading inside the building, deliveries signed for in the absence of the production coordinator.',
+          },
+        ],
+      },
+      tech: {
+        eyebrow: '02 — Technical data',
+        title: 'What you need before the tech scout',
+        rows: [
+          { label: 'Clearance height', value: '3 m' },
+          { label: 'Manoeuvring space', value: 'Unrestricted' },
+          { label: 'Load-in', value: 'Internal, covered' },
+          { label: 'Surveillance', value: 'Full, continuous' },
+          { label: 'Capacity', value: '5 units, single floor' },
+          { label: 'Location', value: 'Chiaia, Naples' },
+        ],
+        note: 'Covered parking in Chiaia is close to non existent. There are one hundred and fifty spaces here, on the level below the apartments. Clearance is three metres, anything under that gets in, long wheelbase vans included.',
+      },
+      spaces: {
+        eyebrow: '03 — The spaces',
+        title: 'The garage',
+        labels: ['Vehicle access', 'Lanes', 'Van bay', 'Handling area', 'Warehouse'],
+      },
       apartmentsTitle: 'The apartments',
       apartmentsText:
         'Five units on the same floor, from 45 to 90 sqm, up to 18 people. One unit with two bedrooms and two bathrooms, four with one bedroom, one bathroom and a double sofa bed. Gym and steam room on the wellness floor.',
       apartmentsLink: 'See the apartments',
-      photosTitle: 'The garage',
-      photoLabels: [
-        'Entrance',
-        'Lanes',
-        'Van bay',
-        'Loading area',
-        'Storage area',
-        'Pedestrian access',
-        'Video surveillance',
-        'Configurable open space',
-      ],
-      whoTitle: 'Who uses this base',
-      whoText:
-        'Film and TV productions, commercial shoots, fashion productions, events, technical teams, installation companies, corporate staff on temporary assignment, yacht crews.',
+      closing: {
+        title:
+          'Send us your shooting schedule. We come back with configuration, availability and a quote.',
+        line: 'Response within twenty four working hours.',
+      },
     },
   },
 };

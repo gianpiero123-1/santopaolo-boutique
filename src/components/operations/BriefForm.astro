@@ -10,9 +10,11 @@ import { OPS_COPY } from '../../lib/operations';
 interface Props {
   lang: Lang;
   extended?: boolean;
+  /** False hides the internal h2, for pages that render their own heading above the form. */
+  showHeading?: boolean;
 }
 
-const { lang, extended = false } = Astro.props;
+const { lang, extended = false, showHeading = true } = Astro.props;
 const c = OPS_COPY[lang];
 
 const inputClass =
@@ -22,7 +24,9 @@ const labelClass = 'block text-[10px] uppercase tracking-wider text-brand-muted 
 
 <section id="brief" class="section-padding scroll-mt-32">
   <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-8">
-    <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{c.form.title}</h2>
+    {showHeading && (
+      <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{c.form.title}</h2>
+    )}
 
     <div class="max-w-3xl">
       <form id="brief-form" class="space-y-6" novalidate>
