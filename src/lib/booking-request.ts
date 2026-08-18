@@ -51,3 +51,24 @@ export interface BookingRequestInput {
   lang: 'it' | 'en';
   units: RequestUnitInput[];
 }
+
+/** Allowed values of booking_requests.status. */
+export const REQUEST_STATUSES = [
+  'pending',
+  'quoted',
+  'confirmed_awaiting_payment',
+  'paid',
+  'expired',
+  'rejected',
+  'cancelled',
+] as const;
+
+export type RequestStatus = (typeof REQUEST_STATUSES)[number];
+
+/** Allowed values of booking_requests.quote_channel. */
+export const QUOTE_CHANNELS = ['email', 'whatsapp', 'both'] as const;
+
+export type QuoteChannel = (typeof QUOTE_CHANNELS)[number];
+
+/** Naples tourist tax, euro per paying guest per night. */
+export const TOURIST_TAX_PER_NIGHT = 6;

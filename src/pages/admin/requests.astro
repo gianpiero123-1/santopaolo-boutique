@@ -1,0 +1,594 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { createServerSupabase } from '../../lib/supabase-client';
+import { getLastSync } from '../../lib/queries';
+import { dateOnly, toDDMMYYYY, romeDateOf, formatTime } from '../../lib/dates';
+import {
+  REQUEST_STATUSES,
+  TOURIST_TAX_PER_NIGHT,
+  type QuoteChannel,
+  type RequestStatus,
+} from '../../lib/booking-request';
+
+interface RequestUnit {
+  id: string;
+  app_number: number;
+  check_in: string;
+  check_out: string;
+  nights: number;
+  adults: number;
+  children: number;
+  paying_guests: number;
+  nightly_rate: number | null;
+  subtotal: number | null;
+}
+
+interface BookingRequest {
+  id: string;
+  request_code: string;
+  guest_name: string;
+  guest_email: string;
+  guest_phone: string | null;
+  guest_country: string | null;
+  lang: string;
+  notes: string | null;
+  status: RequestStatus;
+  accommodation_total: number | null;
+  tourist_tax_total: number | null;
+  grand_total: number | null;
+  quote_sent_at: string | null;
+  quote_channel: QuoteChannel | null;
+  paid_at: string | null;
+  kalisi_blocked_at: string | null;
+  rejected_reason: string | null;
+  created_at: string;
+  booking_request_units: RequestUnit[];
+}
+
+const STATUS_META: Record<RequestStatus, { label: string; cls: string }> = {
+  pending: { label: 'In attesa', cls: 'pending' },
+  quoted: { label: 'Preventivo inviato', cls: 'quoted' },
+  confirmed_awaiting_payment: { label: 'Confermata, attesa pagamento', cls: 'confirmed' },
+  paid: { label: 'Pagata', cls: 'paid' },
+  expired: { label: 'Scaduta', cls: 'muted' },
+  rejected: { label: 'Rifiutata', cls: 'muted' },
+  cancelled: { label: 'Annullata', cls: 'muted' },
+};
+
+const supabase = createServerSupabase();
+const statusFilter = Astro.url.searchParams.get('status') ?? 'all';
+
+const [{ data: rawRequests, error }, lastSync] = await Promise.all([
+  supabase
+    .from('booking_requests')
+    .select('*, booking_request_units(*)')
+    .order('created_at', { ascending: false }),
+  getLastSync(supabase),
+]);
+
+const allRequests = ((rawRequests ?? []) as BookingRequest[]).map((r) => ({
+  ...r,
+  booking_request_units: [...(r.booking_request_units ?? [])].sort(
+    (a, b) => a.check_in.localeCompare(b.check_in) || a.app_number - b.app_number,
+  ),
+}));
+
+const pendingCount = allRequests.filter((r) => r.status === 'pending').length;
+const requests =
+  statusFilter === 'all' ? allRequests : allRequests.filter((r) => r.status === statusFilter);
+
+const statusChips = [
+  { key: 'all', label: 'Tutti' },
+  ...REQUEST_STATUSES.map((s) => ({ key: s, label: STATUS_META[s].label })),
+];
+
+/** Tassa suggerita: somma su tutte le unità di paying_guests per nights per 6. */
+function taxSuggestion(r: BookingRequest): number {
+  return r.booking_request_units.reduce(
+    (sum, u) => sum + u.paying_guests * u.nights * TOURIST_TAX_PER_NIGHT,
+    0,
+  );
+}
+
+/** 2026-07-21 -> 21/07/26 */
+function fmtDate(iso: string): string {
+  return toDDMMYYYY(dateOnly(iso)).replace(/\/20(\d{2})$/, '/$1');
+}
+
+function fmtCreated(iso: string): string {
+  return `${fmtDate(romeDateOf(iso))}, ${formatTime(iso)}`;
+}
+
+function fmtAmount(n: number): string {
+  return n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function guestMeta(r: BookingRequest): string {
+  return [r.guest_email, r.guest_phone, r.guest_country, r.lang.toUpperCase()]
+    .filter(Boolean)
+    .join(', ');
+}
+
+function facts(r: BookingRequest): string[] {
+  const out: string[] = [];
+  if (r.quote_sent_at) {
+    out.push(`Preventivo inviato il ${fmtDate(romeDateOf(r.quote_sent_at))}`);
+  }
+  if (r.paid_at) out.push(`Pagata il ${fmtDate(romeDateOf(r.paid_at))}`);
+  if (r.kalisi_blocked_at) {
+    out.push(`Bloccata su Kalisi il ${fmtDate(romeDateOf(r.kalisi_blocked_at))}`);
+  }
+  if (r.rejected_reason) out.push(`Motivo rifiuto, ${r.rejected_reason}`);
+  return out;
+}
+---
+
+<AdminLayout title="Richieste" activePage="requests" lastSync={lastSync}>
+
+  <div class="page-title-row">
+    <h1 class="page-title">Richieste</h1>
+  </div>
+
+  {error && <div class="rq-error">Errore nel caricamento: {error.message}</div>}
+
+  <div class="kpi-grid tight">
+    <div class="kpi sm">
+      <div class="kpi-label">In attesa</div>
+      <div class="kpi-value">{pendingCount}</div>
+      <div class="kpi-detail">su {allRequests.length} richieste totali</div>
+    </div>
+  </div>
+
+  <div class="filters-bar">
+    <div class="filter-group">
+      <span class="filter-label">Stato</span>
+      {statusChips.map((c) => (
+        <a
+          class={`chip${statusFilter === c.key ? ' active' : ''}`}
+          href={c.key === 'all' ? '/admin/requests' : `/admin/requests?status=${c.key}`}
+        >{c.label}</a>
+      ))}
+    </div>
+  </div>
+
+  <p class="rq-feedback" id="rq-feedback" hidden></p>
+
+  <div id="rq-list">
+    {requests.length === 0 && (
+      <div class="rq-empty">
+        {statusFilter === 'all'
+          ? 'Nessuna richiesta ricevuta.'
+          : 'Nessuna richiesta per il filtro selezionato.'}
+      </div>
+    )}
+    {requests.map((r) => {
+      const meta = STATUS_META[r.status];
+      const suggested = taxSuggestion(r);
+      const factList = facts(r);
+      return (
+        <article class="rq-card" data-id={r.id} data-code={r.request_code}>
+          <header class="rq-head">
+            <div class="rq-head-main">
+              <span class="rq-code">{r.request_code}</span>
+              <span class={`rq-status ${meta.cls}`}>{meta.label}</span>
+            </div>
+            <div class="rq-head-side">
+              <div class="rq-total js-grand-head">{r.grand_total != null ? `€ ${fmtAmount(r.grand_total)}` : ''}</div>
+              <div class="rq-created">{fmtCreated(r.created_at)}</div>
+            </div>
+          </header>
+
+          <div class="rq-guest">
+            <span class="rq-guest-name">{r.guest_name}</span>
+            <span class="rq-guest-meta">{guestMeta(r)}</span>
+          </div>
+
+          {r.notes && <p class="rq-notes">{r.notes}</p>}
+
+          {factList.length > 0 && (
+            <div class="rq-facts">
+              {factList.map((f) => <span>{f}</span>)}
+            </div>
+          )}
+
+          <div class="table-wrap rq-units">
+            <table class="rq-units-table">
+              <thead>
+                <tr>
+                  <th>App</th>
+                  <th>Check in</th>
+                  <th>Check out</th>
+                  <th>Notti</th>
+                  <th>Adulti</th>
+                  <th>Bambini</th>
+                  <th>Prezzo notte €</th>
+                  <th>Subtotale €</th>
+                  <th aria-label="Azioni"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {r.booking_request_units.map((u) => (
+                  <tr data-unit-id={u.id}>
+                    <td class="row-unit">App {u.app_number}</td>
+                    <td class="row-dates">{fmtDate(u.check_in)}</td>
+                    <td class="row-dates">{fmtDate(u.check_out)}</td>
+                    <td>{u.nights}</td>
+                    <td>{u.adults}</td>
+                    <td>{u.children}</td>
+                    <td>
+                      <input
+                        type="number" step="0.01" min="0"
+                        class="field-input rq-input js-unit-rate"
+                        value={u.nightly_rate ?? ''}
+                        aria-label={`Prezzo a notte App ${u.app_number}`}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number" step="0.01" min="0"
+                        class="field-input rq-input js-unit-subtotal"
+                        value={u.subtotal ?? ''}
+                        aria-label={`Subtotale App ${u.app_number}`}
+                      />
+                    </td>
+                    <td>
+                      <button type="button" class="btn-secondary rq-btn js-unit-save">Salva</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="rq-quote">
+            <div class="rq-quote-field">
+              <label class="field-label" for={`acc-${r.id}`}>Soggiorno €</label>
+              <input
+                id={`acc-${r.id}`}
+                type="number" step="0.01" min="0"
+                class="field-input js-acc"
+                value={r.accommodation_total ?? ''}
+              />
+            </div>
+            <div class="rq-quote-field">
+              <label class="field-label" for={`tax-${r.id}`}>Tassa di soggiorno €</label>
+              <input
+                id={`tax-${r.id}`}
+                type="number" step="0.01" min="0"
+                class="field-input js-tax"
+                value={r.tourist_tax_total ?? ''}
+              />
+              <p class="rq-tax-hint">
+                Suggerita € {fmtAmount(suggested)}
+                <button
+                  type="button"
+                  class="rq-copy js-tax-copy"
+                  data-value={suggested}
+                  aria-label="Copia la tassa suggerita nel campo"
+                  title="Copia nel campo"
+                >
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                  </svg>
+                </button>
+              </p>
+            </div>
+            <div class="rq-quote-field">
+              <label class="field-label" for={`channel-${r.id}`}>Canale preventivo</label>
+              <select id={`channel-${r.id}`} class="field-select js-channel">
+                <option value="">Non indicato</option>
+                <option value="email" selected={r.quote_channel === 'email'}>Email</option>
+                <option value="whatsapp" selected={r.quote_channel === 'whatsapp'}>WhatsApp</option>
+                <option value="both" selected={r.quote_channel === 'both'}>Email e WhatsApp</option>
+              </select>
+            </div>
+            <div class="rq-quote-field">
+              <span class="field-label">Totale</span>
+              <div class="rq-grand js-grand">{r.grand_total != null ? `€ ${fmtAmount(r.grand_total)}` : '—'}</div>
+            </div>
+            <div class="rq-quote-field rq-quote-save">
+              <button type="button" class="btn-primary rq-btn js-quote-save">Salva importi</button>
+            </div>
+          </div>
+
+          <div class="rq-actions">
+            <button type="button" class="rq-action js-status" data-action="quoted">Preventivo inviato</button>
+            <button type="button" class="rq-action js-status" data-action="confirmed_awaiting_payment">Confermata</button>
+            <button type="button" class="rq-action js-status" data-action="paid">Pagata</button>
+            <button type="button" class="rq-action js-status" data-action="kalisi_blocked">Bloccata su Kalisi</button>
+            <button type="button" class="rq-action danger js-reject-open">Rifiuta</button>
+            <button type="button" class="rq-action danger js-status" data-action="cancelled">Annulla</button>
+          </div>
+
+          <div class="rq-reject" hidden>
+            <input
+              type="text"
+              class="field-input js-reject-reason"
+              placeholder="Motivo del rifiuto"
+              maxlength="500"
+            />
+            <button type="button" class="btn-primary rq-btn js-reject-confirm">Conferma rifiuto</button>
+            <button type="button" class="btn-secondary rq-btn js-reject-cancel">Chiudi</button>
+          </div>
+        </article>
+      );
+    })}
+  </div>
+
+</AdminLayout>
+
+<script>
+  const list = document.getElementById('rq-list') as HTMLElement;
+  const feedback = document.getElementById('rq-feedback') as HTMLParagraphElement;
+
+  const fmtAmount = (n: number) =>
+    n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  function notify(message: string, isError = true) {
+    feedback.textContent = message;
+    feedback.hidden = false;
+    feedback.classList.toggle('error', isError);
+    if (!isError) setTimeout(() => { feedback.hidden = true; }, 2500);
+  }
+
+  /** Totale complessivo mostrato in sola lettura: soggiorno più tassa. */
+  function recalcGrand(card: HTMLElement) {
+    const acc = parseFloat((card.querySelector('.js-acc') as HTMLInputElement).value);
+    const tax = parseFloat((card.querySelector('.js-tax') as HTMLInputElement).value);
+    const grand = card.querySelector('.js-grand') as HTMLElement;
+    if (Number.isNaN(acc) && Number.isNaN(tax)) {
+      grand.textContent = '—';
+      return;
+    }
+    grand.textContent = `€ ${fmtAmount((Number.isNaN(acc) ? 0 : acc) + (Number.isNaN(tax) ? 0 : tax))}`;
+  }
+
+  const CONFIRM: Record<string, (code: string) => string> = {
+    quoted: (c) => `Segnare ${c} come preventivo inviato?`,
+    confirmed_awaiting_payment: (c) => `Segnare ${c} come confermata, in attesa di pagamento?`,
+    paid: (c) => `Segnare ${c} come pagata?`,
+    kalisi_blocked: (c) => `Segnare ${c} come bloccata su Kalisi?`,
+    cancelled: (c) => `Annullare la richiesta ${c}?`,
+  };
+
+  async function changeStatus(
+    card: HTMLElement,
+    btn: HTMLButtonElement,
+    action: string,
+    rejectedReason?: string,
+  ) {
+    btn.disabled = true;
+    try {
+      const res = await fetch(`/api/requests/${card.dataset.id}/status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, ...(rejectedReason ? { rejected_reason: rejectedReason } : {}) }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        notify(err?.error ? `Errore: ${err.error}` : 'Errore nel cambio di stato');
+        btn.disabled = false;
+        return;
+      }
+      window.location.reload();
+    } catch {
+      notify('Errore di rete');
+      btn.disabled = false;
+    }
+  }
+
+  list?.addEventListener('input', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('.js-acc') || target.closest('.js-tax')) {
+      const card = target.closest('.rq-card') as HTMLElement | null;
+      if (card) recalcGrand(card);
+    }
+  });
+
+  list?.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+    const card = target.closest('.rq-card') as HTMLElement | null;
+    if (!card) return;
+    const code = card.dataset.code ?? '';
+
+    // Copia la tassa suggerita nel campo, che resta comunque editabile.
+    const copy = target.closest('.js-tax-copy') as HTMLButtonElement | null;
+    if (copy) {
+      const taxInput = card.querySelector('.js-tax') as HTMLInputElement;
+      taxInput.value = copy.dataset.value ?? '';
+      recalcGrand(card);
+      taxInput.focus();
+      return;
+    }
+
+    // Salvataggio importi di una singola unità.
+    const unitSave = target.closest('.js-unit-save') as HTMLButtonElement | null;
+    if (unitSave) {
+      const row = unitSave.closest('tr') as HTMLElement;
+      unitSave.disabled = true;
+      try {
+        const res = await fetch(`/api/request-units/${row.dataset.unitId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nightly_rate: (row.querySelector('.js-unit-rate') as HTMLInputElement).value,
+            subtotal: (row.querySelector('.js-unit-subtotal') as HTMLInputElement).value,
+          }),
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(() => null);
+          notify(err?.error ? `Errore: ${err.error}` : 'Errore nel salvataggio');
+        } else {
+          notify(`Unità aggiornata, ${code}`, false);
+        }
+      } catch {
+        notify('Errore di rete');
+      }
+      unitSave.disabled = false;
+      return;
+    }
+
+    // Salvataggio importi del preventivo. grand_total lo ricalcola il server.
+    const quoteSave = target.closest('.js-quote-save') as HTMLButtonElement | null;
+    if (quoteSave) {
+      quoteSave.disabled = true;
+      try {
+        const res = await fetch(`/api/requests/${card.dataset.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            accommodation_total: (card.querySelector('.js-acc') as HTMLInputElement).value,
+            tourist_tax_total: (card.querySelector('.js-tax') as HTMLInputElement).value,
+            quote_channel: (card.querySelector('.js-channel') as HTMLSelectElement).value,
+          }),
+        });
+        const body = await res.json().catch(() => null);
+        if (!res.ok) {
+          notify(body?.error ? `Errore: ${body.error}` : 'Errore nel salvataggio');
+        } else {
+          const grandTotal = body?.request?.grand_total as number | null;
+          const grand = card.querySelector('.js-grand') as HTMLElement;
+          const grandHead = card.querySelector('.js-grand-head') as HTMLElement;
+          grand.textContent = grandTotal != null ? `€ ${fmtAmount(grandTotal)}` : '—';
+          grandHead.textContent = grandTotal != null ? `€ ${fmtAmount(grandTotal)}` : '';
+          notify(`Importi salvati, ${code}`, false);
+        }
+      } catch {
+        notify('Errore di rete');
+      }
+      quoteSave.disabled = false;
+      return;
+    }
+
+    // Pulsanti di stato, sempre con conferma.
+    const statusBtn = target.closest('.js-status') as HTMLButtonElement | null;
+    if (statusBtn) {
+      const action = statusBtn.dataset.action ?? '';
+      const message = CONFIRM[action]?.(code);
+      if (!message || !confirm(message)) return;
+      await changeStatus(card, statusBtn, action);
+      return;
+    }
+
+    // Rifiuto: apre il campo motivo, poi conferma.
+    if (target.closest('.js-reject-open')) {
+      const box = card.querySelector('.rq-reject') as HTMLElement;
+      box.hidden = !box.hidden;
+      if (!box.hidden) (box.querySelector('.js-reject-reason') as HTMLInputElement).focus();
+      return;
+    }
+    if (target.closest('.js-reject-cancel')) {
+      (card.querySelector('.rq-reject') as HTMLElement).hidden = true;
+      return;
+    }
+    const rejectConfirm = target.closest('.js-reject-confirm') as HTMLButtonElement | null;
+    if (rejectConfirm) {
+      const reason = (card.querySelector('.js-reject-reason') as HTMLInputElement).value.trim();
+      if (!reason) return notify('Inserisci il motivo del rifiuto');
+      if (!confirm(`Rifiutare la richiesta ${code}?`)) return;
+      await changeStatus(card, rejectConfirm, 'rejected', reason);
+    }
+  });
+</script>
+
+<style is:global>
+  /* ---- Richieste ---- */
+  .rq-error {
+    background: rgba(139, 68, 68, 0.12); border: 1px solid var(--danger);
+    color: var(--danger); padding: 12px 14px; border-radius: 3px;
+    font-size: 12.5px; margin-bottom: 16px;
+  }
+  .rq-feedback { font-size: 12px; color: var(--green); margin: -6px 0 14px; }
+  .rq-feedback.error { color: var(--danger); }
+  .rq-empty {
+    background: var(--antracite); border: 1px solid var(--border); border-radius: 3px;
+    color: var(--marmo); text-align: center; padding: 48px 20px; font-size: 13px;
+  }
+
+  .rq-card {
+    background: var(--antracite); border: 1px solid var(--border);
+    border-radius: 3px; padding: 20px; margin-bottom: 16px;
+  }
+  .rq-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 10px; }
+  .rq-head-main { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .rq-code { font-family: 'Fraunces', serif; font-size: 18px; }
+  .rq-head-side { text-align: right; flex: none; }
+  .rq-total { font-family: 'Fraunces', serif; font-size: 18px; min-height: 18px; }
+  .rq-created { font-size: 11px; color: var(--marmo); margin-top: 3px; }
+
+  .rq-status {
+    display: inline-block; padding: 4px 10px; border-radius: 2px;
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .rq-status.pending { background: var(--bordeaux); color: var(--off-white); }
+  .rq-status.quoted, .rq-status.confirmed { background: var(--marmo); color: var(--nero); }
+  .rq-status.paid { background: rgba(74, 222, 128, 0.14); border: 1px solid var(--green); color: var(--green); }
+  .rq-status.muted { background: var(--border); color: var(--marmo); }
+
+  .rq-guest { margin-bottom: 8px; }
+  .rq-guest-name { font-size: 14px; font-weight: 500; margin-right: 10px; }
+  .rq-guest-meta { font-size: 12px; color: var(--marmo); }
+  .rq-notes {
+    background: var(--carbon); border: 1px solid var(--border); border-radius: 2px;
+    padding: 10px 12px; font-size: 12.5px; color: var(--off-white); line-height: 1.45;
+    margin-bottom: 10px;
+  }
+  .rq-facts {
+    display: flex; flex-wrap: wrap; gap: 4px 20px;
+    font-size: 11px; color: var(--marmo); margin-bottom: 10px;
+  }
+
+  .rq-units { margin: 14px 0; background: var(--carbon); }
+  .rq-units-table { min-width: 780px; font-size: 12.5px; }
+  .rq-units-table th { background: var(--nero); }
+  .rq-units-table td { padding: 10px 12px; vertical-align: middle; border-bottom: 1px solid var(--border); }
+  .rq-units-table tbody tr:last-child td { border-bottom: none; }
+  .rq-input { width: 110px; padding: 7px 10px; }
+
+  .rq-quote {
+    display: flex; flex-wrap: wrap; gap: 14px 18px; align-items: flex-start;
+    background: var(--carbon); border: 1px solid var(--border); border-radius: 3px;
+    padding: 14px 16px; margin-bottom: 14px;
+  }
+  .rq-quote-field { display: flex; flex-direction: column; }
+  .rq-quote-field .field-input { width: 150px; }
+  .rq-quote-field .field-select { width: 180px; }
+  .rq-quote-save { justify-content: flex-end; align-self: stretch; }
+  .rq-grand { font-family: 'Fraunces', serif; font-size: 20px; padding: 5px 0; min-width: 110px; }
+  .rq-tax-hint {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 11px; color: var(--marmo); margin-top: 7px;
+  }
+  .rq-copy {
+    background: none; border: 1px solid var(--border); color: var(--marmo);
+    width: 24px; height: 24px; border-radius: 2px; cursor: pointer; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .rq-copy:hover { color: var(--off-white); border-color: var(--marmo); }
+
+  .rq-btn { flex: none; padding: 8px 14px; font-size: 10px; }
+
+  .rq-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .rq-action {
+    background: transparent; border: 1px solid var(--border); color: var(--marmo);
+    padding: 8px 14px; border-radius: 2px; font-size: 10px; letter-spacing: 1px;
+    text-transform: uppercase; cursor: pointer; font-family: inherit; transition: all 0.15s;
+  }
+  .rq-action:hover { color: var(--off-white); border-color: var(--marmo); }
+  .rq-action.danger:hover { color: var(--danger); border-color: var(--danger); }
+  .rq-action:disabled { opacity: 0.5; cursor: default; }
+
+  .rq-reject { display: flex; gap: 8px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .rq-reject .field-input { flex: 1; min-width: 220px; width: auto; }
+
+  @media (max-width: 768px) {
+    .rq-card { padding: 14px; }
+    .rq-head { flex-direction: column; gap: 6px; }
+    .rq-head-side { text-align: left; }
+    .rq-quote-field, .rq-quote-field .field-input, .rq-quote-field .field-select { width: 100%; }
+    .rq-quote-field { flex: 1 1 100%; }
+  }
+</style>
