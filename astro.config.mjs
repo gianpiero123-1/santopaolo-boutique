@@ -16,6 +16,12 @@ export default defineConfig({
   // Public site stays static; /admin/* and /api/* opt into SSR via `export const prerender = false`.
   output: 'static',
   adapter: vercel(),
+  // The old booking pages now 301 to the request form (Vercel handles these at
+  // the platform level, no meta refresh).
+  redirects: {
+    '/book': { status: 301, destination: '/richiesta' },
+    '/en/book': { status: 301, destination: '/en/request' },
+  },
   i18n: {
     defaultLocale: 'it',
     locales: ['it', 'en'],

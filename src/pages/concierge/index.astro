@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ServiceCard from '../../components/ServiceCard.astro';
-import { useTranslations, getLocalePath } from '../../i18n/index';
+import { useTranslations, getLocalePath, getRequestPath } from '../../i18n/index';
 import servicesData from '../../data/services.json';
 import '../../styles/concierge-hero.css';
 
@@ -69,7 +69,7 @@ const previewServices = servicesData.slice(0, 4);
         <a href={getLocalePath(lang, '/contact')} class="btn-solid">
           {t.contact.title}
         </a>
-        <a href={getLocalePath(lang, '/book')} class="btn-outline">
+        <a href={getRequestPath(lang)} class="btn-outline">
           {t.nav.book}
         </a>
       </div>

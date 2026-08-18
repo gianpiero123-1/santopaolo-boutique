@@ -18,6 +18,11 @@ interface Props {
   noindex?: boolean;
   /** Overrides where the language toggle points, for pages with no counterpart. */
   langSwitchHref?: string;
+  /**
+   * Overrides the computed hreflang alternate path, for route pairs whose
+   * slugs differ across languages (/richiesta vs /en/request).
+   */
+  alternatePath?: string;
   /** Slug of the unit on an apartment detail page, so the graph can name it. */
   apartmentSlug?: string;
 }
@@ -31,6 +36,7 @@ const {
   canonicalURL: canonicalOverride,
   noindex = false,
   langSwitchHref,
+  alternatePath: alternatePathOverride,
   apartmentSlug,
 } = Astro.props;
 
@@ -47,9 +53,9 @@ const alternateLang = lang === 'it' ? 'en' : 'it';
 // variants of the same language. Note og:locale below is a different spec and
 // keeps its it_IT / en_GB form on purpose.
 const BCP47: Record<Lang, string> = { it: 'it', en: 'en' };
-const alternatePath = lang === 'en'
+const alternatePath = alternatePathOverride ?? (lang === 'en'
   ? Astro.url.pathname.replace(/^\/en/, '') || '/'
-  : `/en${Astro.url.pathname}`;
+  : `/en${Astro.url.pathname}`);
 const alternateURL = `${siteURL}${alternatePath}`;
 
 // One @graph per page, built here so no page can forget it or emit a second

@@ -1,0 +1,86 @@
+---
+import type { Lang } from '../i18n/index';
+import { useTranslations } from '../i18n/index';
+import { APP_CAPACITY, APP_LABELS, APP_NUMBERS } from '../lib/booking-request';
+
+/**
+ * One unit block of the booking request form. Rendered once as the initial
+ * block and once inside a <template>, from which the client script clones
+ * additional blocks. No element ids: labels wrap their inputs so clones stay
+ * valid without rewriting attributes.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang).request;
+
+const inputClass =
+  'w-full bg-brand-bg border border-brand-border text-brand-text px-3 py-2.5 text-sm focus:outline-none focus:border-brand-accent transition-colors';
+const labelClass = 'block text-[10px] uppercase tracking-wider text-brand-muted mb-1';
+
+const maxAdults = Math.max(...Object.values(APP_CAPACITY));
+---
+
+<div class="border border-brand-border bg-brand-bg2 p-5 space-y-4" data-unit-block>
+  <div class="flex items-center justify-between">
+    <p class="nav-link text-brand-text" data-unit-title>{t.unit} 1</p>
+    <button
+      type="button"
+      data-remove-unit
+      hidden
+      class="text-brand-muted hover:text-brand-text transition-colors p-1"
+      aria-label={t.removeUnit}
+      title={t.removeUnit}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <label class="block">
+    <span class={labelClass}>{t.apartment}</span>
+    <select data-field="app_number" class={inputClass}>
+      {APP_NUMBERS.map(n => (
+        <option value={n}>
+          {APP_LABELS[n]}, {t.maxGuestsShort.replace('{n}', String(APP_CAPACITY[n]))}
+        </option>
+      ))}
+    </select>
+  </label>
+
+  <div class="grid grid-cols-2 gap-4">
+    <label class="block">
+      <span class={labelClass}>{t.checkin}</span>
+      <input type="date" data-field="check_in" class={inputClass} />
+    </label>
+    <label class="block">
+      <span class={labelClass}>{t.checkout}</span>
+      <input type="date" data-field="check_out" class={inputClass} />
+    </label>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <label class="block">
+      <span class={labelClass}>{t.adults}</span>
+      <select data-field="adults" class={inputClass}>
+        {Array.from({ length: maxAdults }, (_, i) => i + 1).map(n => (
+          <option value={n}>{n}</option>
+        ))}
+      </select>
+    </label>
+    <label class="block">
+      <span class={labelClass}>{t.children}</span>
+      <select data-field="children" class={inputClass}>
+        {Array.from({ length: maxAdults }, (_, i) => i).map(n => (
+          <option value={n}>{n}</option>
+        ))}
+      </select>
+    </label>
+  </div>
+
+  <p data-unit-error hidden class="text-sm text-[#D9A0A0]" role="alert"></p>
+</div>

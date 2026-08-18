@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/index';
-import { useTranslations, getLocalePath } from '../i18n/index';
+import { useTranslations, getLocalePath, getRequestPath } from '../i18n/index';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
 interface Props {
@@ -67,7 +67,7 @@ function isActive(href: string): boolean {
           href={langSwitchHref}
         />
         <a
-          href={getLocalePath(lang, '/book')}
+          href={getRequestPath(lang)}
           class="btn-solid hidden sm:inline-block text-xs py-2.5 px-5"
         >
           {t.nav.book}
@@ -98,7 +98,7 @@ function isActive(href: string): boolean {
           {label}
         </a>
       ))}
-      <a href={getLocalePath(lang, '/book')} class="btn-solid mt-2 text-center text-xs py-3">
+      <a href={getRequestPath(lang)} class="btn-solid mt-2 text-center text-xs py-3">
         {t.nav.book}
       </a>
     </div>

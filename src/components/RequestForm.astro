@@ -1,0 +1,341 @@
+---
+import type { Lang } from '../i18n/index';
+import { useTranslations, getLocalePath } from '../i18n/index';
+import RequestUnitBlock from './RequestUnitBlock.astro';
+import { APP_CAPACITY, MAX_UNITS } from '../lib/booking-request';
+
+/**
+ * Multi-unit booking request form. Fully client-driven: unit blocks are cloned
+ * from a <template>, validation runs in the browser and again server side, the
+ * submit goes to POST /api/booking-request and the confirmation is shown
+ * inline, no redirect.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang).request;
+
+const inputClass =
+  'w-full bg-brand-bg border border-brand-border text-brand-text px-3 py-2.5 text-sm focus:outline-none focus:border-brand-accent transition-colors';
+const labelClass = 'block text-[10px] uppercase tracking-wider text-brand-muted mb-1';
+
+// Strings the client script needs, passed via define:vars below.
+const clientConfig = {
+  lang,
+  maxUnits: MAX_UNITS,
+  capacities: APP_CAPACITY,
+  unitLabel: t.unit,
+  sending: t.sending,
+  submit: t.submit,
+  errors: t.errors,
+};
+---
+
+<div class="max-w-3xl" id="request-root">
+  <form id="request-form" class="space-y-8" novalidate>
+    <div
+      id="form-error"
+      hidden
+      class="border border-[#8A2A2A] bg-brand-bg2 px-4 py-3 text-sm text-[#D9A0A0]"
+      role="alert"
+    >
+    </div>
+
+    <fieldset class="border border-brand-border bg-brand-bg2 p-5 lg:p-6 space-y-5">
+      <legend class="nav-link text-brand-text px-2">{t.guestSection}</legend>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <label class="block">
+          <span class={labelClass}>{t.name}</span>
+          <input type="text" name="guest_name" autocomplete="name" maxlength="200" class={inputClass} required />
+          <span data-error-for="guest_name" hidden class="block mt-1 text-sm text-[#D9A0A0]" role="alert"></span>
+        </label>
+        <label class="block">
+          <span class={labelClass}>{t.email}</span>
+          <input type="email" name="guest_email" autocomplete="email" maxlength="200" class={inputClass} required />
+          <span data-error-for="guest_email" hidden class="block mt-1 text-sm text-[#D9A0A0]" role="alert"></span>
+        </label>
+        <label class="block">
+          <span class={labelClass}>{t.phone} ({t.optional})</span>
+          <input type="tel" name="guest_phone" autocomplete="tel" maxlength="50" class={inputClass} />
+        </label>
+        <label class="block">
+          <span class={labelClass}>{t.country} ({t.optional})</span>
+          <input type="text" name="guest_country" autocomplete="country-name" maxlength="100" class={inputClass} />
+        </label>
+      </div>
+
+      <label class="block">
+        <span class={labelClass}>{t.notes} ({t.optional})</span>
+        <textarea
+          name="notes"
+          rows="4"
+          maxlength="2000"
+          placeholder={t.notesPlaceholder}
+          class={`${inputClass} resize-y`}></textarea>
+      </label>
+    </fieldset>
+
+    <fieldset class="space-y-5">
+      <legend class="nav-link text-brand-text mb-4">{t.unitsSection}</legend>
+
+      <div id="units-list" class="space-y-5">
+        <RequestUnitBlock lang={lang} />
+      </div>
+
+      <button type="button" id="add-unit" class="btn-outline inline-flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14" />
+          <path d="M12 5v14" />
+        </svg>
+        {t.addUnit}
+      </button>
+    </fieldset>
+
+    <button type="submit" id="request-submit" class="btn-solid w-full py-4">
+      {t.submit}
+    </button>
+  </form>
+
+  <div id="request-success" hidden class="border border-brand-border bg-brand-bg2 p-8 lg:p-10 text-center space-y-5">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6B1F1F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mx-auto">
+      <circle cx="12" cy="12" r="10" />
+      <path d="m9 12 2 2 4-4" />
+    </svg>
+    <h2 class="font-display text-3xl text-brand-text tracking-tight">{t.success.title}</h2>
+    <div>
+      <p class="text-[10px] uppercase tracking-wider text-brand-muted mb-1">{t.success.codeLabel}</p>
+      <p id="request-code" class="font-display text-2xl text-brand-text"></p>
+    </div>
+    <p class="text-brand-muted text-sm leading-relaxed max-w-md mx-auto">{t.success.body}</p>
+    <a href={getLocalePath(lang, '/')} class="btn-outline inline-block">{t.success.backHome}</a>
+  </div>
+
+  <template id="unit-template">
+    <RequestUnitBlock lang={lang} />
+  </template>
+</div>
+
+<script is:inline define:vars={{ CFG: clientConfig }}>
+  (function () {
+    const form = document.getElementById('request-form');
+    const list = document.getElementById('units-list');
+    const addBtn = document.getElementById('add-unit');
+    const template = document.getElementById('unit-template');
+    const formError = document.getElementById('form-error');
+    const successBox = document.getElementById('request-success');
+    const submitBtn = document.getElementById('request-submit');
+    if (!form || !list || !addBtn || !template || !submitBtn) return;
+
+    const pad = n => String(n).padStart(2, '0');
+    const isoOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const todayISO = () => isoOf(new Date());
+    const nextDayISO = iso => {
+      const [y, m, d] = iso.split('-').map(Number);
+      return isoOf(new Date(y, m - 1, d + 1));
+    };
+
+    const blocks = () => Array.from(list.querySelectorAll('[data-unit-block]'));
+    const field = (block, name) => block.querySelector(`[data-field="${name}"]`);
+
+    function hideUnitError(block) {
+      const p = block.querySelector('[data-unit-error]');
+      p.hidden = true;
+      p.textContent = '';
+    }
+
+    function showUnitError(block, message) {
+      const p = block.querySelector('[data-unit-error]');
+      p.textContent = message;
+      p.hidden = false;
+    }
+
+    function showFieldError(name, message) {
+      const p = form.querySelector(`[data-error-for="${name}"]`);
+      if (!p) return;
+      p.textContent = message;
+      p.hidden = false;
+    }
+
+    function clearFieldErrors() {
+      form.querySelectorAll('[data-error-for]').forEach(p => {
+        p.hidden = true;
+        p.textContent = '';
+      });
+    }
+
+    function refresh() {
+      const bs = blocks();
+      bs.forEach((b, i) => {
+        b.querySelector('[data-unit-title]').textContent = `${CFG.unitLabel} ${i + 1}`;
+        b.querySelector('[data-remove-unit]').hidden = bs.length <= 1;
+      });
+      addBtn.hidden = bs.length >= CFG.maxUnits;
+    }
+
+    function wire(block) {
+      const ci = field(block, 'check_in');
+      const co = field(block, 'check_out');
+      ci.min = todayISO();
+      co.min = nextDayISO(todayISO());
+
+      ci.addEventListener('change', () => {
+        if (ci.value) {
+          co.min = nextDayISO(ci.value);
+          if (co.value && co.value <= ci.value) co.value = '';
+        }
+      });
+
+      block.querySelectorAll('select, input').forEach(el => {
+        el.addEventListener('change', () => hideUnitError(block));
+      });
+
+      block.querySelector('[data-remove-unit]').addEventListener('click', () => {
+        block.remove();
+        refresh();
+      });
+    }
+
+    addBtn.addEventListener('click', () => {
+      if (blocks().length >= CFG.maxUnits) return;
+      const clone = template.content.firstElementChild.cloneNode(true);
+      // Guests often ask for a second apartment on the same dates: start the
+      // new block from the last block's dates.
+      const last = blocks()[blocks().length - 1];
+      list.appendChild(clone);
+      wire(clone);
+      if (last) {
+        field(clone, 'check_in').value = field(last, 'check_in').value;
+        field(clone, 'check_out').value = field(last, 'check_out').value;
+        if (field(last, 'check_in').value) {
+          field(clone, 'check_out').min = nextDayISO(field(last, 'check_in').value);
+        }
+      }
+      refresh();
+    });
+
+    function validate() {
+      clearFieldErrors();
+      formError.hidden = true;
+      let firstInvalid = null;
+      const invalid = el => {
+        if (!firstInvalid) firstInvalid = el;
+      };
+
+      const name = form.elements.guest_name.value.trim();
+      if (!name) {
+        showFieldError('guest_name', CFG.errors.name);
+        invalid(form.elements.guest_name);
+      }
+
+      const email = form.elements.guest_email.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFieldError('guest_email', CFG.errors.email);
+        invalid(form.elements.guest_email);
+      }
+
+      const today = todayISO();
+      for (const block of blocks()) {
+        hideUnitError(block);
+        const app = Number(field(block, 'app_number').value);
+        const ci = field(block, 'check_in').value;
+        const co = field(block, 'check_out').value;
+        const adults = Number(field(block, 'adults').value);
+        const children = Number(field(block, 'children').value);
+        const cap = CFG.capacities[app];
+
+        if (!ci || !co) {
+          showUnitError(block, CFG.errors.dates);
+          invalid(block);
+        } else if (ci < today) {
+          showUnitError(block, CFG.errors.checkinPast);
+          invalid(block);
+        } else if (co <= ci) {
+          showUnitError(block, CFG.errors.checkoutOrder);
+          invalid(block);
+        } else if (adults + children > cap) {
+          showUnitError(block, CFG.errors.capacity.replace('{max}', String(cap)));
+          invalid(block);
+        }
+      }
+
+      return firstInvalid;
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const firstInvalid = validate();
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (typeof firstInvalid.focus === 'function' && firstInvalid.tagName !== 'DIV') {
+          firstInvalid.focus({ preventScroll: true });
+        }
+        return;
+      }
+
+      const payload = {
+        guest_name: form.elements.guest_name.value.trim(),
+        guest_email: form.elements.guest_email.value.trim(),
+        guest_phone: form.elements.guest_phone.value.trim(),
+        guest_country: form.elements.guest_country.value.trim(),
+        notes: form.elements.notes.value.trim(),
+        lang: CFG.lang,
+        units: blocks().map(block => ({
+          app_number: Number(field(block, 'app_number').value),
+          check_in: field(block, 'check_in').value,
+          check_out: field(block, 'check_out').value,
+          adults: Number(field(block, 'adults').value),
+          children: Number(field(block, 'children').value),
+        })),
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = CFG.sending;
+
+      try {
+        const res = await fetch('/api/booking-request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => null);
+
+        if (res.ok && data && data.ok) {
+          document.getElementById('request-code').textContent = data.request_code;
+          form.hidden = true;
+          successBox.hidden = false;
+          successBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+
+        if (res.status === 429) {
+          formError.textContent = CFG.errors.rateLimited;
+        } else {
+          formError.textContent = (data && data.error) || CFG.errors.generic;
+        }
+        formError.hidden = false;
+        formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch {
+        formError.textContent = CFG.errors.generic;
+        formError.hidden = false;
+        formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = CFG.submit;
+      }
+    });
+
+    // Initial block: wire it and honor the ?app=N preselection coming from the
+    // apartment pages.
+    const initial = blocks()[0];
+    wire(initial);
+    const appParam = Number(new URLSearchParams(location.search).get('app'));
+    if (CFG.capacities[appParam]) {
+      field(initial, 'app_number').value = String(appParam);
+    }
+    refresh();
+  })();
+</script>

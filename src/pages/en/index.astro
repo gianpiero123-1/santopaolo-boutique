@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ApartmentCard from '../../components/ApartmentCard.astro';
 import Hero from '../../components/Hero.astro';
-import { useTranslations, getLocalePath } from '../../i18n/index';
+import { useTranslations, getLocalePath, getRequestPath } from '../../i18n/index';
 import apartmentsData from '../../data/apartments.json';
 import '../../styles/concierge-hero.css';
 
@@ -144,7 +144,7 @@ const mobileHeroCards = [
       <h2 class="font-display text-3xl lg:text-5xl text-brand-text tracking-tight">{t.home.cta.title}</h2>
       <p class="text-brand-muted max-w-md mx-auto leading-relaxed">{t.home.cta.body}</p>
       <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-        <a href={getLocalePath(lang, '/book')} class="btn-solid">{t.home.cta.cta}</a>
+        <a href={getRequestPath(lang)} class="btn-solid">{t.home.cta.cta}</a>
         <a href={getLocalePath(lang, '/contact')} class="btn-outline">{t.home.cta.secondary}</a>
       </div>
     </div>

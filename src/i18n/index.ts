@@ -38,6 +38,14 @@ export function pluralize(lang: Lang, count: number, unit: CountableUnit): strin
   return `${count} ${count === 1 ? one : many}`;
 }
 
+/**
+ * The booking request page is the one route pair with asymmetric slugs
+ * (/richiesta vs /en/request), so getLocalePath cannot derive it.
+ */
+export function getRequestPath(lang: Lang): string {
+  return lang === 'en' ? '/en/request' : '/richiesta';
+}
+
 export function getAlternatePath(currentLang: Lang, currentPath: string): string {
   if (currentLang === 'en') {
     return currentPath.replace(/^\/en/, '') || '/';

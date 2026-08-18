@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RequestForm from '../../components/RequestForm.astro';
+import { useTranslations } from '../../i18n/index';
+
+const lang = 'en';
+const t = useTranslations(lang);
+---
+
+<BaseLayout
+  title={`${t.request.title} — ${t.meta.siteName}`}
+  description={t.request.metaDescription}
+  lang={lang}
+  alternatePath="/richiesta"
+  langSwitchHref="/richiesta"
+>
+  <section class="section-padding border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <p class="nav-link text-brand-accent mb-3">Santopaolo Boutique Apartments</p>
+      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">
+        {t.request.title}
+      </h1>
+      <p class="text-brand-muted text-lg max-w-2xl">{t.request.intro}</p>
+    </div>
+  </section>
+
+  <section class="section-padding bg-brand-bg">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8">
+      <RequestForm lang={lang} />
+    </div>
+  </section>
+</BaseLayout>
