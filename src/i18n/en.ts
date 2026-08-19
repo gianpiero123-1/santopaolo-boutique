@@ -6,7 +6,7 @@ const en: Translations = {
     wellness: 'Wellness',
     concierge: 'Concierge',
     contact: 'Contact',
-    operations: 'Operations',
+    production: 'Production Base',
     book: 'Book',
   },
   home: {

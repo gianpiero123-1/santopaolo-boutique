@@ -417,12 +417,9 @@ const SEGMENT_LABELS: Record<string, Record<Lang, string>> = {
   // The guide is the route pair with asymmetric slugs, so both segments map.
   guida: { it: 'Guida', en: 'Guide' },
   guide: { it: 'Guida', en: 'Guide' },
-  // The Operations B2B area. The brand name stays identical in both languages.
-  operations: { it: 'Operations', en: 'Operations' },
-  'private-stays': { it: 'Soggiorni privati', en: 'Private Stays' },
-  production: { it: 'Produzioni e aziende', en: 'Production & Corporate' },
-  'local-desk': { it: 'Operazioni locali', en: 'Local Operations' },
-  partners: { it: 'Partner', en: 'Partners' },
+  // The B2B production base page. The name stays identical in both languages,
+  // matching the navbar label.
+  production: { it: 'Production Base', en: 'Production Base' },
 };
 
 const HOME_LABEL: Record<Lang, string> = { it: 'Home', en: 'Home' };

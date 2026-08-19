@@ -10,7 +10,7 @@ function json(body: unknown, status = 200): Response {
 }
 
 /**
- * Operations brief form. Placeholder for now: logs the payload and returns
+ * Production base brief form. Placeholder for now: logs the payload and returns
  * 200, persistence and notifications come later.
  */
 export const POST: APIRoute = async ({ request }) => {

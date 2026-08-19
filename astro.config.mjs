@@ -6,14 +6,8 @@ import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel';
 
 // Routes that carry `noindex` and must therefore stay out of the sitemap:
-// /404, the whole authenticated admin area (AdminLayout sets noindex,nofollow)
-// and the Operations stub pages (OperationsStub sets noindex,follow until the
-// real content lands; /operations and /operations/production stay indexable).
-const NOINDEX_ROUTES = [
-  /^\/404\/?$/,
-  /^\/admin(\/|$)/,
-  /^\/(en\/)?operations\/(private-stays|local-desk|partners)\/?$/,
-];
+// /404 and the whole authenticated admin area (AdminLayout sets noindex,nofollow).
+const NOINDEX_ROUTES = [/^\/404\/?$/, /^\/admin(\/|$)/];
 
 export default defineConfig({
   // Must match the host the site is actually served on (www), otherwise every
@@ -23,11 +17,22 @@ export default defineConfig({
   // Public site stays static; /admin/* and /api/* opt into SSR via `export const prerender = false`.
   output: 'static',
   adapter: vercel(),
-  // The old booking pages now 301 to the request form (Vercel handles these at
+  // The old booking pages now 301 to the request form, and the dismantled
+  // Operations area 301s to the production base page (Vercel handles these at
   // the platform level, no meta refresh).
   redirects: {
     '/book': { status: 301, destination: '/richiesta' },
     '/en/book': { status: 301, destination: '/en/request' },
+    '/operations': { status: 301, destination: '/production' },
+    '/operations/production': { status: 301, destination: '/production' },
+    '/operations/private-stays': { status: 301, destination: '/production' },
+    '/operations/local-desk': { status: 301, destination: '/production' },
+    '/operations/partners': { status: 301, destination: '/production' },
+    '/en/operations': { status: 301, destination: '/en/production' },
+    '/en/operations/production': { status: 301, destination: '/en/production' },
+    '/en/operations/private-stays': { status: 301, destination: '/en/production' },
+    '/en/operations/local-desk': { status: 301, destination: '/en/production' },
+    '/en/operations/partners': { status: 301, destination: '/en/production' },
   },
   i18n: {
     defaultLocale: 'it',

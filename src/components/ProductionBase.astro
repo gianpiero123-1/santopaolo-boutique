@@ -1,15 +1,15 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import type { Lang } from '../../i18n/index';
-import { OPS_COPY } from '../../lib/operations';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { Lang } from '../i18n/index';
+import { PRODUCTION_COPY } from '../lib/production';
 
-/** The production base page, shared by /operations/production and the EN route. */
+/** The production base page, shared by /production and the EN route. */
 interface Props {
   lang: Lang;
 }
 
 const { lang } = Astro.props;
-const p = OPS_COPY[lang].production;
+const p = PRODUCTION_COPY[lang];
 const f = p.closing.form;
 
 // The ticker track loops its content twice so the -50% keyframe is seamless.

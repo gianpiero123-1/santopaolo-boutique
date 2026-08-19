@@ -4,7 +4,7 @@ const it = {
     wellness: 'Wellness',
     concierge: 'Concierge',
     contact: 'Contatti',
-    operations: 'Operations',
+    production: 'Production Base',
     book: 'Prenota',
   },
   home: {
