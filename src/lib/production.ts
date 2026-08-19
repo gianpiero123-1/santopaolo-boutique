@@ -12,10 +12,11 @@ export interface ProductionCopy {
   seo: { title: string; description: string };
   hero: {
     eyebrow: string;
-    /** First line of the H1; `titleMuted` follows on its own line in marble grey. */
+    /** First line of the H1; `titleAccent` follows on its own line in brand red italic. */
     title: string;
-    titleMuted: string;
-    text: string;
+    titleAccent: string;
+    /** Mono rail under the H1, one line per entry, strings already uppercase. */
+    specs: string[];
     cta: string;
   };
   /** Items numbered from their index and looped twice by the track. */
@@ -105,13 +106,13 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     seo: {
       title: 'Base per produzioni a Napoli, ricettività e rimessaggio a un solo indirizzo',
       description:
-        '18 posti letto in cinque unità e oltre 1.000 metri quadri coperti nello stesso stabile a Chiaia, Napoli. Accesso 24/7.',
+        'Fino a 18 ospiti in cinque unità e oltre 1.000 metri quadri coperti nello stesso stabile a Chiaia, Napoli. Accesso 24/7.',
     },
     hero: {
-      eyebrow: 'Base operativa per produzioni, Napoli Chiaia',
-      title: 'Ricettività e rimessaggio',
-      titleMuted: 'allo stesso indirizzo.',
-      text: 'Cinque unità, diciotto posti letto, oltre mille metri quadri coperti sotto lo stesso stabile. Le maestranze dormono dove sostano i mezzi.',
+      eyebrow: 'Production base, Chiaia, Napoli',
+      title: 'Alloggio troupe, parcheggio e rimessaggio',
+      titleAccent: 'un solo indirizzo.',
+      specs: ['FINO A 18 OSPITI, CINQUE UNITÀ', 'OLTRE 1.000 MQ AL COPERTO', 'ACCESSO 24/7, 365 GIORNI'],
       cta: 'Trasmetti un brief',
     },
     ticker: [
@@ -153,7 +154,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
           tag: 'Ricettività',
           title: 'Alloggio delle maestranze',
           text: 'Cinque unità da 45 a 90 metri quadri, disponibili singolarmente o a piano intero. Cucina e lavatrice in ogni unità, pulizia interna quotidiana, palestra e bagno turco al piano wellness. Ingressi e uscite senza vincoli di orario.',
-          chips: ['18 posti letto', 'Piano intero', 'Lavatrice in ogni unità', 'Pulizia quotidiana', 'Wellness'],
+          chips: ['Fino a 18 ospiti', 'Piano intero', 'Lavatrice in ogni unità', 'Pulizia quotidiana', 'Wellness'],
         },
         {
           tag: 'Rimessaggio',
@@ -174,7 +175,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       title: 'Nessun trasferimento fra alloggio e rimessaggio.',
       text: 'Vico Santa Maria a Cappella Vecchia 8b. Tutto ciò che serve alla lavorazione è nello stesso stabile, con un referente unico per accessi, fornitori e orari.',
       bands: [
-        { level: 'Piano appartamenti', value: '18 posti letto', side: 'Cinque unità, 325 mq' },
+        { level: 'Piano appartamenti', value: 'Fino a 18 ospiti', side: 'Cinque unità, 325 mq' },
         {
           level: 'Piano wellness',
           value: 'Palestra e bagno turco',
@@ -204,7 +205,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         { label: 'Videosorveglianza', value: 'Integrale' },
         { label: 'Carico e scarico', value: 'Al coperto' },
         { label: 'Ricarica elettrica', value: 'Disponibile' },
-        { label: 'Posti letto', value: '18 in cinque unità' },
+        { label: 'Capienza', value: 'Fino a 18 ospiti, cinque unità' },
       ],
     },
     closing: {
@@ -235,7 +236,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
           phone: 'Telefono',
           type: 'Tipo di lavorazione',
           dates: 'Periodo',
-          beds: 'Posti letto richiesti',
+          beds: 'Ospiti',
           vehicles: 'Mezzi in rimessaggio',
           notes: 'Esigenze di superficie e note',
         },
@@ -274,13 +275,13 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     seo: {
       title: 'Production base in Naples, crew accommodation and vehicle storage at one address',
       description:
-        '18 beds across five units and over 1,000 covered square metres in one building in Chiaia, Naples. 24 hour access, 365 days.',
+        'Sleeps up to 18 across five units, with over 1,000 covered square metres in one building in Chiaia, Naples. 24 hour access, 365 days.',
     },
     hero: {
       eyebrow: 'Production base, Chiaia, Naples',
-      title: 'Crew accommodation and vehicle storage',
-      titleMuted: 'at one address.',
-      text: 'Five units, 18 beds, over 1,000 covered square metres in one building. Crew and vehicles at the same address.',
+      title: 'Crew accommodation, parking and storage',
+      titleAccent: 'one address.',
+      specs: ['SLEEPS UP TO 18, FIVE UNITS', 'OVER 1,000 SQM UNDER COVER', '24/7 ACCESS, 365 DAYS'],
       cta: 'Send a brief',
     },
     ticker: [
@@ -322,7 +323,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
           tag: 'Hospitality',
           title: 'Crew accommodation',
           text: 'Five units from 45 to 90 square metres, taken singly or as a whole floor. Kitchen and washing machine in every unit, daily housekeeping, gym and steam room on the wellness level. Arrivals and departures at any hour.',
-          chips: ['18 beds', 'Whole floor', 'Washing machine in every unit', 'Daily housekeeping', 'Wellness'],
+          chips: ['Sleeps 18', 'Whole floor', 'Washing machine in every unit', 'Daily housekeeping', 'Wellness'],
         },
         {
           tag: 'Storage',
@@ -343,7 +344,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       title: 'No shuttling between accommodation and storage.',
       text: 'Vico Santa Maria a Cappella Vecchia 8b. Everything the production needs sits in one building, with a single point of contact for access, suppliers and schedules.',
       bands: [
-        { level: 'Apartment level', value: '18 beds', side: 'Five units, 325 sqm' },
+        { level: 'Apartment level', value: 'Sleeps 18', side: 'Five units, 325 sqm' },
         { level: 'Wellness level', value: 'Gym and steam room', side: 'Reserved for guests' },
         { level: 'Garage level', value: 'Over 1,000 sqm', side: 'Vehicle and goods storage' },
       ],
@@ -369,7 +370,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         { label: 'CCTV', value: 'Full coverage' },
         { label: 'Load in and load out', value: 'Under cover' },
         { label: 'EV charging', value: 'Available' },
-        { label: 'Beds', value: '18 across five units' },
+        { label: 'Capacity', value: 'Sleeps 18, five units' },
       ],
     },
     closing: {
@@ -400,7 +401,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
           phone: 'Telephone',
           type: 'Type of production',
           dates: 'Dates',
-          beds: 'Beds required',
+          beds: 'Guests',
           vehicles: 'Vehicles to store',
           notes: 'Space requirements and notes',
         },
