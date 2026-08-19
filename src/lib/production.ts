@@ -12,7 +12,7 @@ export interface ProductionCopy {
   seo: { title: string; description: string };
   hero: {
     eyebrow: string;
-    /** First line of the H1; `titleAccent` follows on its own line in brand red italic. */
+    /** First line of the H1; `titleAccent` follows on its own line in accent bordeaux, weight 700. */
     title: string;
     titleAccent: string;
     /** Mono rail under the H1, one line per entry, strings already uppercase. */
