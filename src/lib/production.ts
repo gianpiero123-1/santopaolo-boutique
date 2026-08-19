@@ -1,5 +1,8 @@
 import type { Lang } from '../i18n/index';
 
+/** The photographic material does not exist yet; the gallery section stays hidden until this flips to true. Captions and note below are ready. */
+export const GALLERY_ENABLED = false;
+
 /**
  * Copy for the production base page, self-contained like the guide: only the
  * navbar label goes through the usual i18n dictionaries.
@@ -102,19 +105,19 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     seo: {
       title: 'Base per produzioni a Napoli, ricettività e rimessaggio a un solo indirizzo',
       description:
-        'Diciotto posti letto in cinque unità e oltre 1.000 metri quadri coperti nel medesimo stabile a Chiaia, Napoli. Oltre 100 posti auto, accesso 24 ore.',
+        '18 posti letto in cinque unità e oltre 1.000 metri quadri coperti nello stesso stabile a Chiaia, Napoli. Oltre 100 posti auto, accesso 24/7.',
     },
     hero: {
       eyebrow: 'Base operativa per produzioni, Napoli Chiaia',
       title: 'Ricettività e rimessaggio',
-      titleMuted: 'al medesimo indirizzo.',
-      text: 'Diciotto posti letto in cinque unità e oltre mille metri quadri coperti nel medesimo stabile. Nessun trasferimento fra la sistemazione delle maestranze e il ricovero dei mezzi.',
+      titleMuted: 'allo stesso indirizzo.',
+      text: 'Cinque unità, diciotto posti letto, oltre mille metri quadri coperti sotto lo stesso stabile. Le maestranze dormono dove sostano i mezzi.',
       cta: 'Trasmetti un brief',
     },
     ticker: [
-      'Superficie coperta oltre 1.000 mq',
+      'Oltre 1.000 mq coperti',
       'Oltre 100 posti auto',
-      'Accesso 24 ore, 365 giorni',
+      'Accesso 24/7, 365 giorni',
       'Carico e scarico al coperto',
       'Videosorveglianza integrale',
     ],
@@ -123,22 +126,22 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       value: '1.000',
       unit: 'Metri quadri, piano autorimessa',
       text1:
-        "Oltre mille metri quadri coperti al di sotto delle unità ricettive. A Chiaia la disponibilità di superficie coperta è strutturalmente limitata, e un'estensione di questa dimensione non trova riscontro nel quartiere.",
+        'Oltre mille metri quadri coperti sotto le unità ricettive. A Chiaia la superficie coperta è scarsa, e una metratura simile non esiste altrove nel quartiere.',
       text2:
-        'La superficie non viene ceduta a tariffa giornaliera. Viene perimetrata sulla durata effettiva della lavorazione, con presa in carico e riconsegna formalizzate.',
+        'Non si affitta a giornata. Si perimetra sulla durata della lavorazione, con presa in carico e riconsegna formalizzate.',
       usesLabel: 'Destinazione',
       uses: [
         {
-          title: 'Ricovero mezzi',
-          text: 'Oltre cento posti auto al coperto, accesso ventiquattro ore su ventiquattro.',
+          title: 'Rimessaggio mezzi',
+          text: 'Oltre 100 posti auto al coperto, accesso 24/7.',
         },
         {
-          title: 'Deposito perimetrato',
+          title: 'Magazzino perimetrato',
           text: 'Porzioni di superficie riservate per la durata della lavorazione.',
         },
         {
           title: 'Manovra e carico',
-          text: 'Operazioni interne, al riparo dagli agenti atmosferici.',
+          text: 'Spazio di manovra interno, nessuna operazione su strada.',
         },
       ],
     },
@@ -149,28 +152,28 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       panels: [
         {
           tag: 'Ricettività',
-          title: 'Sistemazione delle maestranze',
-          text: 'Cinque unità da 45 a 90 metri quadri, disponibili singolarmente o a piano intero. Cucina in ogni unità, lavanderia comune, palestra e bagno turco al piano wellness. Nessuna limitazione di orario su ingressi e uscite.',
+          title: 'Alloggio delle maestranze',
+          text: 'Cinque unità da 45 a 90 metri quadri, disponibili singolarmente o a piano intero. Cucina in ogni unità, lavanderia comune, palestra e bagno turco al piano wellness. Ingressi e uscite senza vincoli di orario.',
           chips: ['18 posti letto', 'Piano intero', 'Lavanderia', 'Wellness'],
         },
         {
           tag: 'Rimessaggio',
-          title: 'Ricovero di mezzi e attrezzature',
-          text: "Mezzi tecnici e attrezzatura di scena restano al coperto per l'intera durata delle riprese, sotto videosorveglianza integrale, senza necessità di scarico su strada a fine giornata.",
-          chips: ['Videosorveglianza', 'Accesso 24 ore', 'Ricarica elettrica'],
+          title: 'Rimessaggio di mezzi e attrezzature',
+          text: 'Mezzi tecnici e attrezzatura di scena restano al coperto per tutta la durata delle riprese, sotto videosorveglianza integrale. Nessuno scarico su strada a fine giornata.',
+          chips: ['Videosorveglianza', 'Accesso 24/7', 'Ricarica elettrica'],
         },
         {
           tag: 'Movimentazione',
-          title: 'Carico, scarico e deposito',
-          text: 'Area di manovra interna dedicata alle operazioni di carico e scarico, al riparo dagli agenti atmosferici. Porzioni di superficie perimetrabili a magazzino per la durata della lavorazione, con presa in carico e riconsegna concordate.',
+          title: 'Carico, scarico e magazzino',
+          text: 'Area di manovra interna per il carico e lo scarico. Porzioni di superficie perimetrabili a magazzino per la durata della lavorazione, con presa in carico e riconsegna concordate.',
           chips: ['Carico al coperto', 'Magazzino', 'Sopralluogo'],
         },
       ],
     },
     address: {
       eyebrow: 'Un solo indirizzo',
-      title: 'Nessun trasferimento fra sistemazione e deposito.',
-      text: "Vico Santa Maria a Cappella Vecchia 8b. L'intera dotazione necessaria alla lavorazione è contenuta nel medesimo stabile, con un referente unico per accessi, fornitori e orari.",
+      title: 'Nessun trasferimento fra alloggio e rimessaggio.',
+      text: 'Vico Santa Maria a Cappella Vecchia 8b. Tutto ciò che serve alla lavorazione è nello stesso stabile, con un referente unico per accessi, fornitori e orari.',
       bands: [
         { level: 'Piano appartamenti', value: '18 posti letto', side: 'Cinque unità, 325 mq' },
         {
@@ -199,9 +202,9 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       rows: [
         { label: 'Superficie coperta', value: 'Oltre 1.000 mq' },
         { label: 'Posti auto', value: 'Oltre 100' },
-        { label: 'Accesso', value: '24 ore, 365 giorni' },
+        { label: 'Accesso', value: '24/7, 365 giorni' },
         { label: 'Videosorveglianza', value: 'Integrale' },
-        { label: 'Carico e scarico', value: 'Interno, al coperto' },
+        { label: 'Carico e scarico', value: 'Al coperto' },
         { label: 'Ricarica elettrica', value: 'Disponibile' },
         { label: 'Posti letto', value: '18 in cinque unità' },
       ],
@@ -224,7 +227,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
             lines: ['Vico Santa Maria a Cappella Vecchia 8b', '80121 Napoli, Chiaia'],
           },
         ],
-        hint: 'Per lavorazioni con esigenze di ricovero mezzi si consiglia il sopralluogo preliminare, indispensabile a verificare percorsi di accesso e spazi di manovra.',
+        hint: 'Per lavorazioni con rimessaggio mezzi il sopralluogo preliminare verifica percorsi di accesso e spazi di manovra.',
       },
       form: {
         fields: {
@@ -235,7 +238,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
           type: 'Tipo di lavorazione',
           dates: 'Periodo',
           beds: 'Posti letto richiesti',
-          vehicles: 'Mezzi da ricoverare',
+          vehicles: 'Mezzi in rimessaggio',
           notes: 'Esigenze di superficie e note',
         },
         placeholders: {
@@ -246,7 +249,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
           dates: 'Dal, al',
           beds: 'Numero di persone',
           vehicles: 'Tipologia e quantità',
-          notes: 'Metri quadri stimati per deposito, orari di accesso, esigenze di carico',
+          notes: 'Metri quadri stimati a magazzino, orari di accesso, esigenze di carico',
         },
         typeOptions: [
           'Lungometraggio o serie',
@@ -259,7 +262,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         sending: 'Trasmissione in corso',
         sent: 'Brief trasmesso',
         error: 'Trasmissione non riuscita, riprovare o scrivere direttamente.',
-        fine: 'Riscontro entro ventiquattro ore lavorative. I dati trasmessi sono utilizzati esclusivamente per la formulazione del preventivo.',
+        fine: 'Riscontro entro 24 ore lavorative. I dati trasmessi servono solo a formulare il preventivo.',
       },
       foot: [
         'Santopaolo Boutique Apartments',

@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import type { Lang } from '../i18n/index';
-import { PRODUCTION_COPY } from '../lib/production';
+import { PRODUCTION_COPY, GALLERY_ENABLED } from '../lib/production';
 
 /** The production base page, shared by /production and the EN route. */
 interface Props {
@@ -116,26 +116,28 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </div>
     </section>
 
-    <!-- 5. Photo slots, placeholders until the material arrives -->
-    <section class="gallery">
-      <div class="wrap">
-        <div class="head">
-          <p class="eyebrow rv"><b>/</b> {p.gallery.eyebrow}</p>
-          <h2 class="rv">{p.gallery.title}</h2>
+    <!-- 5. Photo gallery, hidden behind GALLERY_ENABLED until the material exists -->
+    {GALLERY_ENABLED && (
+      <section class="gallery">
+        <div class="wrap">
+          <div class="head">
+            <p class="eyebrow rv"><b>/</b> {p.gallery.eyebrow}</p>
+            <h2 class="rv">{p.gallery.title}</h2>
+          </div>
+          <div class="pgrid">
+            {p.gallery.captions.map((caption, index) => (
+              <figure class="ph rv">
+                <div class="m">
+                  <span class="n">{String(index + 1).padStart(2, '0')}</span>
+                  <span class="t">{caption}</span>
+                </div>
+              </figure>
+            ))}
+          </div>
+          <p class="note rv">{p.gallery.note}</p>
         </div>
-        <div class="pgrid">
-          {p.gallery.captions.map((caption, index) => (
-            <figure class="ph rv">
-              <div class="m">
-                <span class="n">{String(index + 1).padStart(2, '0')}</span>
-                <span class="t">{caption}</span>
-              </div>
-            </figure>
-          ))}
-        </div>
-        <p class="note rv">{p.gallery.note}</p>
-      </div>
-    </section>
+      </section>
+    )}
 
     <!-- 6. Technical data -->
     <section class="specs">
