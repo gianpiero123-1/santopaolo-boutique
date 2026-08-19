@@ -12,8 +12,8 @@ export interface ProductionCopy {
   seo: { title: string; description: string };
   hero: {
     eyebrow: string;
-    /** First line of the H1; `titleAccent` follows on its own line in accent bordeaux, weight 700. */
-    title: string;
+    /** One H1 line per entry, no wrapping inside a line; `titleAccent` is the third line in accent bordeaux, weight 700. */
+    titleLines: string[];
     titleAccent: string;
     /** Mono rail under the H1, one line per entry, strings already uppercase. */
     specs: string[];
@@ -110,7 +110,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     },
     hero: {
       eyebrow: 'Production base, Chiaia, Napoli',
-      title: 'Alloggio troupe, parcheggio e rimessaggio',
+      titleLines: ['Alloggio troupe', 'parcheggio e rimessaggio'],
       titleAccent: 'un solo indirizzo.',
       specs: ['FINO A 18 OSPITI, CINQUE UNITÀ', 'OLTRE 1.000 MQ AL COPERTO', 'ACCESSO 24/7, 365 GIORNI'],
       cta: 'Trasmetti un brief',
@@ -279,7 +279,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     },
     hero: {
       eyebrow: 'Production base, Chiaia, Naples',
-      title: 'Crew accommodation, parking and storage',
+      titleLines: ['Crew accommodation', 'parking and storage'],
       titleAccent: 'one address.',
       specs: ['SLEEPS UP TO 18, FIVE UNITS', 'OVER 1,000 SQM UNDER COVER', '24/7 ACCESS, 365 DAYS'],
       cta: 'Send a brief',
