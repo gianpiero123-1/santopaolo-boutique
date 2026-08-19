@@ -16,7 +16,7 @@ const t = useTranslations(lang);
   <section class="section-padding border-b border-brand-border">
     <div class="max-w-7xl mx-auto px-6 lg:px-8">
       <p class="nav-link text-brand-accent mb-3">{t.concierge.hero.eyebrow}</p>
-      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">{t.concierge.services.title}</h1>
+      <h1 class="font-display text-brand-text mb-4">{t.concierge.services.title}</h1>
       <p class="text-brand-muted text-lg max-w-xl">{t.concierge.services.subtitle}</p>
     </div>
   </section>
@@ -34,7 +34,7 @@ const t = useTranslations(lang);
   <section class="section-padding bg-brand-bg2 border-t border-brand-border">
     <div class="max-w-7xl mx-auto px-6 lg:px-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
       <div class="space-y-2">
-        <h2 class="font-display text-2xl lg:text-3xl text-brand-text tracking-tight">Have a specific request?</h2>
+        <h2 class="font-display text-brand-text">Have a specific request?</h2>
         <p class="text-brand-muted">We are available for tailored and bespoke services.</p>
       </div>
       <a href={getLocalePath(lang, '/contact')} class="btn-solid flex-shrink-0">{t.concierge.services.cta}</a>

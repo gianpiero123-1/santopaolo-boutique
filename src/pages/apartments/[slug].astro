@@ -94,7 +94,7 @@ const buildingImages = [
             <span aria-hidden="true">·</span>
             <span>{pluralize(lang, apartment.bathrooms, 'bathrooms')}</span>
           </div>
-          <h1 class="font-display text-4xl lg:text-5xl text-brand-text tracking-tight">
+          <h1 class="font-display text-brand-text">
             {apartment.name}
           </h1>
         </div>
@@ -104,7 +104,7 @@ const buildingImages = [
         <hr class="divider" />
 
         <div class="space-y-5">
-          <h2 class="font-display text-2xl text-brand-text tracking-tight">{t.apartments.amenities}</h2>
+          <h2 class="font-display text-brand-text">{t.apartments.amenities}</h2>
           <ul class="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {commonAmenities.map(amenity => (
               <li class="flex items-center gap-2 text-brand-muted text-sm">
@@ -135,7 +135,7 @@ const buildingImages = [
         <hr class="divider" />
 
         <div class="space-y-5">
-          <h2 class="font-display text-2xl text-brand-text tracking-tight">
+          <h2 class="font-display text-brand-text">
             {t.apartments.goodToKnow}
           </h2>
           <ul class="space-y-3">

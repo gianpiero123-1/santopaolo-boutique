@@ -94,7 +94,7 @@ const isoDate = (d: Date) => d.toISOString().split('T')[0];
 
       {related.length > 0 && (
         <div class="pt-8 border-t border-brand-border space-y-5">
-          <h2 class="font-display text-2xl text-brand-text tracking-tight">{copy.related}</h2>
+          <h2 class="font-display font-light text-2xl text-brand-text tracking-tight">{copy.related}</h2>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {related.map(r => (
               <a
@@ -129,6 +129,8 @@ const isoDate = (d: Date) => d.toISOString().split('T')[0];
 
   .guide-prose h2 {
     font-size: 1.5rem;
+    /* At 24px the global weight 200 is too thin on the dark ground. */
+    font-weight: 300;
     margin-top: 2.5rem;
   }
 

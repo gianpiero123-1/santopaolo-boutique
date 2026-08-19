@@ -104,7 +104,7 @@ const mobileHeroCards = [
       <div class="flex items-end justify-between mb-10">
         <div class="space-y-2">
           <p class="nav-link text-brand-accent">{t.home.featured.label}</p>
-          <h2 class="font-display text-3xl lg:text-4xl text-brand-text tracking-tight">{t.home.featured.title}</h2>
+          <h2 class="font-display text-brand-text">{t.home.featured.title}</h2>
         </div>
         <a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors hidden sm:block">
           {t.home.featured.viewAll}
@@ -141,7 +141,7 @@ const mobileHeroCards = [
   <!-- Bottom CTA -->
   <section class="section-padding bg-brand-bg border-t border-brand-border">
     <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center space-y-6">
-      <h2 class="font-display text-3xl lg:text-5xl text-brand-text tracking-tight">{t.home.cta.title}</h2>
+      <h2 class="font-display text-brand-text">{t.home.cta.title}</h2>
       <p class="text-brand-muted max-w-md mx-auto leading-relaxed">{t.home.cta.body}</p>
       <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
         <a href={getRequestPath(lang)} class="btn-solid">{t.home.cta.cta}</a>

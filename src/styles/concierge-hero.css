@@ -61,9 +61,6 @@
 
 .ch-title {
   font-family: 'Fraunces', serif;
-  font-size: clamp(2rem, 4vw, 3.25rem);
-  font-weight: 400;
-  line-height: 1.1;
   color: #F5F2EC;
   margin: 0 0 20px;
 }
@@ -120,4 +117,23 @@
   .ch-cta {
     align-self: center;
   }
+}
+
+/* On the page hero the ch-title sits on an h1: capped scale plus a fluid
+   column so the title breaks on two or three lines. Padding, gradient and
+   overlay stay untouched. */
+.ch-section--tall .ch-content {
+  max-width: min(72vw, 780px);
+}
+
+@media (max-width: 767px) {
+  .ch-section--tall .ch-content {
+    max-width: min(92vw, 780px);
+  }
+}
+
+h1.ch-title {
+  font-size: clamp(40px, 6vw, 76px);
+  /* Balanced breaks: keeps the Italian title on two even lines. */
+  text-wrap: balance;
 }
