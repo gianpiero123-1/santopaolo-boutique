@@ -18,7 +18,7 @@ export interface ProductionCopy {
     text: string;
     cta: string;
   };
-  /** Five items, numbered 01-05 from their index and looped twice by the track. */
+  /** Items numbered from their index and looped twice by the track. */
   ticker: string[];
   surface: {
     eyebrow: string;
@@ -105,7 +105,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     seo: {
       title: 'Base per produzioni a Napoli, ricettività e rimessaggio a un solo indirizzo',
       description:
-        '18 posti letto in cinque unità e oltre 1.000 metri quadri coperti nello stesso stabile a Chiaia, Napoli. Oltre 100 posti auto, accesso 24/7.',
+        '18 posti letto in cinque unità e oltre 1.000 metri quadri coperti nello stesso stabile a Chiaia, Napoli. Accesso 24/7.',
     },
     hero: {
       eyebrow: 'Base operativa per produzioni, Napoli Chiaia',
@@ -116,7 +116,6 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     },
     ticker: [
       'Oltre 1.000 mq coperti',
-      'Oltre 100 posti auto',
       'Accesso 24/7, 365 giorni',
       'Carico e scarico al coperto',
       'Videosorveglianza integrale',
@@ -133,7 +132,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       uses: [
         {
           title: 'Rimessaggio mezzi',
-          text: 'Oltre 100 posti auto al coperto, accesso 24/7.',
+          text: 'Rimessaggio e stoccaggio al coperto, accesso 24/7.',
         },
         {
           title: 'Magazzino perimetrato',
@@ -153,8 +152,8 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         {
           tag: 'Ricettività',
           title: 'Alloggio delle maestranze',
-          text: 'Cinque unità da 45 a 90 metri quadri, disponibili singolarmente o a piano intero. Cucina in ogni unità, lavanderia comune, palestra e bagno turco al piano wellness. Ingressi e uscite senza vincoli di orario.',
-          chips: ['18 posti letto', 'Piano intero', 'Lavanderia', 'Wellness'],
+          text: 'Cinque unità da 45 a 90 metri quadri, disponibili singolarmente o a piano intero. Cucina e lavatrice in ogni unità, pulizia interna quotidiana, palestra e bagno turco al piano wellness. Ingressi e uscite senza vincoli di orario.',
+          chips: ['18 posti letto', 'Piano intero', 'Lavatrice in ogni unità', 'Pulizia quotidiana', 'Wellness'],
         },
         {
           tag: 'Rimessaggio',
@@ -181,7 +180,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
           value: 'Palestra e bagno turco',
           side: 'Riservato agli ospiti',
         },
-        { level: 'Piano autorimessa', value: 'Oltre 1.000 mq', side: 'Oltre 100 posti auto' },
+        { level: 'Piano autorimessa', value: 'Oltre 1.000 mq', side: 'Rimessaggio e magazzino' },
       ],
     },
     gallery: {
@@ -201,7 +200,6 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       title: 'Verificati sul posto.',
       rows: [
         { label: 'Superficie coperta', value: 'Oltre 1.000 mq' },
-        { label: 'Posti auto', value: 'Oltre 100' },
         { label: 'Accesso', value: '24/7, 365 giorni' },
         { label: 'Videosorveglianza', value: 'Integrale' },
         { label: 'Carico e scarico', value: 'Al coperto' },
@@ -276,7 +274,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     seo: {
       title: 'Production base in Naples, accommodation and vehicle storage at a single address',
       description:
-        'Eighteen beds across five units and over 1,000 covered square metres in the same building in Chiaia, Naples. Over 100 parking spaces, 24 hour access.',
+        'Eighteen beds across five units and over 1,000 covered square metres in the same building in Chiaia, Naples. 24 hour access.',
     },
     hero: {
       eyebrow: 'Production base, Naples Chiaia',
@@ -287,9 +285,8 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     },
     ticker: [
       'Covered surface over 1,000 sqm',
-      'Over 100 parking spaces',
       'Access 24 hours, 365 days',
-      'Loading and unloading under cover',
+      'Covered load in and load out',
       'Full video surveillance',
     ],
     surface: {
@@ -304,7 +301,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       uses: [
         {
           title: 'Vehicle storage',
-          text: 'Over a hundred covered parking spaces, access twenty four hours a day.',
+          text: 'Covered parking, 24 hour access.',
         },
         {
           title: 'Enclosed storage',
@@ -324,8 +321,8 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         {
           tag: 'Hospitality',
           title: 'Crew accommodation',
-          text: 'Five units from 45 to 90 square metres, available individually or as a whole floor. Kitchen in every unit, shared laundry, gym and steam room on the wellness level. No time restrictions on arrivals and departures.',
-          chips: ['18 beds', 'Whole floor', 'Laundry', 'Wellness'],
+          text: 'Five units from 45 to 90 square metres, available individually or as a whole floor. Kitchen and washing machine in every unit, daily housekeeping, gym and steam room on the wellness level. No time restrictions on arrivals and departures.',
+          chips: ['18 beds', 'Whole floor', 'Washing machine in every unit', 'Daily housekeeping', 'Wellness'],
         },
         {
           tag: 'Storage',
@@ -348,7 +345,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       bands: [
         { level: 'Apartment level', value: '18 beds', side: 'Five units, 325 sqm' },
         { level: 'Wellness level', value: 'Gym and steam room', side: 'Reserved for guests' },
-        { level: 'Garage level', value: 'Over 1,000 sqm', side: 'Over 100 parking spaces' },
+        { level: 'Garage level', value: 'Over 1,000 sqm', side: 'Vehicle and goods storage' },
       ],
     },
     gallery: {
@@ -368,7 +365,6 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       title: 'Verified on site.',
       rows: [
         { label: 'Covered surface', value: 'Over 1,000 sqm' },
-        { label: 'Parking spaces', value: 'Over 100' },
         { label: 'Access', value: '24 hours, 365 days' },
         { label: 'Video surveillance', value: 'Full' },
         { label: 'Loading and unloading', value: 'Indoors, under cover' },
