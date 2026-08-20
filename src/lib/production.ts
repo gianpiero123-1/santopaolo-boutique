@@ -11,18 +11,14 @@ export const GALLERY_ENABLED = false;
 export interface ProductionCopy {
   seo: { title: string; description: string };
   hero: {
-    /** Mono line above the H1, already uppercase. */
     eyebrow: string;
-    title: string;
-    /** Mono address line under the H1, above the 44px red rule. */
-    subtitle: string;
+    /** One H1 line per entry, no wrapping inside a line; `titleAccent` is the third line in accent bordeaux, weight 700. */
+    titleLines: string[];
+    titleAccent: string;
+    /** Mono rail under the H1, one line per entry, strings already uppercase. */
+    specs: string[];
+    cta: string;
   };
-  /** Single paragraph; `closing` renders in ivory at the end of the same paragraph. */
-  summary: { label: string; text: string; closing: string };
-  /** Three equal cards, numbered 01-03 from the index; only the first carries a link. */
-  functions: { title: string; text: string; linkLabel?: string; linkHref?: string }[];
-  /** Single button under the grid, anchored to the brief form. */
-  openingCta: string;
   /** Items numbered from their index and looped twice by the track. */
   ticker: string[];
   surface: {
@@ -35,6 +31,13 @@ export interface ProductionCopy {
     /** Mono label repeated above each of the three destination columns. */
     usesLabel: string;
     uses: { title: string; text: string }[];
+  };
+  scope: {
+    eyebrow: string;
+    title: string;
+    /** Sticky index entries, one per panel, same order. */
+    index: string[];
+    panels: { tag: string; title: string; text: string; chips: string[] }[];
   };
   address: {
     eyebrow: string;
@@ -106,32 +109,12 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         'Fino a 18 ospiti in cinque unità e oltre 1.000 metri quadri coperti nello stesso stabile a Chiaia, Napoli. Accesso 24/7.',
     },
     hero: {
-      eyebrow: 'SANTOPAOLO BOUTIQUE APARTMENTS',
-      title: 'Production Base',
-      subtitle: 'VICO SANTA MARIA A CAPPELLA VECCHIA 8B, CHIAIA, NAPOLI',
+      eyebrow: 'Production base, Chiaia, Napoli',
+      titleLines: ['Alloggio troupe', 'parcheggio e rimessaggio'],
+      titleAccent: 'un solo indirizzo.',
+      specs: ['FINO A 18 OSPITI, CINQUE UNITÀ', 'OLTRE 1.000 MQ AL COPERTO', 'ACCESSO 24/7, 365 GIORNI'],
+      cta: 'Trasmetti un brief',
     },
-    summary: {
-      label: 'SINTESI DEL SERVIZIO',
-      text: 'Tre funzioni normalmente distribuite su sedi diverse, accorpate in un solo indirizzo: ricettività per maestranze e cast, spazio coperto libero configurabile per la lavorazione, autorimessa per movimentazione mezzi e merci con presidio 24 ore.',
-      closing: 'Un solo interlocutore, un solo accesso, nessuno spostamento tra basi durante la lavorazione.',
-    },
-    functions: [
-      {
-        title: 'Alloggi',
-        text: "Cinque appartamenti sullo stesso piano, da 45 a 90 mq, fino a 18 ospiti. Occupazione parziale o esclusiva dell'intero piano per l'intera durata della lavorazione. Wellness floor con palestra e bagno turco a servizio del piano.",
-        linkLabel: 'VEDI APPARTAMENTI',
-        linkHref: '/apartments',
-      },
-      {
-        title: 'Spazio configurabile',
-        text: 'Oltre 1.000 mq coperti liberi, configurabili sulla singola lavorazione. Deposito attrezzatura e scenografia, allestimento, magazzino costumi, sartoria, trucco, set interno. Accesso mezzi al coperto.',
-      },
-      {
-        title: 'Autorimessa',
-        text: 'Accesso 24/7, 365 giorni. Carico e scarico al coperto, aree di drop off e attesa mezzi, presa in carico merci e consegne da personale qualificato, videosorveglianza integrale.',
-      },
-    ],
-    openingCta: 'Richiedi un sopralluogo',
     ticker: [
       'Oltre 1.000 mq coperti',
       'Accesso 24/7, 365 giorni',
@@ -159,6 +142,31 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         {
           title: 'Manovra e carico',
           text: 'Spazio di manovra interno, nessuna operazione su strada.',
+        },
+      ],
+    },
+    scope: {
+      eyebrow: 'Ambiti operativi',
+      title: 'Tre funzioni nello stesso perimetro.',
+      index: ['Alloggio', 'Rimessaggio', 'Movimentazione'],
+      panels: [
+        {
+          tag: 'Ricettività',
+          title: 'Alloggio delle maestranze',
+          text: 'Cinque unità da 45 a 90 metri quadri, disponibili singolarmente o a piano intero. Cucina e lavatrice in ogni unità, pulizia interna quotidiana, palestra e bagno turco al piano wellness. Ingressi e uscite senza vincoli di orario.',
+          chips: ['Fino a 18 ospiti', 'Piano intero', 'Lavatrice in ogni unità', 'Pulizia quotidiana', 'Wellness'],
+        },
+        {
+          tag: 'Rimessaggio',
+          title: 'Rimessaggio di mezzi e attrezzature',
+          text: 'Mezzi tecnici e attrezzatura di scena restano al coperto per tutta la durata delle riprese, sotto videosorveglianza integrale. Nessuno scarico su strada a fine giornata.',
+          chips: ['Videosorveglianza', 'Accesso 24/7', 'Ricarica elettrica'],
+        },
+        {
+          tag: 'Movimentazione',
+          title: 'Carico, scarico e magazzino',
+          text: 'Area di manovra interna per il carico e lo scarico. Porzioni di superficie perimetrabili a magazzino per la durata della lavorazione, con presa in carico e riconsegna concordate.',
+          chips: ['Carico al coperto', 'Magazzino', 'Sopralluogo'],
         },
       ],
     },
@@ -270,32 +278,12 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         'Sleeps up to 18 across five units, with over 1,000 covered square metres in one building in Chiaia, Naples. 24 hour access, 365 days.',
     },
     hero: {
-      eyebrow: 'SANTOPAOLO BOUTIQUE APARTMENTS',
-      title: 'Production Base',
-      subtitle: 'VICO SANTA MARIA A CAPPELLA VECCHIA 8B, CHIAIA, NAPLES',
+      eyebrow: 'Production base, Chiaia, Naples',
+      titleLines: ['Crew accommodation', 'parking and storage'],
+      titleAccent: 'one address.',
+      specs: ['SLEEPS UP TO 18, FIVE UNITS', 'OVER 1,000 SQM UNDER COVER', '24/7 ACCESS, 365 DAYS'],
+      cta: 'Send a brief',
     },
-    summary: {
-      label: 'SERVICE SUMMARY',
-      text: 'Three functions that usually sit on separate sites, brought together at one address: accommodation for crew and cast, open covered space configured around each production, and vehicle storage with covered load in and load out, staffed 24 hours a day.',
-      closing: 'One point of contact, one entrance, no moving between bases during the shoot.',
-    },
-    functions: [
-      {
-        title: 'Accommodation',
-        text: 'Five apartments on one floor, 45 to 90 sqm, sleeps up to 18. Take part of the floor or all of it for the length of the production. Wellness floor with gym and steam room serving the apartments.',
-        linkLabel: 'VIEW APARTMENTS',
-        linkHref: '/en/apartments',
-      },
-      {
-        title: 'Configurable space',
-        text: 'Over 1,000 sqm of open covered space, configured production by production. Equipment and set storage, build and fit out, costume store, wardrobe, makeup, interior sets. Covered vehicle access.',
-      },
-      {
-        title: 'Vehicle storage',
-        text: '24/7 access, 365 days. Covered load in and load out, drop off and holding areas for vehicles, goods and deliveries received by trained personnel, full CCTV coverage.',
-      },
-    ],
-    openingCta: 'Request a site visit',
     ticker: [
       'Over 1,000 sqm under cover',
       '24 hour access, 365 days',
@@ -323,6 +311,31 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         {
           title: 'Load in and load out',
           text: 'Indoor manoeuvring space, no work on the street.',
+        },
+      ],
+    },
+    scope: {
+      eyebrow: 'Operational scope',
+      title: 'Three functions on one site.',
+      index: ['Accommodation', 'Storage', 'Handling'],
+      panels: [
+        {
+          tag: 'Hospitality',
+          title: 'Crew accommodation',
+          text: 'Five units from 45 to 90 square metres, taken singly or as a whole floor. Kitchen and washing machine in every unit, daily housekeeping, gym and steam room on the wellness level. Arrivals and departures at any hour.',
+          chips: ['Sleeps 18', 'Whole floor', 'Washing machine in every unit', 'Daily housekeeping', 'Wellness'],
+        },
+        {
+          tag: 'Storage',
+          title: 'Vehicle and equipment storage',
+          text: 'Unit vehicles and set equipment stay inside for the length of the shoot, under full CCTV coverage. Nothing goes back onto the street at the end of the day.',
+          chips: ['Full CCTV', '24 hour access', 'EV charging'],
+        },
+        {
+          tag: 'Handling',
+          title: 'Load in, load out and storage',
+          text: 'Indoor manoeuvring area for load in and load out. Sections of the floor can be closed off as storage for the length of the production, with handover agreed on collection and return.',
+          chips: ['Load in and load out', 'Storage', 'Site visit'],
         },
       ],
     },
