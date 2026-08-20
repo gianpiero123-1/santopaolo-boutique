@@ -63,35 +63,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </div>
     </div>
 
-    <!-- 3. Covered surface -->
-    <section class="figure">
-      <div class="wrap">
-        <p class="eyebrow rv"><b>/</b> {p.surface.eyebrow}</p>
-
-        <div class="top">
-          <div class="qty rv">
-            <span class="val">{p.surface.value}<sup>+</sup></span>
-            <span class="unit">{p.surface.unit}</span>
-          </div>
-          <div class="copy">
-            <p class="rv">{p.surface.text1}</p>
-            <p class="rv">{p.surface.text2}</p>
-          </div>
-        </div>
-
-        <dl class="under rv">
-          {p.surface.uses.map(use => (
-            <div>
-              <dt>{p.surface.usesLabel}</dt>
-              <dd>{use.title}</dd>
-              <p>{use.text}</p>
-            </div>
-          ))}
-        </dl>
-      </div>
-    </section>
-
-    <!-- 4. A single address, staggered bands -->
+    <!-- 3. A single address, staggered bands -->
     <section class="address">
       <div class="wrap in">
         <div>
@@ -110,7 +82,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </div>
     </section>
 
-    <!-- 5. Photo gallery, hidden behind GALLERY_ENABLED until the material exists -->
+    <!-- 4. Photo gallery, hidden behind GALLERY_ENABLED until the material exists -->
     {GALLERY_ENABLED && (
       <section class="gallery">
         <div class="wrap">
@@ -133,7 +105,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </section>
     )}
 
-    <!-- 6. Technical data -->
+    <!-- 5. Technical data -->
     <section class="specs">
       <div class="wrap in">
         <div>
@@ -148,7 +120,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </div>
     </section>
 
-    <!-- 7. Closing, contacts and brief form -->
+    <!-- 6. Closing, contacts and brief form -->
     <section class="close" id="brief">
       <div class="wrap">
         <div class="close-head">
@@ -306,12 +278,12 @@ const tickerLoop = [...p.ticker, ...p.ticker];
   .lede { font-size: clamp(17px, 1.45vw, 20px); line-height: 1.58; max-width: 44ch; }
 
   /* ═══ HERO, light shafts. Height compensates the fixed navbar spacer. ═══ */
+  /* Top-anchored: height comes from the content plus paddings, no viewport fill. */
   .hero {
-    position: relative; min-height: 70vh;
-    display: flex; flex-direction: column; justify-content: center;
-    overflow: hidden;
+    position: relative;
+    padding-top: 40px; padding-bottom: 0; overflow: hidden;
   }
-  @media (min-width: 768px) { .hero { min-height: 85vh; } }
+  @media (min-width: 768px) { .hero { padding-top: 64px; } }
   .shafts { position: absolute; inset: -10% -20%; z-index: 0; pointer-events: none; }
   .shafts span {
     position: absolute; top: -30%; height: 170%; width: clamp(90px, 13vw, 230px);
@@ -337,7 +309,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
   .hero-rule { display: block; width: 44px; height: 1px; background: var(--brand-red); margin-top: 26px; }
 
   /* ═══ OPENING: offset summary on columns 2-8, cards on 1-12 ═══ */
-  .opening { margin-top: 72px; padding-bottom: clamp(56px, 8vh, 100px); }
+  .opening { margin-top: 48px; padding-bottom: clamp(56px, 8vh, 100px); }
   .ogrid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 18px; }
   .summary { grid-column: 1 / -1; max-width: 58ch; border-left: 2px solid var(--accent); padding-left: 22px; }
   .summary .summary-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--marble); margin: 0 0 14px; }
@@ -353,7 +325,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
   .btn-visit:hover { background: var(--accent-hover); }
   .btn-visit:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
   @media (min-width: 768px) {
-    .opening { margin-top: 120px; }
+    .opening { margin-top: 72px; }
     .summary { grid-column: 2 / 9; }
     .fn-grid { margin-top: 120px; grid-template-columns: repeat(3, 1fr); }
   }
@@ -401,62 +373,6 @@ const tickerLoop = [...p.ticker, ...p.ticker];
     from { transform: translateX(0); }
     to { transform: translateX(-50%); }
   }
-
-  /* ═══ SURFACE ═══ */
-  .figure {
-    position: relative; overflow: hidden;
-    padding-block: clamp(90px, 14vh, 170px);
-    background:
-      radial-gradient(120% 90% at 8% 18%, rgba(138, 42, 42, 0.3), transparent 60%),
-      linear-gradient(158deg, #25100f 0%, #170b0b 34%, var(--bg) 78%);
-  }
-  .figure::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
-    background: repeating-linear-gradient(96deg, transparent 0 78px, rgba(245, 242, 236, 0.035) 78px 79px);
-    -webkit-mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
-    mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
-  }
-  .figure .wrap { position: relative; }
-
-  .figure .top { display: grid; gap: clamp(38px, 5vw, 86px); align-items: end; margin-top: clamp(34px, 4vw, 58px); }
-  @media (min-width: 940px) { .figure .top { grid-template-columns: minmax(300px, 40%) 1fr; } }
-
-  .qty { position: relative; padding-left: clamp(20px, 2.6vw, 36px); }
-  .qty::before {
-    content: ''; position: absolute; left: 0; top: 6px; bottom: 14px; width: 2px;
-    background: linear-gradient(180deg, var(--accent-hover), rgba(138, 42, 42, 0));
-  }
-  .qty .val {
-    font-family: var(--display); font-weight: 200; letter-spacing: -0.04em; line-height: 0.88;
-    font-size: clamp(70px, 8.4vw, 132px); display: block;
-  }
-  .qty .val sup { font-size: 0.24em; vertical-align: top; position: relative; top: 0.55em; color: var(--accent-hover); letter-spacing: 0; }
-  .qty .unit {
-    display: block; margin-top: 18px; font-family: var(--mono); font-size: 11px;
-    letter-spacing: 0.22em; text-transform: uppercase; color: var(--marble);
-  }
-  .figure .copy { display: grid; gap: clamp(22px, 2.6vw, 34px); }
-  @media (min-width: 1140px) { .figure .copy { grid-template-columns: 1fr 1fr; } }
-  .figure .copy p { max-width: 42ch; color: rgba(245, 242, 236, 0.76); }
-
-  .figure .under {
-    display: grid; gap: 0; margin-top: clamp(52px, 7vw, 96px);
-    border-top: 1px solid rgba(245, 242, 236, 0.16);
-  }
-  @media (min-width: 760px) { .figure .under { grid-template-columns: repeat(3, 1fr); } }
-  .figure .under div {
-    padding: clamp(22px, 2.6vw, 32px) clamp(0px, 2vw, 30px);
-    border-bottom: 1px solid var(--hair);
-  }
-  @media (min-width: 760px) {
-    .figure .under div { border-bottom: 0; border-left: 1px solid var(--hair); }
-    .figure .under div:first-child { border-left: 0; padding-left: 0; }
-  }
-  .figure .under dt {
-    font-family: var(--mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-hover);
-  }
-  .figure .under dd { margin: 14px 0 0; font-family: var(--display); font-weight: 200; font-size: clamp(23px, 2.4vw, 31px); line-height: 1.15; }
-  .figure .under p { margin-top: 10px; font-size: 14px; color: var(--marble); max-width: 30ch; }
 
   /* ═══ ADDRESS, staggered bands ═══ */
   .address { position: relative; padding-block: clamp(90px, 14vh, 170px); background: var(--panel); overflow: hidden; }

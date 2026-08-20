@@ -25,17 +25,6 @@ export interface ProductionCopy {
   openingCta: string;
   /** Items numbered from their index and looped twice by the track. */
   ticker: string[];
-  surface: {
-    eyebrow: string;
-    /** The big figure, locale formatted; the component appends the accent plus sign. */
-    value: string;
-    unit: string;
-    text1: string;
-    text2: string;
-    /** Mono label repeated above each of the three destination columns. */
-    usesLabel: string;
-    uses: { title: string; text: string }[];
-  };
   address: {
     eyebrow: string;
     title: string;
@@ -138,30 +127,6 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       'Carico e scarico al coperto',
       'Videosorveglianza integrale',
     ],
-    surface: {
-      eyebrow: 'Superficie coperta',
-      value: '1.000',
-      unit: 'Metri quadri, piano autorimessa',
-      text1:
-        'Oltre mille metri quadri coperti sotto le unità ricettive. A Chiaia la superficie coperta è scarsa, e una metratura simile non esiste altrove nel quartiere.',
-      text2:
-        'Non si affitta a giornata. Si perimetra sulla durata della lavorazione, con presa in carico e riconsegna formalizzate.',
-      usesLabel: 'Destinazione',
-      uses: [
-        {
-          title: 'Rimessaggio mezzi',
-          text: 'Rimessaggio e stoccaggio al coperto, accesso 24/7.',
-        },
-        {
-          title: 'Magazzino perimetrato',
-          text: 'Porzioni di superficie riservate per la durata della lavorazione.',
-        },
-        {
-          title: 'Manovra e carico',
-          text: 'Spazio di manovra interno, nessuna operazione su strada.',
-        },
-      ],
-    },
     address: {
       eyebrow: 'Un solo indirizzo',
       title: 'Nessun trasferimento fra alloggio e rimessaggio.',
@@ -302,30 +267,6 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       'Covered load in and load out',
       'Full CCTV coverage',
     ],
-    surface: {
-      eyebrow: 'Covered floor area',
-      value: '1,000',
-      unit: 'Square metres, garage level',
-      text1:
-        'Over 1,000 covered square metres directly beneath the apartments. Covered space is scarce in Chiaia, and nothing of this size exists elsewhere in the district.',
-      text2:
-        'The floor is not let by the day. It is marked out for the length of the production, with documented handover at the start and end.',
-      usesLabel: 'Use',
-      uses: [
-        {
-          title: 'Vehicle storage',
-          text: 'Covered parking with 24 hour access.',
-        },
-        {
-          title: 'Secure storage',
-          text: 'Sections of the floor set aside for the length of the production.',
-        },
-        {
-          title: 'Load in and load out',
-          text: 'Indoor manoeuvring space, no work on the street.',
-        },
-      ],
-    },
     address: {
       eyebrow: 'A single address',
       title: 'No shuttling between accommodation and storage.',
