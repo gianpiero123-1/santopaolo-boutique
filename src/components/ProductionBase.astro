@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import type { Lang } from '../i18n/index';
-import { PRODUCTION_COPY, GALLERY_ENABLED } from '../lib/production';
+import { PRODUCTION_COPY, GALLERY_ENABLED, PLATES_ENABLED } from '../lib/production';
 
 /** The production base page, shared by /production and the EN route. */
 interface Props {
@@ -11,6 +11,10 @@ interface Props {
 const { lang } = Astro.props;
 const p = PRODUCTION_COPY[lang];
 const f = p.closing.form;
+const s = p.sections;
+
+/** Fixed anchors of the deep sections, in spine order. */
+const spineAnchors = ['#alloggi', '#spazio', '#autorimessa'];
 
 // The ticker track loops its content twice so the -50% keyframe is seamless.
 const tickerLoop = [...p.ticker, ...p.ticker];
@@ -44,13 +48,110 @@ const tickerLoop = [...p.ticker, ...p.ticker];
                 <span class="fn-num">{String(index + 1).padStart(2, '0')}</span>
                 <h2 class="fn-title">{fn.title}</h2>
                 <p class="fn-text">{fn.text}</p>
-                {fn.linkHref && <a class="fn-link" href={fn.linkHref}>{fn.linkLabel}</a>}
+                <a class="fn-link" href={fn.linkHref}>{fn.linkLabel} <i aria-hidden="true">&#8595;</i></a>
               </div>
             </article>
           ))}
         </div>
+      </div>
+    </section>
 
-        <a class="btn-visit rv" href="#brief">{p.openingCta}</a>
+    <!-- Section spine, fixed left, shown while the deep sections are on screen -->
+    <nav class="spine" aria-label={lang === 'it' ? 'Sezioni' : 'Sections'}>
+      {s.spine.map((label, index) => (
+        <a href={spineAnchors[index]}><span class="bar" aria-hidden="true"></span><span class="lbl">{label}</span></a>
+      ))}
+    </nav>
+
+    <!-- 3. Deep section: alloggi -->
+    <section class="deep" id="alloggi">
+      <span class="dshaft" aria-hidden="true"></span>
+      <div class="wrap">
+        <div class="dhead">
+          <span class="dnum rv2">01</span>
+          <div class="dtext">
+            <h2 class="rv2">{s.alloggi.titleLines[0]}<br />{s.alloggi.titleLines[1]}</h2>
+            <p class="dlead rv2">{s.alloggi.lead} <strong>{s.alloggi.leadClosing}</strong></p>
+            <ul class="drail rv2">
+              {s.alloggi.rail.map(item => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+        <div class="units">
+          {s.alloggi.units.map((unit, index) => (
+            <a class="unit rv2" href={unit.href}>
+              <span class="unum">{String(index + 1).padStart(2, '0')}</span>
+              <span class="uname">{unit.name}<span class="unote">{unit.note}</span></span>
+              <span class="udatas">
+                <span class="udata">{unit.area}</span>
+                <span class="udata">{unit.guests}</span>
+              </span>
+              <span class="uarr" aria-hidden="true">&#8594;</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Deep section: spazio -->
+    <section class="deep deep-alt" id="spazio">
+      <span class="dshaft" aria-hidden="true"></span>
+      <div class="wrap">
+        <div class="dhead">
+          <span class="dnum rv2">02</span>
+          <div class="dtext">
+            <h2 class="rv2">{s.spazio.titleLines[0]}<br />{s.spazio.titleLines[1]}</h2>
+            <p class="dlead rv2">{s.spazio.lead} <strong>{s.spazio.leadClosing}</strong></p>
+            <ul class="drail rv2">
+              {s.spazio.rail.map(item => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+        <div class="uses3">
+          {s.spazio.uses.map(use => (
+            <article class="use3 rv2">
+              <span class="ulbl">{s.spazio.usesLabel}</span>
+              <h3>{use.title}</h3>
+              <p>{use.text}</p>
+            </article>
+          ))}
+        </div>
+        <div class="plates plates-3">
+          {s.spazio.plates.map(plate => (
+            <figure class="plate rv2">
+              {PLATES_ENABLED && plate.src && <img class="pimg" src={plate.src} alt={plate.caption2} loading="lazy" />}
+              {PLATES_ENABLED && plate.src && <span class="pshade" aria-hidden="true"></span>}
+              <figcaption class="pcap"><b>{plate.caption1}</b>{plate.caption2}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Deep section: autorimessa -->
+    <section class="deep" id="autorimessa">
+      <span class="dshaft" aria-hidden="true"></span>
+      <div class="wrap">
+        <div class="dhead">
+          <span class="dnum rv2">03</span>
+          <div class="dtext">
+            <h2 class="rv2">{s.autorimessa.titleLines[0]}<br />{s.autorimessa.titleLines[1]}</h2>
+            <p class="dlead rv2">{s.autorimessa.lead} <strong>{s.autorimessa.leadClosing}</strong></p>
+            <ul class="drail rv2">
+              {s.autorimessa.rail.map(item => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+        <div class="plates plates-2">
+          {s.autorimessa.plates.map(plate => (
+            <figure class="plate rv2">
+              {PLATES_ENABLED && plate.src && <img class="pimg" src={plate.src} alt={plate.caption2} loading="lazy" />}
+              {PLATES_ENABLED && plate.src && <span class="pshade" aria-hidden="true"></span>}
+              <figcaption class="pcap"><b>{plate.caption1}</b>{plate.caption2}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <a class="dcta" href="#brief">{s.autorimessa.cta}</a>
       </div>
     </section>
 
@@ -63,7 +164,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </div>
     </div>
 
-    <!-- 3. A single address, staggered bands -->
+    <!-- 6. A single address, staggered bands -->
     <section class="address">
       <div class="wrap in">
         <div>
@@ -82,7 +183,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </div>
     </section>
 
-    <!-- 4. Photo gallery, hidden behind GALLERY_ENABLED until the material exists -->
+    <!-- 7. Photo gallery, hidden behind GALLERY_ENABLED until the material exists -->
     {GALLERY_ENABLED && (
       <section class="gallery">
         <div class="wrap">
@@ -105,7 +206,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </section>
     )}
 
-    <!-- 5. Technical data -->
+    <!-- 8. Technical data -->
     <section class="specs">
       <div class="wrap in">
         <div>
@@ -120,7 +221,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </div>
     </section>
 
-    <!-- 6. Closing, contacts and brief form -->
+    <!-- 9. Closing, contacts and brief form -->
     <section class="close" id="brief">
       <div class="wrap">
         <div class="close-head">
@@ -309,21 +410,13 @@ const tickerLoop = [...p.ticker, ...p.ticker];
   .hero-rule { display: block; width: 44px; height: 1px; background: var(--brand-red); margin-top: 26px; }
 
   /* ═══ OPENING: offset summary on columns 2-8, cards on 1-12 ═══ */
-  .opening { margin-top: 48px; padding-bottom: clamp(56px, 8vh, 100px); }
+  .opening { margin-top: 48px; }
   .ogrid { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 18px; }
   .summary { grid-column: 1 / -1; max-width: 58ch; border-left: 2px solid var(--accent); padding-left: 22px; }
   .summary .summary-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--marble); margin: 0 0 14px; }
   .summary .summary-text { font-family: var(--body); line-height: 1.85; color: var(--text2); margin: 0; }
   .summary .summary-text strong { color: #f5f2ec; font-weight: inherit; }
   .fn-grid { grid-column: 1 / -1; margin-top: 72px; display: grid; grid-template-columns: 1fr; gap: 18px; align-items: stretch; }
-  .btn-visit {
-    grid-column: 1 / -1; justify-self: start; margin-top: clamp(44px, 6vw, 72px);
-    display: inline-block; padding: 16px 34px; background: var(--accent); color: #f5f2ec;
-    font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
-    text-decoration: none; transition: background 0.3s ease;
-  }
-  .btn-visit:hover { background: var(--accent-hover); }
-  .btn-visit:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
   @media (min-width: 768px) {
     .opening { margin-top: 72px; }
     .summary { grid-column: 2 / 9; }
@@ -350,10 +443,156 @@ const tickerLoop = [...p.ticker, ...p.ticker];
     color: var(--text); text-decoration: none; border-bottom: 1px solid var(--accent);
   }
   .fn-in .fn-link:focus-visible { outline: 1px solid var(--text); outline-offset: 4px; }
+  .fn-in .fn-link i { font-style: normal; }
   @media (prefers-reduced-motion: reduce) {
     .fn-card.rv:not(.in) { transform: none; transition: none; }
     .fn-in { transition: none; }
     .fn-card:hover .fn-in { transform: none; }
+  }
+
+  /* ═══ SECTION SPINE, fixed left ═══ */
+  .spine {
+    position: fixed; left: 26px; top: 50%; transform: translateY(-50%); z-index: 40;
+    display: flex; flex-direction: column; gap: 18px;
+    opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+  }
+  .spine.show { opacity: 1; pointer-events: auto; }
+  @media (max-width: 1179px) { .spine { display: none; } }
+  .spine a { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .spine .bar { width: 3px; height: 30px; background: #242424; transition: height 0.35s ease, background 0.35s ease; }
+  .spine .lbl {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: #4a4a4a; transition: color 0.35s ease;
+  }
+  .spine a.on .bar { background: var(--accent); height: 44px; }
+  .spine a.on .lbl { color: #f5f2ec; }
+  .spine a:focus-visible { outline: 1px solid var(--text); outline-offset: 4px; }
+
+  /* ═══ DEEP SECTIONS: alloggi, spazio, autorimessa ═══ */
+  .deep { position: relative; overflow: hidden; padding: 132px 0; border-top: 1px solid #262626; scroll-margin-top: 7rem; }
+  @media (max-width: 759px) { .deep { padding: 80px 0; } }
+  .dshaft {
+    position: absolute; top: 0; bottom: 0; right: 9%; width: 180px; pointer-events: none;
+    background: linear-gradient(180deg, rgba(200, 32, 44, 0.05), transparent 62%);
+    transform: skewX(-11deg);
+  }
+  .deep-alt .dshaft { width: 80px; right: 20%; opacity: 0.55; }
+  .dhead { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+  .deep .dnum {
+    grid-column: 1; align-self: start; font-family: var(--mono); font-size: 12px;
+    letter-spacing: 0.14em; color: var(--brand-red); padding-bottom: 12px; border-bottom: 1px solid #262626;
+  }
+  .dtext { grid-column: 2 / 10; }
+  .dtext h2 { font-size: clamp(32px, 4.4vw, 58px); line-height: 1.04; letter-spacing: -0.01em; }
+  .dtext .dlead { margin-top: 26px; font-family: var(--body); font-size: 15px; line-height: 1.85; color: var(--text2); max-width: 58ch; }
+  .dtext .dlead strong { color: #f5f2ec; font-weight: inherit; }
+  .dtext .drail { margin: 36px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; border-top: 1px solid #262626; }
+  .dtext .drail li {
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--marble); padding: 13px 22px 13px 0; margin-right: 22px; border-right: 1px solid #262626;
+  }
+  .dtext .drail li:last-child { border-right: 0; margin-right: 0; }
+  @media (max-width: 859px) {
+    .dhead { grid-template-columns: 1fr; }
+    .deep .dnum { grid-column: auto; width: max-content; }
+    .dtext { grid-column: auto; }
+  }
+
+  /* Editorial unit rows, links to the apartment pages */
+  .units { margin-top: 66px; border-top: 1px solid #262626; }
+  .unit {
+    position: relative; display: grid; grid-template-columns: 66px 1fr 96px 104px 40px;
+    gap: 16px; align-items: center; padding: 26px 0; border-bottom: 1px solid #262626;
+    text-decoration: none; transition: padding-left 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .unit::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 0;
+    background: var(--accent); transition: width 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .unit:hover { padding-left: 22px; }
+  .unit:hover::before { width: 2px; }
+  .unit:focus-visible { outline: 1px solid var(--text); outline-offset: 4px; }
+  .unit .unum { font-family: var(--mono); font-size: 11px; color: #4a4a4a; transition: color 0.35s ease; }
+  .unit:hover .unum { color: var(--brand-red); }
+  .unit .uname { font-family: var(--display); font-weight: 200; font-size: 24px; line-height: 1.15; color: var(--text); }
+  .unit .unote { display: block; font-family: var(--body); font-size: 12px; color: var(--marble); margin-top: 6px; }
+  .udatas { display: contents; }
+  .unit .udata { font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; color: var(--text2); }
+  .unit .uarr {
+    font-family: var(--mono); font-size: 14px; color: #3d3d3d; justify-self: end;
+    transition: color 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .unit:hover .uarr { color: #f5f2ec; transform: translateX(5px); }
+  @media (max-width: 759px) {
+    .unit { grid-template-columns: 44px 1fr 30px; }
+    .unit .uname { font-size: 20px; }
+    .udatas { display: flex; gap: 14px; grid-column: 2; grid-row: 2; }
+    .unit .uarr { grid-column: 3; grid-row: 1; align-self: start; }
+  }
+
+  /* Three uses on a hairline grid */
+  .uses3 {
+    margin-top: 70px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px;
+    background: #262626; border-top: 1px solid #262626; border-bottom: 1px solid #262626;
+  }
+  @media (max-width: 859px) { .uses3 { grid-template-columns: 1fr; } }
+  .use3 { background: #0e0e0e; padding: 34px 26px 38px; transition: background 0.35s ease; }
+  .use3:hover { background: #171717; }
+  .use3 .ulbl {
+    display: block; font-family: var(--mono); font-size: 9px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--brand-red); margin-bottom: 16px;
+  }
+  .use3 h3 { font-size: 22px; font-weight: 200; letter-spacing: -0.01em; }
+  .use3 p { margin-top: 12px; font-size: 13px; line-height: 1.75; color: var(--marble); }
+
+  /* Photo plates, graphic placeholders until PLATES_ENABLED flips to true */
+  .plates { margin-top: 74px; display: grid; gap: 14px; }
+  .plates-3 { grid-template-columns: 1.32fr 1fr; grid-template-rows: repeat(2, minmax(230px, auto)); }
+  .plates-3 .plate:first-child { grid-row: 1 / 3; min-height: 474px; }
+  .plates-2 { grid-template-columns: 1fr 1fr; }
+  @media (max-width: 859px) {
+    .plates-3, .plates-2 { grid-template-columns: 1fr; grid-template-rows: none; }
+    .plates-3 .plate:first-child { grid-row: auto; min-height: 230px; }
+  }
+  .plate {
+    position: relative; overflow: hidden; margin: 0; background: #171717;
+    border-top: 1px solid #262626; min-height: 230px;
+    display: flex; align-items: flex-end; padding: 20px;
+    transition: border-color 0.35s ease;
+  }
+  .plate:hover { border-top-color: var(--accent); }
+  .plate::before {
+    content: ''; position: absolute; inset: 0; opacity: 0.9; pointer-events: none;
+    background:
+      repeating-linear-gradient(135deg, #1a1a1a 0 1px, transparent 1px 13px),
+      linear-gradient(160deg, #1f1f1f, #141414);
+  }
+  .plate .pimg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .plate .pshade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(180deg, transparent 45%, rgba(14, 14, 14, 0.85)); }
+  .plate .pcap {
+    position: relative; margin: 0; font-family: var(--mono); font-size: 9px;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--marble); line-height: 1.8;
+  }
+  .plate .pcap b { display: block; color: #4a4a4a; font-weight: inherit; }
+
+  .deep .dcta {
+    display: inline-block; margin-top: 76px; padding: 17px 34px;
+    background: var(--accent); color: #f5f2ec; font-family: var(--mono); font-size: 11px;
+    letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none;
+    transition: background 0.3s ease;
+  }
+  .deep .dcta:hover { background: var(--accent-hover); }
+  .deep .dcta:focus-visible { outline: 2px solid var(--text); outline-offset: 4px; }
+
+  /* Deep reveal: 16px rise, the script staggers siblings by 80ms capped at six */
+  .rv2 {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.3, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .rv2.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .rv2 { opacity: 1; transform: none; transition: none; }
+    .spine, .spine .bar, .spine .lbl, .unit, .unit::before, .unit .unum, .unit .uarr, .use3, .plate { transition: none; }
   }
 
   /* ═══ TICKER ═══ */
@@ -564,6 +803,62 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       { threshold: 0.14, rootMargin: '0px 0px -6% 0px' }
     );
     revealed.forEach(el => io.observe(el));
+  }
+
+  // Deep-section reveal: 16px rise, 80ms sibling stagger capped at six.
+  const revealed2 = Array.from(document.querySelectorAll<HTMLElement>('.rv2'));
+  revealed2.forEach(el => {
+    const parent = el.parentElement;
+    if (!parent) return;
+    const siblings = Array.from(parent.children).filter(child => child.classList.contains('rv2'));
+    const index = Math.min(siblings.indexOf(el), 5);
+    if (index > 0) el.style.transitionDelay = `${index * 80}ms`;
+  });
+  if (!('IntersectionObserver' in window) || reduce) {
+    revealed2.forEach(el => el.classList.add('in'));
+  } else {
+    const io2 = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            io2.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' }
+    );
+    revealed2.forEach(el => io2.observe(el));
+  }
+
+  // Section spine: shown while a deep section is on screen, active item from the centre band.
+  const spineNav = document.querySelector<HTMLElement>('.spine');
+  const spineLinks = spineNav ? Array.from(spineNav.querySelectorAll<HTMLAnchorElement>('a')) : [];
+  const deepSections = Array.from(document.querySelectorAll<HTMLElement>('.deep'));
+  if (spineNav && deepSections.length && 'IntersectionObserver' in window) {
+    const onScreen = new Set<Element>();
+    const visibility = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) onScreen.add(entry.target);
+        else onScreen.delete(entry.target);
+      });
+      spineNav.classList.toggle('show', onScreen.size > 0);
+    });
+    const active = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const index = deepSections.indexOf(entry.target as HTMLElement);
+            spineLinks.forEach((link, i) => link.classList.toggle('on', i === index));
+          }
+        });
+      },
+      { rootMargin: '-30% 0px -50% 0px' }
+    );
+    deepSections.forEach(section => {
+      visibility.observe(section);
+      active.observe(section);
+    });
   }
 
   // Brief form, JSON to /api/brief with three button states: ready, sending, sent.
