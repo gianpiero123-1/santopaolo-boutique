@@ -164,26 +164,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </div>
     </div>
 
-    <!-- 6. A single address, staggered bands -->
-    <section class="address">
-      <div class="wrap in">
-        <div>
-          <p class="eyebrow rv"><b>/</b> {p.address.eyebrow}</p>
-          <h2 class="rv">{p.address.title}</h2>
-          <p class="lede rv">{p.address.text}</p>
-        </div>
-        <div class="stack">
-          {p.address.bands.map((band, index) => (
-            <div class:list={['band', 'rv', { solid: index === p.address.bands.length - 1 }]}>
-              <div><span class="lv">{band.level}</span><span class="big">{band.value}</span></div>
-              <span class="side">{band.side}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- 7. Photo gallery, hidden behind GALLERY_ENABLED until the material exists -->
+    <!-- 6. Photo gallery, hidden behind GALLERY_ENABLED until the material exists -->
     {GALLERY_ENABLED && (
       <section class="gallery">
         <div class="wrap">
@@ -206,22 +187,7 @@ const tickerLoop = [...p.ticker, ...p.ticker];
       </section>
     )}
 
-    <!-- 8. Technical data -->
-    <section class="specs">
-      <div class="wrap in">
-        <div>
-          <p class="eyebrow rv"><b>/</b> {p.specs.eyebrow}</p>
-          <h2 class="rv">{p.specs.title}</h2>
-        </div>
-        <dl class="rv">
-          {p.specs.rows.map(row => (
-            <div class="l"><dt>{row.label}</dt><dd>{row.value}</dd></div>
-          ))}
-        </dl>
-      </div>
-    </section>
-
-    <!-- 9. Closing, contacts and brief form -->
+    <!-- 7. Closing, contacts and brief form -->
     <section class="close" id="brief">
       <div class="wrap">
         <div class="close-head">
@@ -376,7 +342,6 @@ const tickerLoop = [...p.ticker, ...p.ticker];
   .prod h2 { font-size: clamp(32px, 4.6vw, 58px); line-height: 1.05; }
   .prod h3 { font-size: clamp(22px, 2.4vw, 30px); line-height: 1.18; font-weight: 300; letter-spacing: -0.01em; }
   .prod p { margin: 0; color: var(--text2); }
-  .lede { font-size: clamp(17px, 1.45vw, 20px); line-height: 1.58; max-width: 44ch; }
 
   /* ═══ HERO, light shafts. Height compensates the fixed navbar spacer. ═══ */
   /* Top-anchored: height comes from the content plus paddings, no viewport fill. */
@@ -613,32 +578,6 @@ const tickerLoop = [...p.ticker, ...p.ticker];
     to { transform: translateX(-50%); }
   }
 
-  /* ═══ ADDRESS, staggered bands ═══ */
-  .address { position: relative; padding-block: clamp(90px, 14vh, 170px); background: var(--panel); overflow: hidden; }
-  .address::before {
-    content: ''; position: absolute; inset: 0; opacity: 0.5;
-    background: radial-gradient(120% 80% at 78% 8%, rgba(138, 42, 42, 0.28), transparent 62%);
-  }
-  .address .in { position: relative; display: grid; gap: clamp(40px, 6vw, 80px); }
-  @media (min-width: 900px) { .address .in { grid-template-columns: 1fr 1fr; align-items: center; } }
-  .address h2 { margin-top: 20px; max-width: 17ch; }
-  .address p { margin-top: 22px; }
-  .stack { display: flex; flex-direction: column; gap: 10px; }
-  .band {
-    position: relative; border: 1px solid var(--hair2); background: rgba(14, 14, 14, 0.55);
-    padding: clamp(20px, 2.4vw, 30px); display: flex; justify-content: space-between; align-items: flex-end; gap: 20px;
-    transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.3, 1), border-color 0.55s ease, background 0.55s ease;
-  }
-  .band:hover { transform: translateX(10px); border-color: var(--accent-hover); background: rgba(14, 14, 14, 0.8); }
-  .band .lv { font-family: var(--mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--marble); }
-  .band .big { font-family: var(--display); font-weight: 200; font-size: clamp(28px, 3.4vw, 44px); line-height: 1; margin-top: 12px; display: block; }
-  .band .side { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text2); text-align: right; max-width: 12ch; line-height: 1.6; }
-  .band:nth-child(1) { margin-right: clamp(0px, 7%, 90px); }
-  .band:nth-child(2) { margin-left: clamp(0px, 5%, 60px); }
-  .band:nth-child(3) { margin-right: clamp(0px, 3%, 40px); }
-  .band.solid { background: var(--accent); border-color: var(--accent); }
-  .band.solid .lv, .band.solid .side { color: rgba(245, 242, 236, 0.78); }
-
   /* ═══ PHOTO SLOTS ═══ */
   .gallery { padding-block: clamp(80px, 12vh, 150px); }
   .gallery .head { max-width: 52ch; }
@@ -671,19 +610,8 @@ const tickerLoop = [...p.ticker, ...p.ticker];
   .ph .t { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--marble); line-height: 1.55; max-width: 26ch; display: block; }
   .gallery .note { margin-top: clamp(24px, 3vw, 36px); font-size: 14px; color: var(--marble); max-width: 56ch; }
 
-  /* ═══ SPECS ═══ */
-  .specs { padding-block: clamp(80px, 12vh, 150px); border-top: 1px solid var(--hair); }
-  .specs .in { display: grid; gap: clamp(36px, 5vw, 80px); }
-  @media (min-width: 900px) { .specs .in { grid-template-columns: 34% 1fr; align-items: start; } }
-  .specs h2 { margin-top: 20px; }
-  .specs dl { margin: 0; border-top: 1px solid var(--hair2); }
-  .specs .l { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; padding-block: 18px; border-bottom: 1px solid var(--hair); transition: padding-left 0.4s ease, border-color 0.4s ease; }
-  .specs .l:hover { padding-left: 10px; border-color: var(--hair2); }
-  .specs dt { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.17em; text-transform: uppercase; color: var(--marble); flex: 0 0 auto; }
-  .specs dd { margin: 0; text-align: right; color: var(--text); font-size: 16px; }
-
   /* ═══ CLOSING ═══ */
-  .close { position: relative; padding-top: clamp(80px, 12vh, 150px); overflow: hidden; border-top: 1px solid var(--hair); scroll-margin-top: 7rem; }
+  .close { position: relative; padding-top: clamp(80px, 12vh, 150px); overflow: hidden; scroll-margin-top: 7rem; }
   .close::before {
     content: ''; position: absolute; left: 12%; top: -30%; width: min(90vw, 1000px); aspect-ratio: 2/1;
     pointer-events: none;
@@ -776,10 +704,6 @@ const tickerLoop = [...p.ticker, ...p.ticker];
   @media (prefers-reduced-motion: reduce) {
     .rv { opacity: 1; transform: none; transition: none; }
     .shafts span, .ticker .track { animation: none; }
-    .band:hover { transform: none; }
-  }
-  @media (max-width: 899px) {
-    .band { margin: 0 !important; }
   }
 </style>
 

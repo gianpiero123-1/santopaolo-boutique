@@ -1,9 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import GuideCard from './GuideCard.astro';
 import type { Lang } from '../../i18n/index';
 import { useTranslations, getGuidePath } from '../../i18n/index';
-import { CLUSTER_ORDER, CLUSTER_LABELS, GUIDE_COPY, guideArticlePath } from '../../lib/guida';
+import { CLUSTER_ORDER, CLUSTER_LABELS, GUIDE_COPY } from '../../lib/guida';
 
 /** The guide hub, shared by /guida and /en/guide. */
 interface Props {
@@ -26,44 +27,47 @@ const clusters = CLUSTER_ORDER.map(cluster => ({
 ---
 
 <BaseLayout
-  title={`${copy.hubTitle} — ${t.meta.siteName}`}
+  title={`${copy.hubTitle} | ${t.meta.siteName}`}
   description={copy.hubDescription}
   lang={lang}
   pageType="CollectionPage"
   alternatePath={`${getGuidePath(otherLang)}/`}
   langSwitchHref={getGuidePath(otherLang)}
 >
-  <section class="section-padding border-b border-brand-border">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8">
-      <p class="nav-link text-brand-accent mb-3">Santopaolo Boutique Apartments</p>
-      <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight mb-4">
-        {copy.hubTitle}
-      </h1>
-      <p class="text-brand-muted text-lg max-w-2xl">{copy.hubIntro}</p>
-    </div>
-  </section>
+  <section class="py-12 lg:py-16">
+    <div class="max-w-5xl mx-auto px-6">
+      <header>
+        <h1 class="font-display text-4xl lg:text-6xl text-brand-text tracking-tight">
+          {copy.hubTitle}
+        </h1>
+        <p class="mt-4 text-[13px] uppercase tracking-[0.12em] text-brand-muted">
+          {copy.hubEyebrow}
+        </p>
+        <p class="mt-5 text-base text-brand-muted max-w-[60ch]">{copy.hubIntro}</p>
+      </header>
 
-  <section class="section-padding">
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 space-y-12 lg:space-y-16">
-      {clusters.map(group => (
-        <div class="space-y-5">
-          <h2 class="font-display text-2xl lg:text-3xl text-brand-text tracking-tight">
-            {group.label}
-          </h2>
-          <ul class="space-y-2.5">
-            {group.items.map(entry => (
-              <li>
-                <a
-                  href={guideArticlePath(lang, entry.data.slug)}
-                  class="text-brand-muted text-sm hover:text-brand-text transition-colors"
-                >
-                  {entry.data.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <hr class="my-12 border-0 border-t border-[#1C1C1C]" />
+
+      <div class="space-y-12">
+        {clusters.map(group => (
+          <section>
+            <h2 class="flex items-center gap-3 font-display font-light text-[22px] text-brand-text tracking-tight">
+              <span aria-hidden="true" class="inline-block w-[2px] h-[18px] bg-brand-accent"></span>
+              {group.label}
+            </h2>
+            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+              {group.items.map(entry => (
+                <GuideCard lang={lang} entry={entry} />
+              ))}
+            </div>
+            <p class="mt-4 text-xs text-brand-muted">
+              {group.items.length} {group.items.length === 1 ? copy.questionOne : copy.questionMany}
+            </p>
+          </section>
+        ))}
+      </div>
+
+      <p class="mt-16 text-[13px] text-brand-muted">{copy.brandLine}</p>
     </div>
   </section>
 </BaseLayout>

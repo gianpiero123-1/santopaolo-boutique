@@ -150,10 +150,11 @@ const it = {
     tagline: '5 appartamenti boutique nel cuore di Chiaia, Napoli.',
     navTitle: 'Navigazione',
     contactTitle: 'Contatti',
+    guideTitle: 'Guida',
+    guideAll: 'Tutte le domande',
     links: {
       apartments: 'Appartamenti',
       concierge: 'Concierge',
-      guide: 'Guida',
       contact: 'Contatti',
       book: 'Prenota',
       privacy: 'Privacy',

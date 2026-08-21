@@ -1,40 +1,60 @@
 ---
 import type { Lang } from '../../i18n/index';
+import { getLangFromPath } from '../../i18n/index';
 
 /**
- * "In pratica" block, imported by the MDX articles that need it. The slot
- * takes markdown (typically a short list of concrete steps).
+ * "In pratica" block, injected into the MDX articles via the `components`
+ * prop of <Content /> so the files never import it. The slot takes markdown
+ * (typically a short list of concrete steps). The language falls back to the
+ * page URL, so the MDX usage stays bare: <InPractice>.
  */
 interface Props {
   lang?: Lang;
 }
 
-const { lang = 'it' } = Astro.props;
+const { lang = getLangFromPath(Astro.url.pathname) } = Astro.props;
 const title = lang === 'en' ? 'In practice' : 'In pratica';
 ---
 
-<aside class="bg-brand-bg2 border border-brand-border p-6 lg:p-8 my-8 space-y-4">
-  <p class="nav-link text-brand-text">{title}</p>
+<aside class="in-practice">
+  <p class="in-practice-title">{title}</p>
   <div class="in-practice-body text-brand-muted text-sm leading-relaxed">
     <slot />
   </div>
 </aside>
 
 <style is:global>
+  .in-practice {
+    background: transparent;
+    border: 1px solid #1c1c1c;
+    padding: 20px;
+  }
+
+  .in-practice-title {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #8a8580;
+    margin-bottom: 1rem;
+  }
+
   .in-practice-body > * + * {
     margin-top: 0.625rem;
   }
 
-  .in-practice-body ul {
+  /* Doubled selectors so these beat the .guide-prose list rules regardless of
+     the order the two global style blocks land in the bundle. */
+  .in-practice .in-practice-body ul {
     list-style: none;
+    padding-left: 0;
   }
 
-  .in-practice-body li {
+  .in-practice .in-practice-body li {
     position: relative;
-    padding-left: 1.125rem;
+    padding-left: 1rem;
   }
 
-  .in-practice-body li + li {
+  .in-practice .in-practice-body li + li {
     margin-top: 0.625rem;
   }
 
@@ -42,10 +62,9 @@ const title = lang === 'en' ? 'In practice' : 'In pratica';
     content: '';
     position: absolute;
     left: 0;
-    top: 0.625rem;
-    width: 4px;
-    height: 4px;
-    border-radius: 9999px;
+    top: 0.3em;
+    width: 1px;
+    height: 12px;
     background-color: #6b1f1f;
   }
 </style>

@@ -56,24 +56,12 @@ export interface ProductionCopy {
   };
   /** Items numbered from their index and looped twice by the track. */
   ticker: string[];
-  address: {
-    eyebrow: string;
-    title: string;
-    text: string;
-    /** Three bands; the last one renders solid bordeaux. */
-    bands: { level: string; value: string; side: string }[];
-  };
   gallery: {
     eyebrow: string;
     title: string;
     /** Captions of the five photo slots, in grid order. */
     captions: string[];
     note: string;
-  };
-  specs: {
-    eyebrow: string;
-    title: string;
-    rows: { label: string; value: string }[];
   };
   closing: {
     eyebrow: string;
@@ -214,20 +202,6 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       'Carico e scarico al coperto',
       'Videosorveglianza integrale',
     ],
-    address: {
-      eyebrow: 'Un solo indirizzo',
-      title: 'Nessun trasferimento fra alloggio e rimessaggio.',
-      text: 'Vico Santa Maria a Cappella Vecchia 8b. Tutto ciò che serve alla lavorazione è nello stesso stabile, con un referente unico per accessi, fornitori e orari.',
-      bands: [
-        { level: 'Piano appartamenti', value: 'Fino a 18 ospiti', side: 'Cinque unità, 325 mq' },
-        {
-          level: 'Piano wellness',
-          value: 'Palestra e bagno turco',
-          side: 'Riservato agli ospiti',
-        },
-        { level: 'Piano autorimessa', value: 'Oltre 1.000 mq', side: 'Rimessaggio e magazzino' },
-      ],
-    },
     gallery: {
       eyebrow: 'Materiale fotografico',
       title: 'Cinque inquadrature, in ordine di lettura.',
@@ -239,18 +213,6 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         'Superficie libera, configurabile a magazzino',
       ],
       note: 'Spazi predisposti in attesa dei materiali. Ripresa orizzontale, illuminazione accesa, con una persona o un riferimento metrico in almeno due inquadrature per restituire la scala.',
-    },
-    specs: {
-      eyebrow: 'Dati tecnici',
-      title: 'Verificati sul posto.',
-      rows: [
-        { label: 'Superficie coperta', value: 'Oltre 1.000 mq' },
-        { label: 'Accesso', value: '24/7, 365 giorni' },
-        { label: 'Videosorveglianza', value: 'Integrale' },
-        { label: 'Carico e scarico', value: 'Al coperto' },
-        { label: 'Ricarica elettrica', value: 'Disponibile' },
-        { label: 'Capienza', value: 'Fino a 18 ospiti, cinque unità' },
-      ],
     },
     closing: {
       eyebrow: 'Presa in carico',
@@ -410,16 +372,6 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       'Covered load in and load out',
       'Full CCTV coverage',
     ],
-    address: {
-      eyebrow: 'A single address',
-      title: 'No shuttling between accommodation and storage.',
-      text: 'Vico Santa Maria a Cappella Vecchia 8b. Everything the production needs sits in one building, with a single point of contact for access, suppliers and schedules.',
-      bands: [
-        { level: 'Apartment level', value: 'Sleeps 18', side: 'Five units, 325 sqm' },
-        { level: 'Wellness level', value: 'Gym and steam room', side: 'Reserved for guests' },
-        { level: 'Garage level', value: 'Over 1,000 sqm', side: 'Vehicle and goods storage' },
-      ],
-    },
     gallery: {
       eyebrow: 'Photography',
       title: 'Five views, in order.',
@@ -431,18 +383,6 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         'Open floor, configurable as storage',
       ],
       note: 'Awaiting photography. Landscape format, lights on, a person or scale reference in at least two frames.',
-    },
-    specs: {
-      eyebrow: 'Technical data',
-      title: 'Verified on site.',
-      rows: [
-        { label: 'Covered floor area', value: 'Over 1,000 sqm' },
-        { label: 'Access', value: '24 hours, 365 days' },
-        { label: 'CCTV', value: 'Full coverage' },
-        { label: 'Load in and load out', value: 'Under cover' },
-        { label: 'EV charging', value: 'Available' },
-        { label: 'Capacity', value: 'Sleeps 18, five units' },
-      ],
     },
     closing: {
       eyebrow: 'Enquiries',

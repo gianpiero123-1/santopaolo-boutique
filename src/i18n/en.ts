@@ -152,10 +152,11 @@ const en: Translations = {
     tagline: '5 boutique apartments in the heart of Chiaia, Naples.',
     navTitle: 'Navigation',
     contactTitle: 'Contact',
+    guideTitle: 'Guide',
+    guideAll: 'All questions',
     links: {
       apartments: 'Apartments',
       concierge: 'Concierge',
-      guide: 'Guide',
       contact: 'Contact',
       book: 'Book',
       privacy: 'Privacy',

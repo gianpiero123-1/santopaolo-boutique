@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '../../i18n/index';
+import { guideArticlePath, truncateAnswer } from '../../lib/guida';
+
+/**
+ * Article card, shared by the hub clusters and the "Continua" block of the
+ * article template so the two stay identical. The whole card is the link.
+ */
+interface Props {
+  lang: Lang;
+  entry: CollectionEntry<'guida'>;
+}
+
+const { lang, entry } = Astro.props;
+---
+
+<a
+  href={guideArticlePath(lang, entry.data.slug)}
+  class="group block rounded-[2px] bg-brand-bg2 p-5 transition-colors duration-150 hover:bg-[#232323]"
+>
+  <p class="text-base font-medium leading-[1.4] text-brand-text/85 transition-colors duration-150 group-hover:text-brand-text">
+    {entry.data.title}
+  </p>
+  <p class="mt-2 text-sm text-brand-muted">{truncateAnswer(entry.data.answer)}</p>
+</a>

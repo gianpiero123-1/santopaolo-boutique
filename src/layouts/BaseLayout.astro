@@ -35,6 +35,8 @@ interface Props {
   apartmentSlug?: string;
   /** CollectionPage on listing hubs (the guide index); WebPage everywhere else. */
   pageType?: 'WebPage' | 'CollectionPage';
+  /** og:type, `article` on guide article pages; `website` everywhere else. */
+  ogType?: 'website' | 'article';
   /** Names the final breadcrumb segment when it is a dynamic slug. */
   breadcrumbLeafLabel?: string;
   /** Adds Article + FAQPage nodes to the graph on guide article pages. */
@@ -54,6 +56,7 @@ const {
   hasAlternate = true,
   apartmentSlug,
   pageType,
+  ogType = 'website',
   breadcrumbLeafLabel,
   guideArticle,
 } = Astro.props;
@@ -120,7 +123,7 @@ const jsonLd = noindex
     )}
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={siteName} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -146,7 +149,7 @@ const jsonLd = noindex
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,200;0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
 

@@ -1,6 +1,7 @@
 ---
 import type { Lang } from '../i18n/index';
 import { useTranslations, getLocalePath, getRequestPath, getGuidePath } from '../i18n/index';
+import { FOOTER_GUIDE_LINKS, guideArticlePath } from '../lib/guida';
 
 interface Props {
   lang: Lang;
@@ -14,7 +15,7 @@ const copy = t.footer.copy.replace('{year}', String(year));
 
 <footer class="bg-brand-bg2 border-t border-brand-border mt-auto">
   <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
       <!-- Brand -->
       <div class="space-y-4">
         <a
@@ -50,7 +51,6 @@ const copy = t.footer.copy.replace('{year}', String(year));
         <ul class="space-y-2.5">
           <li><a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.apartments}</a></li>
           <li><a href={getLocalePath(lang, '/concierge')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.concierge}</a></li>
-          <li><a href={getGuidePath(lang)} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.guide}</a></li>
           <li><a href={getLocalePath(lang, '/contact')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.contact}</a></li>
           <li><a href={getRequestPath(lang)} class="text-brand-accent text-sm hover:opacity-80 transition-opacity">{t.footer.links.book}</a></li>
         </ul>
@@ -71,6 +71,25 @@ const copy = t.footer.copy.replace('{year}', String(year));
             </a>
           </li>
           <li class="text-brand-muted text-sm">{t.contact.info.address}</li>
+        </ul>
+      </div>
+
+      <!-- Guide -->
+      <div class="space-y-3">
+        <p class="nav-link text-brand-text mb-4 text-xs">{t.footer.guideTitle}</p>
+        <ul class="space-y-2.5">
+          <li>
+            <a href={getGuidePath(lang)} class="text-brand-muted text-sm hover:text-brand-text transition-colors">
+              {t.footer.guideAll}
+            </a>
+          </li>
+          {FOOTER_GUIDE_LINKS[lang].map(({ slug, label }) => (
+            <li>
+              <a href={guideArticlePath(lang, slug)} class="text-brand-muted text-sm hover:text-brand-text transition-colors">
+                {label}
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
     </div>
