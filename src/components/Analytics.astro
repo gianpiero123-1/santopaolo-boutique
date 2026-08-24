@@ -1,0 +1,96 @@
+---
+// First party, cookieless page view tracking. Sends one POST to /api/track on
+// load and a duration beacon when the page is hidden or unloaded. Identity is
+// a daily rotating server side hash, nothing persistent is stored client side:
+// sessionStorage only, which dies with the tab.
+---
+
+<script is:inline>
+  (function () {
+    try {
+      if (
+        navigator.doNotTrack === '1' ||
+        navigator.doNotTrack === 'yes' ||
+        window.doNotTrack === '1' ||
+        navigator.globalPrivacyControl === true
+      ) {
+        return;
+      }
+
+      var sid = sessionStorage.getItem('sp_sid');
+      var isEntry = sid === null;
+      if (sid === null) {
+        sid = crypto.randomUUID();
+        sessionStorage.setItem('sp_sid', sid);
+      }
+
+      var isNewVisitor = sessionStorage.getItem('sp_seen') === null;
+      sessionStorage.setItem('sp_seen', '1');
+
+      var params = new URLSearchParams(location.search);
+      var payload = {
+        session_id: sid,
+        is_new_visitor: isNewVisitor,
+        is_entry: isEntry,
+        path: location.pathname,
+        page_title: document.title,
+        lang: location.pathname === '/en' || location.pathname.indexOf('/en/') === 0 ? 'en' : 'it',
+        referrer: document.referrer,
+        browser_lang: navigator.language,
+        screen_w: screen.width,
+        screen_h: screen.height,
+        viewport_w: window.innerWidth,
+        viewport_h: window.innerHeight,
+        utm_source: params.get('utm_source'),
+        utm_medium: params.get('utm_medium'),
+        utm_campaign: params.get('utm_campaign'),
+        utm_content: params.get('utm_content'),
+        utm_term: params.get('utm_term')
+      };
+
+      var viewId = null;
+      var start = performance.now();
+      var durationSent = false;
+
+      fetch('/api/track', {
+        method: 'POST',
+        keepalive: true,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(function (res) {
+          return res.status === 200 ? res.json() : null;
+        })
+        .then(function (data) {
+          if (data && data.id !== undefined && data.id !== null) viewId = data.id;
+        })
+        .catch(function () {});
+
+      function sendDuration() {
+        try {
+          if (durationSent || viewId === null) return;
+          durationSent = true;
+          var body = JSON.stringify({
+            id: viewId,
+            duration_ms: Math.round(performance.now() - start)
+          });
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api/track', new Blob([body], { type: 'application/json' }));
+          } else {
+            fetch('/api/track', {
+              method: 'POST',
+              keepalive: true,
+              headers: { 'Content-Type': 'application/json' },
+              body: body
+            }).catch(function () {});
+          }
+        } catch (e) {}
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') sendDuration();
+      });
+      window.addEventListener('pagehide', sendDuration);
+    } catch (e) {}
+  })();
+</script>

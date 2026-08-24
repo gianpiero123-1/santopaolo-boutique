@@ -6,7 +6,8 @@ import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import JsonLd from '../components/JsonLd.astro';
 import type { Lang } from '../i18n/index';
 import { buildPageGraph, type GuideArticleGraphOptions } from '../data/schema';
-import Analytics from '@vercel/analytics/astro';
+import VercelAnalytics from '@vercel/analytics/astro';
+import Analytics from '../components/Analytics.astro';
 
 interface Props {
   title: string;
@@ -162,6 +163,7 @@ const jsonLd = noindex
     </main>
     <Footer lang={lang} />
     <WhatsAppFloat phone="+393313225577" lang={lang} />
+    <VercelAnalytics />
     <Analytics />
   </body>
 </html>
