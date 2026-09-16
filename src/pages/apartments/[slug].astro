@@ -4,6 +4,7 @@ import BookingWidget from '../../components/BookingWidget.astro';
 import { useTranslations, getLocalePath, pluralize } from '../../i18n/index';
 import apartmentsData from '../../data/apartments.json';
 import PhotoGallery from '../../components/PhotoGallery.astro';
+import Gallery from '../../components/Gallery.astro';
 import FromGuide from '../../components/guida/FromGuide.astro';
 
 export async function getStaticPaths() {
@@ -43,12 +44,8 @@ const houseRules = [
   'City tax €6 a persona a notte, max 14 notti (pagamento al check-in)',
 ];
 
-// Gallery of the unit itself: grid uses the -sm files, the lightbox the full ones.
-const galleryImages = apartment.gallery.map(photo => ({
-  src: photo.src,
-  src_sm: photo.src_sm,
-  alt: photo.alt_it,
-}));
+// Photo 01 of the unit is the hero and the og:image; the full set goes to <Gallery>.
+const cover = apartment.gallery[0];
 
 const buildingImages = [
   { src: '/wellness/building/building-01.jpg', alt: "Facciata palazzo Santopaolo con cornice marmo verde, ingresso Via Santa Maria a Cappella Vecchia" },
@@ -66,13 +63,13 @@ const buildingImages = [
   title={`${apartment.name} — ${t.meta.siteName}`}
   description={apartment.description_it}
   lang={lang}
-  ogImage={apartment.hero_image}
+  ogImage={cover.src}
   apartmentSlug={apartment.slug}
 >
   <section class="w-full bg-brand-bg2 overflow-hidden" style="aspect-ratio: 16/7; min-height: 320px;">
     <img
-      src={apartment.hero_image}
-      alt={galleryImages[0].alt}
+      src={cover.webp}
+      alt={cover.alt.it}
       class="w-full h-full object-cover"
       loading="eager"
     />
@@ -118,9 +115,9 @@ const buildingImages = [
 
         <hr class="divider" />
 
-        <PhotoGallery
+        <Gallery
           title="Galleria"
-          images={galleryImages}
+          images={apartment.gallery}
           lang={lang}
         />
 

@@ -12,43 +12,346 @@
     "smoobuPropertyId": "TBD",
     "description_it": "Novanta metri quadri a due passi da Piazza dei Martiri. Due camere matrimoniali, due bagni, ambienti ampi e luminosi. La soluzione giusta per famiglie, coppie che viaggiano insieme o piccoli gruppi business che vogliono stare comodi senza dividere lo spazio.",
     "description_en": "Ninety square meters a stone's throw from Piazza dei Martiri. Two double bedrooms, two bathrooms, large bright rooms. The right fit for families, couples travelling together, or small business groups who want room to breathe without sharing the space.",
-    "hero_image": "/apartments/santopaolo-1/santopaolo-1-01.webp",
     "gallery": [
       {
-        "src": "/apartments/santopaolo-1/santopaolo-1-01.webp",
-        "src_sm": "/apartments/santopaolo-1/santopaolo-1-01-sm.webp",
-        "alt_it": "Soggiorno Santopaolo 1 con zona pranzo, divano e parquet, appartamento 90 mq a Chiaia Napoli",
-        "alt_en": "Living room in Santopaolo 1 with dining area, sofa and hardwood floors, 90 sqm apartment in Chiaia Naples"
+        "src": "/images/apartments/app1/01-salone.jpg",
+        "webp": "/images/apartments/app1/01-salone.webp",
+        "thumb": "/images/apartments/app1/01-salone-thumb.webp",
+        "alt": {
+          "it": "Salone di Santopaolo 1, cucina a isola bianca, divano rosso e sgabelli sotto le linee di luce a soffitto",
+          "en": "Santopaolo 1 living room, white island kitchen, red sofa and bar stools under the linear ceiling lights"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-1/santopaolo-1-02.webp",
-        "src_sm": "/apartments/santopaolo-1/santopaolo-1-02-sm.webp",
-        "alt_it": "Camera matrimoniale Santopaolo 1 con bagno en-suite dietro parete in vetro, parquet e opere d'arte contemporanee",
-        "alt_en": "Master bedroom in Santopaolo 1 with glass-walled en-suite bathroom, hardwood floors and contemporary artwork"
+        "src": "/images/apartments/app1/02-salone.jpg",
+        "webp": "/images/apartments/app1/02-salone.webp",
+        "thumb": "/images/apartments/app1/02-salone-thumb.webp",
+        "alt": {
+          "it": "Divano rosso ad angolo sulla parete in legno grigio azzurro, quadro e parquet, salone di Santopaolo 1",
+          "en": "Red corner sofa against the blue-grey timber wall, artwork and parquet, Santopaolo 1 living room"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-1/santopaolo-1-03.webp",
-        "src_sm": "/apartments/santopaolo-1/santopaolo-1-03-sm.webp",
-        "alt_it": "Camera matrimoniale Santopaolo 1, seconda angolazione con affaccio sul verde e tende in velluto",
-        "alt_en": "Master bedroom in Santopaolo 1, second view with garden outlook and velvet curtains"
+        "src": "/images/apartments/app1/03-salone.jpg",
+        "webp": "/images/apartments/app1/03-salone.webp",
+        "thumb": "/images/apartments/app1/03-salone-thumb.webp",
+        "alt": {
+          "it": "Il divano rosso e il quadro del salone di Santopaolo 1, vista frontale",
+          "en": "Front view of the red sofa and the painting in the Santopaolo 1 living room"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-1/santopaolo-1-04.webp",
-        "src_sm": "/apartments/santopaolo-1/santopaolo-1-04-sm.webp",
-        "alt_it": "Bagno padronale Santopaolo 1 con vasca, doccia separata, rivestimento in legno e pietra naturale scura",
-        "alt_en": "Master bathroom in Santopaolo 1 with bathtub, separate shower, wood panelling and dark natural stone"
+        "src": "/images/apartments/app1/04-cucina.jpg",
+        "webp": "/images/apartments/app1/04-cucina.webp",
+        "thumb": "/images/apartments/app1/04-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina di Santopaolo 1 vista dall'ingresso, frigorifero, isola bianca e finestra",
+          "en": "Santopaolo 1 kitchen from the entrance, fridge, white island and window"
+        },
+        "room": "cucina"
       },
       {
-        "src": "/apartments/santopaolo-1/santopaolo-1-05.webp",
-        "src_sm": "/apartments/santopaolo-1/santopaolo-1-05-sm.webp",
-        "alt_it": "Bagno padronale Santopaolo 1 con lavabo sospeso in pietra, sanitari neri e parete in legno",
-        "alt_en": "Master bathroom in Santopaolo 1 with suspended stone washbasin, black sanitary ware and wood wall"
+        "src": "/images/apartments/app1/05-cucina.jpg",
+        "webp": "/images/apartments/app1/05-cucina.webp",
+        "thumb": "/images/apartments/app1/05-cucina-thumb.webp",
+        "alt": {
+          "it": "Isola con piano a induzione, forno a colonna e frigorifero nella cucina di Santopaolo 1",
+          "en": "Island with induction hob, built-in oven and fridge in the Santopaolo 1 kitchen"
+        },
+        "room": "cucina"
       },
       {
-        "src": "/apartments/santopaolo-1/santopaolo-1-06.webp",
-        "src_sm": "/apartments/santopaolo-1/santopaolo-1-06-sm.webp",
-        "alt_it": "Seconda camera Santopaolo 1 con letto matrimoniale, scrivania, smart TV e affaccio sul verde",
-        "alt_en": "Second bedroom in Santopaolo 1 with double bed, work desk, smart TV and garden view"
+        "src": "/images/apartments/app1/06-cucina.jpg",
+        "webp": "/images/apartments/app1/06-cucina.webp",
+        "thumb": "/images/apartments/app1/06-cucina-thumb.webp",
+        "alt": {
+          "it": "Lavastoviglie aperta, rubinetto a molla e frigorifero, cucina di Santopaolo 1",
+          "en": "Open dishwasher, spring tap and fridge, Santopaolo 1 kitchen"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app1/07-camera.jpg",
+        "webp": "/images/apartments/app1/07-camera.webp",
+        "thumb": "/images/apartments/app1/07-camera-thumb.webp",
+        "alt": {
+          "it": "Camera principale di Santopaolo 1, letto matrimoniale, scrivania con sedia e TV a parete",
+          "en": "Santopaolo 1 master bedroom, double bed, desk with chair and wall-mounted TV"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app1/08-camera.jpg",
+        "webp": "/images/apartments/app1/08-camera.webp",
+        "thumb": "/images/apartments/app1/08-camera-thumb.webp",
+        "alt": {
+          "it": "Letto matrimoniale davanti alla finestra sul verde, scrivania e TV, camera principale di Santopaolo 1",
+          "en": "Double bed facing the window onto the greenery, desk and TV, Santopaolo 1 master bedroom"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app1/09-camera.jpg",
+        "webp": "/images/apartments/app1/09-camera.webp",
+        "thumb": "/images/apartments/app1/09-camera-thumb.webp",
+        "alt": {
+          "it": "Camera principale di Santopaolo 1, letto con copriletto scuro e tre quadri alla parete",
+          "en": "Santopaolo 1 master bedroom, bed with dark quilt and three artworks on the wall"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app1/10-camera.jpg",
+        "webp": "/images/apartments/app1/10-camera.webp",
+        "thumb": "/images/apartments/app1/10-camera-thumb.webp",
+        "alt": {
+          "it": "Testata del letto con i tre quadri, lampade e tenda, camera principale di Santopaolo 1",
+          "en": "Bed head with the three artworks, lamps and curtain, Santopaolo 1 master bedroom"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app1/11-camera.jpg",
+        "webp": "/images/apartments/app1/11-camera.webp",
+        "thumb": "/images/apartments/app1/11-camera-thumb.webp",
+        "alt": {
+          "it": "Dal letto verso la scrivania e la vetrata del bagno en suite, camera principale di Santopaolo 1",
+          "en": "From the bed towards the desk and the glass wall of the en suite bathroom, Santopaolo 1 master bedroom"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app1/12-camera.jpg",
+        "webp": "/images/apartments/app1/12-camera.webp",
+        "thumb": "/images/apartments/app1/12-camera-thumb.webp",
+        "alt": {
+          "it": "Vista d'insieme della camera principale di Santopaolo 1, finestra sul giardino e vetrata",
+          "en": "Overall view of the Santopaolo 1 master bedroom, garden window and glass partition"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app1/13-camera.jpg",
+        "webp": "/images/apartments/app1/13-camera.webp",
+        "thumb": "/images/apartments/app1/13-camera-thumb.webp",
+        "alt": {
+          "it": "Letto, tende e quadri della camera principale di Santopaolo 1, passaggio con tenda",
+          "en": "Bed, curtains and artworks in the Santopaolo 1 master bedroom, curtained doorway"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app1/14-camera-2.jpg",
+        "webp": "/images/apartments/app1/14-camera-2.webp",
+        "thumb": "/images/apartments/app1/14-camera-2-thumb.webp",
+        "alt": {
+          "it": "Seconda camera di Santopaolo 1, scrivania con poltroncina davanti alla finestra e TV",
+          "en": "Santopaolo 1 second bedroom, desk with armchair by the window and TV"
+        },
+        "room": "camera-2"
+      },
+      {
+        "src": "/images/apartments/app1/15-camera-2.jpg",
+        "webp": "/images/apartments/app1/15-camera-2.webp",
+        "thumb": "/images/apartments/app1/15-camera-2-thumb.webp",
+        "alt": {
+          "it": "Letto con testata blu nella seconda camera di Santopaolo 1",
+          "en": "Bed with blue headboard in the Santopaolo 1 second bedroom"
+        },
+        "room": "camera-2"
+      },
+      {
+        "src": "/images/apartments/app1/16-camera-2.jpg",
+        "webp": "/images/apartments/app1/16-camera-2.webp",
+        "thumb": "/images/apartments/app1/16-camera-2-thumb.webp",
+        "alt": {
+          "it": "Seconda camera di Santopaolo 1, letto, finestra sul verde e quadro",
+          "en": "Santopaolo 1 second bedroom, bed, window onto the greenery and artwork"
+        },
+        "room": "camera-2"
+      },
+      {
+        "src": "/images/apartments/app1/17-camera-2.jpg",
+        "webp": "/images/apartments/app1/17-camera-2.webp",
+        "thumb": "/images/apartments/app1/17-camera-2-thumb.webp",
+        "alt": {
+          "it": "Scrivania, TV e letto con la tenda alla finestra, seconda camera di Santopaolo 1",
+          "en": "Desk, TV and bed with the window curtain, Santopaolo 1 second bedroom"
+        },
+        "room": "camera-2"
+      },
+      {
+        "src": "/images/apartments/app1/18-camera-2.jpg",
+        "webp": "/images/apartments/app1/18-camera-2.webp",
+        "thumb": "/images/apartments/app1/18-camera-2-thumb.webp",
+        "alt": {
+          "it": "Armadio a quattro ante della seconda camera di Santopaolo 1",
+          "en": "Four-door wardrobe in the Santopaolo 1 second bedroom"
+        },
+        "room": "camera-2"
+      },
+      {
+        "src": "/images/apartments/app1/19-bagno.jpg",
+        "webp": "/images/apartments/app1/19-bagno.webp",
+        "thumb": "/images/apartments/app1/19-bagno-thumb.webp",
+        "alt": {
+          "it": "Bagno en suite di Santopaolo 1 con vasca, pietra scura e parete in legno",
+          "en": "Santopaolo 1 en suite bathroom with bathtub, dark stone and timber wall"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app1/20-bagno.jpg",
+        "webp": "/images/apartments/app1/20-bagno.webp",
+        "thumb": "/images/apartments/app1/20-bagno-thumb.webp",
+        "alt": {
+          "it": "Doppio lavabo sulla parete in legno, specchio e TV, bagno en suite di Santopaolo 1",
+          "en": "Twin basin on the timber wall, mirror and TV, Santopaolo 1 en suite bathroom"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app1/21-bagno.jpg",
+        "webp": "/images/apartments/app1/21-bagno.webp",
+        "thumb": "/images/apartments/app1/21-bagno-thumb.webp",
+        "alt": {
+          "it": "Doccia in pietra scura con vista sulla camera, bagno en suite di Santopaolo 1",
+          "en": "Dark stone shower looking onto the bedroom, Santopaolo 1 en suite bathroom"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app1/22-bagno-2.jpg",
+        "webp": "/images/apartments/app1/22-bagno-2.webp",
+        "thumb": "/images/apartments/app1/22-bagno-2-thumb.webp",
+        "alt": {
+          "it": "Secondo bagno di Santopaolo 1 visto dal corridoio, doccia in vetro e parquet",
+          "en": "Santopaolo 1 second bathroom seen from the corridor, glass shower and parquet"
+        },
+        "room": "bagno-2"
+      },
+      {
+        "src": "/images/apartments/app1/23-bagno-2.jpg",
+        "webp": "/images/apartments/app1/23-bagno-2.webp",
+        "thumb": "/images/apartments/app1/23-bagno-2-thumb.webp",
+        "alt": {
+          "it": "Secondo bagno di Santopaolo 1, lavabo, sanitari e doccia in vetro con piastrelle rosa",
+          "en": "Santopaolo 1 second bathroom, basin, wc, bidet and glass shower with pink tiles"
+        },
+        "room": "bagno-2"
+      },
+      {
+        "src": "/images/apartments/app1/24-bagno-2.jpg",
+        "webp": "/images/apartments/app1/24-bagno-2.webp",
+        "thumb": "/images/apartments/app1/24-bagno-2-thumb.webp",
+        "alt": {
+          "it": "Doccia in vetro con rubinetteria e piastrelle rosa, secondo bagno di Santopaolo 1",
+          "en": "Glass shower with fittings and pink tiles, Santopaolo 1 second bathroom"
+        },
+        "room": "bagno-2"
+      },
+      {
+        "src": "/images/apartments/app1/25-bagno-2.jpg",
+        "webp": "/images/apartments/app1/25-bagno-2.webp",
+        "thumb": "/images/apartments/app1/25-bagno-2-thumb.webp",
+        "alt": {
+          "it": "Particolare della doccia del secondo bagno di Santopaolo 1",
+          "en": "Shower detail in the Santopaolo 1 second bathroom"
+        },
+        "room": "bagno-2"
+      },
+      {
+        "src": "/images/apartments/app1/26-bagno-2.jpg",
+        "webp": "/images/apartments/app1/26-bagno-2.webp",
+        "thumb": "/images/apartments/app1/26-bagno-2-thumb.webp",
+        "alt": {
+          "it": "Il secondo bagno di Santopaolo 1 con lavabo, specchio e doccia",
+          "en": "The Santopaolo 1 second bathroom with basin, mirror and shower"
+        },
+        "room": "bagno-2"
+      },
+      {
+        "src": "/images/apartments/app1/27-lavatrice.jpg",
+        "webp": "/images/apartments/app1/27-lavatrice.webp",
+        "thumb": "/images/apartments/app1/27-lavatrice-thumb.webp",
+        "alt": {
+          "it": "Lavatrice nel vano dedicato di Santopaolo 1",
+          "en": "Washing machine in its own cupboard at Santopaolo 1"
+        },
+        "room": "lavatrice"
+      },
+      {
+        "src": "/images/apartments/app1/28-dettaglio.jpg",
+        "webp": "/images/apartments/app1/28-dettaglio.webp",
+        "thumb": "/images/apartments/app1/28-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Testa in bronzo accanto alla finestra sul verde, Santopaolo 1",
+          "en": "Bronze head beside the window onto the greenery, Santopaolo 1"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app1/29-dettaglio.jpg",
+        "webp": "/images/apartments/app1/29-dettaglio.webp",
+        "thumb": "/images/apartments/app1/29-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Particolare della scultura in bronzo, Santopaolo 1",
+          "en": "Close-up of the bronze sculpture, Santopaolo 1"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app1/30-dettaglio.jpg",
+        "webp": "/images/apartments/app1/30-dettaglio.webp",
+        "thumb": "/images/apartments/app1/30-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Asciugamani e ciabattine sul piano in legno del bagno, Santopaolo 1",
+          "en": "Towels and slippers on the timber bathroom top, Santopaolo 1"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app1/31-dettaglio.jpg",
+        "webp": "/images/apartments/app1/31-dettaglio.webp",
+        "thumb": "/images/apartments/app1/31-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Poggiatesta della vasca e candele, bagno en suite di Santopaolo 1",
+          "en": "Bathtub headrest and candles, Santopaolo 1 en suite bathroom"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app1/32-dettaglio.jpg",
+        "webp": "/images/apartments/app1/32-dettaglio.webp",
+        "thumb": "/images/apartments/app1/32-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Rubinetteria della doccia sulla pietra scura, Santopaolo 1",
+          "en": "Shower fittings on the dark stone, Santopaolo 1"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app1/33-dettaglio.jpg",
+        "webp": "/images/apartments/app1/33-dettaglio.webp",
+        "thumb": "/images/apartments/app1/33-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Lampada a filamento, Santopaolo 1",
+          "en": "Filament bulb lamp, Santopaolo 1"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app1/34-dettaglio.jpg",
+        "webp": "/images/apartments/app1/34-dettaglio.webp",
+        "thumb": "/images/apartments/app1/34-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Bollitore e tostapane sul piano cucina, Santopaolo 1",
+          "en": "Kettle and toaster on the kitchen worktop, Santopaolo 1"
+        },
+        "room": "dettaglio"
       }
     ]
   },
@@ -65,49 +368,186 @@
     "smoobuPropertyId": "TBD",
     "description_it": "Sessanta metri quadri pensati per chi viaggia in due. Camera matrimoniale con bagno en-suite e vasca, zona giorno separata. Il taglio è da suite d'hotel, ma con la calma di una casa privata nel pieno di Chiaia.",
     "description_en": "Sixty square meters built around two guests. Double bedroom with en-suite bathroom and bathtub, separate living area. Hotel-suite layout with the quiet of a private home, right in the heart of Chiaia.",
-    "hero_image": "/apartments/santopaolo-2/santopaolo-2-01.webp",
     "gallery": [
       {
-        "src": "/apartments/santopaolo-2/santopaolo-2-01.webp",
-        "src_sm": "/apartments/santopaolo-2/santopaolo-2-01-sm.webp",
-        "alt_it": "Open space Santopaolo 2 con cucina attrezzata, tavolo da pranzo e accesso al bagno, appartamento 60 mq a Chiaia",
-        "alt_en": "Open plan living in Santopaolo 2 with fitted kitchen, dining table and bathroom access, 60 sqm apartment in Chiaia"
+        "src": "/images/apartments/app2/01-salone.jpg",
+        "webp": "/images/apartments/app2/01-salone.webp",
+        "thumb": "/images/apartments/app2/01-salone-thumb.webp",
+        "alt": {
+          "it": "Salone di Santopaolo 2, tavolo tondo con poltroncine grigie, divano e pianta",
+          "en": "Santopaolo 2 living room, round table with grey chairs, sofa and plant"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-2/santopaolo-2-02.webp",
-        "src_sm": "/apartments/santopaolo-2/santopaolo-2-02-sm.webp",
-        "alt_it": "Soggiorno Santopaolo 2 con divano angolare, tavolo rotondo e cucina lineare sul fondo",
-        "alt_en": "Living area in Santopaolo 2 with corner sofa, round dining table and galley kitchen"
+        "src": "/images/apartments/app2/02-salone.jpg",
+        "webp": "/images/apartments/app2/02-salone.webp",
+        "thumb": "/images/apartments/app2/02-salone-thumb.webp",
+        "alt": {
+          "it": "Salone di Santopaolo 2 verso la cucina, tavolo da pranzo e mobile TV",
+          "en": "Santopaolo 2 living room towards the kitchen, dining table and TV unit"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-2/santopaolo-2-03.webp",
-        "src_sm": "/apartments/santopaolo-2/santopaolo-2-03-sm.webp",
-        "alt_it": "Zona living Santopaolo 2 con smart TV, libreria e divano modulare in tessuto grigio",
-        "alt_en": "Living space in Santopaolo 2 with smart TV, shelving and grey modular sofa"
+        "src": "/images/apartments/app2/03-salone.jpg",
+        "webp": "/images/apartments/app2/03-salone.webp",
+        "thumb": "/images/apartments/app2/03-salone-thumb.webp",
+        "alt": {
+          "it": "Zona pranzo e cucina con finestra nel salone di Santopaolo 2",
+          "en": "Dining area and kitchen with window in the Santopaolo 2 living room"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-2/santopaolo-2-04.webp",
-        "src_sm": "/apartments/santopaolo-2/santopaolo-2-04-sm.webp",
-        "alt_it": "Cucina Santopaolo 2 con piano in pietra, piano a induzione, forno e colonne a tutta altezza",
-        "alt_en": "Kitchen in Santopaolo 2 with stone worktop, induction hob, oven and full height units"
+        "src": "/images/apartments/app2/04-salone.jpg",
+        "webp": "/images/apartments/app2/04-salone.webp",
+        "thumb": "/images/apartments/app2/04-salone-thumb.webp",
+        "alt": {
+          "it": "Divano grigio, pianta e tavolo da pranzo, salone di Santopaolo 2",
+          "en": "Grey sofa, plant and dining table, Santopaolo 2 living room"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-2/santopaolo-2-05.webp",
-        "src_sm": "/apartments/santopaolo-2/santopaolo-2-05-sm.webp",
-        "alt_it": "Camera matrimoniale Santopaolo 2 con armadiatura a tutta parete e smart TV",
-        "alt_en": "Double bedroom in Santopaolo 2 with full wall wardrobe and smart TV"
+        "src": "/images/apartments/app2/05-salone.jpg",
+        "webp": "/images/apartments/app2/05-salone.webp",
+        "thumb": "/images/apartments/app2/05-salone-thumb.webp",
+        "alt": {
+          "it": "Salone di Santopaolo 2, tavolo in primo piano, divano e il quadro con l'albero",
+          "en": "Santopaolo 2 living room, table in the foreground, sofa and the tree painting"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-2/santopaolo-2-06.webp",
-        "src_sm": "/apartments/santopaolo-2/santopaolo-2-06-sm.webp",
-        "alt_it": "Bagno Santopaolo 2 con vasca incassata, lavabo in pietra e rivestimento in gres effetto marmo grigio",
-        "alt_en": "Bathroom in Santopaolo 2 with built-in bathtub, stone washbasin and grey marble effect porcelain"
+        "src": "/images/apartments/app2/06-salone.jpg",
+        "webp": "/images/apartments/app2/06-salone.webp",
+        "thumb": "/images/apartments/app2/06-salone-thumb.webp",
+        "alt": {
+          "it": "Tavolo da pranzo e TV a parete nel salone di Santopaolo 2",
+          "en": "Dining table and wall-mounted TV in the Santopaolo 2 living room"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-2/santopaolo-2-07.webp",
-        "src_sm": "/apartments/santopaolo-2/santopaolo-2-07-sm.webp",
-        "alt_it": "Doccia Santopaolo 2 con soffione a pioggia, porta in vetro satinato e lavabo in pietra",
-        "alt_en": "Shower in Santopaolo 2 with rain head, frosted glass door and stone washbasin"
+        "src": "/images/apartments/app2/07-salone.jpg",
+        "webp": "/images/apartments/app2/07-salone.webp",
+        "thumb": "/images/apartments/app2/07-salone-thumb.webp",
+        "alt": {
+          "it": "Dal divano verso la cucina, salone di Santopaolo 2",
+          "en": "From the sofa towards the kitchen, Santopaolo 2 living room"
+        },
+        "room": "salone"
+      },
+      {
+        "src": "/images/apartments/app2/08-salone.jpg",
+        "webp": "/images/apartments/app2/08-salone.webp",
+        "thumb": "/images/apartments/app2/08-salone-thumb.webp",
+        "alt": {
+          "it": "Divano grigio sotto la finestra con i cuscini e il quadro con l'albero, Santopaolo 2",
+          "en": "Grey sofa under the window with cushions and the tree painting, Santopaolo 2"
+        },
+        "room": "salone"
+      },
+      {
+        "src": "/images/apartments/app2/09-cucina.jpg",
+        "webp": "/images/apartments/app2/09-cucina.webp",
+        "thumb": "/images/apartments/app2/09-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina grigia di Santopaolo 2 con finestra, lavello e piano cottura",
+          "en": "Santopaolo 2 grey kitchen with window, sink and hob"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app2/10-cucina.jpg",
+        "webp": "/images/apartments/app2/10-cucina.webp",
+        "thumb": "/images/apartments/app2/10-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina di Santopaolo 2, colonna forno e finestra sul cortile",
+          "en": "Santopaolo 2 kitchen, oven column and window onto the courtyard"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app2/11-cucina.jpg",
+        "webp": "/images/apartments/app2/11-cucina.webp",
+        "thumb": "/images/apartments/app2/11-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina e tavolo tondo, Santopaolo 2",
+          "en": "Kitchen and round table, Santopaolo 2"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app2/12-cucina.jpg",
+        "webp": "/images/apartments/app2/12-cucina.webp",
+        "thumb": "/images/apartments/app2/12-cucina-thumb.webp",
+        "alt": {
+          "it": "Lavastoviglie aperta e finestra con i fiori, cucina di Santopaolo 2",
+          "en": "Open dishwasher and window with flowers, Santopaolo 2 kitchen"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app2/13-camera.jpg",
+        "webp": "/images/apartments/app2/13-camera.webp",
+        "thumb": "/images/apartments/app2/13-camera-thumb.webp",
+        "alt": {
+          "it": "Camera di Santopaolo 2, letto matrimoniale, armadio scuro e TV",
+          "en": "Santopaolo 2 bedroom, double bed, dark wardrobe and TV"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app2/14-camera.jpg",
+        "webp": "/images/apartments/app2/14-camera.webp",
+        "thumb": "/images/apartments/app2/14-camera-thumb.webp",
+        "alt": {
+          "it": "Letto con copriletto grigio e parete testata in vetro, camera di Santopaolo 2",
+          "en": "Bed with grey quilt and glass headboard wall, Santopaolo 2 bedroom"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app2/15-camera.jpg",
+        "webp": "/images/apartments/app2/15-camera.webp",
+        "thumb": "/images/apartments/app2/15-camera-thumb.webp",
+        "alt": {
+          "it": "Il letto matrimoniale di Santopaolo 2, vista frontale",
+          "en": "The Santopaolo 2 double bed, front view"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app2/16-bagno.jpg",
+        "webp": "/images/apartments/app2/16-bagno.webp",
+        "thumb": "/images/apartments/app2/16-bagno-thumb.webp",
+        "alt": {
+          "it": "Bagno en suite di Santopaolo 2 in pietra grigia, lavabo, vasca e TV",
+          "en": "Santopaolo 2 en suite bathroom in grey stone, basin, bathtub and TV"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app2/17-bagno.jpg",
+        "webp": "/images/apartments/app2/17-bagno.webp",
+        "thumb": "/images/apartments/app2/17-bagno-thumb.webp",
+        "alt": {
+          "it": "Vasca da bagno con TV a parete, Santopaolo 2",
+          "en": "Bathtub with wall-mounted TV, Santopaolo 2"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app2/18-bagno.jpg",
+        "webp": "/images/apartments/app2/18-bagno.webp",
+        "thumb": "/images/apartments/app2/18-bagno-thumb.webp",
+        "alt": {
+          "it": "Doccia dietro il vetro satinato nel bagno di Santopaolo 2",
+          "en": "Shower behind frosted glass in the Santopaolo 2 bathroom"
+        },
+        "room": "bagno"
       }
     ]
   },
@@ -124,49 +564,236 @@
     "smoobuPropertyId": "TBD",
     "description_it": "Settanta metri quadri con camera matrimoniale e divano letto in soggiorno. Bagno con doccia, cucina attrezzata, scrivania per chi lavora. Si presta sia alle famiglie sia ai gruppi di colleghi in trasferta che vogliono un posto curato dove tornare la sera.",
     "description_en": "Seventy square meters with a double bedroom and a sofa bed in the living room. Shower bathroom, full kitchen, a proper desk for those who work. Works equally well for families or colleagues travelling together who want a polished place to come back to.",
-    "hero_image": "/apartments/santopaolo-3/santopaolo-3-01.webp",
     "gallery": [
       {
-        "src": "/apartments/santopaolo-3/santopaolo-3-01.webp",
-        "src_sm": "/apartments/santopaolo-3/santopaolo-3-01-sm.webp",
-        "alt_it": "Soggiorno Santopaolo 3 con divano letto, tavolo da pranzo e ampie finestre sul verde, appartamento 70 mq a Chiaia",
-        "alt_en": "Living room in Santopaolo 3 with sofa bed, dining table and large windows onto greenery, 70 sqm apartment in Chiaia"
+        "src": "/images/apartments/app3/01-salone.jpg",
+        "webp": "/images/apartments/app3/01-salone.webp",
+        "thumb": "/images/apartments/app3/01-salone-thumb.webp",
+        "alt": {
+          "it": "Salone di Santopaolo 3, divano arancione, tavolo da pranzo e finestra sul verde",
+          "en": "Santopaolo 3 living room, orange sofa, dining table and window onto the greenery"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-3/santopaolo-3-02.webp",
-        "src_sm": "/apartments/santopaolo-3/santopaolo-3-02-sm.webp",
-        "alt_it": "Zona living Santopaolo 3 con cucina antracite a vista, divano letto e accesso al patio",
-        "alt_en": "Living space in Santopaolo 3 with open anthracite kitchen, sofa bed and patio access"
+        "src": "/images/apartments/app3/02-salone.jpg",
+        "webp": "/images/apartments/app3/02-salone.webp",
+        "thumb": "/images/apartments/app3/02-salone-thumb.webp",
+        "alt": {
+          "it": "Ingresso sul salone di Santopaolo 3, divano arancione e porta finestra sul balcone",
+          "en": "Entrance to the Santopaolo 3 living room, orange sofa and French door to the balcony"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-3/santopaolo-3-03.webp",
-        "src_sm": "/apartments/santopaolo-3/santopaolo-3-03-sm.webp",
-        "alt_it": "Cucina Santopaolo 3, dettaglio del lavabo con schienale in legno di noce e piano a induzione",
-        "alt_en": "Kitchen detail in Santopaolo 3 with walnut splashback, sink and induction hob"
+        "src": "/images/apartments/app3/03-salone.jpg",
+        "webp": "/images/apartments/app3/03-salone.webp",
+        "thumb": "/images/apartments/app3/03-salone-thumb.webp",
+        "alt": {
+          "it": "Divano arancione e tavolini nel salone di Santopaolo 3",
+          "en": "Orange sofa and coffee tables in the Santopaolo 3 living room"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-3/santopaolo-3-04.webp",
-        "src_sm": "/apartments/santopaolo-3/santopaolo-3-04-sm.webp",
-        "alt_it": "Camera matrimoniale Santopaolo 3 con testiera in velluto blu e parquet",
-        "alt_en": "Double bedroom in Santopaolo 3 with blue velvet headboard and hardwood floors"
+        "src": "/images/apartments/app3/04-salone.jpg",
+        "webp": "/images/apartments/app3/04-salone.webp",
+        "thumb": "/images/apartments/app3/04-salone-thumb.webp",
+        "alt": {
+          "it": "Divano arancione sotto la finestra con il quadro del tramonto, Santopaolo 3",
+          "en": "Orange sofa under the window with the sunset painting, Santopaolo 3"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-3/santopaolo-3-05.webp",
-        "src_sm": "/apartments/santopaolo-3/santopaolo-3-05-sm.webp",
-        "alt_it": "Camera Santopaolo 3 con armadiatura blu su misura e smart TV integrata",
-        "alt_en": "Bedroom in Santopaolo 3 with bespoke blue wardrobe and integrated smart TV"
+        "src": "/images/apartments/app3/05-salone.jpg",
+        "webp": "/images/apartments/app3/05-salone.webp",
+        "thumb": "/images/apartments/app3/05-salone-thumb.webp",
+        "alt": {
+          "it": "Dal divano alla zona pranzo, salone di Santopaolo 3",
+          "en": "From the sofa to the dining area, Santopaolo 3 living room"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-3/santopaolo-3-06.webp",
-        "src_sm": "/apartments/santopaolo-3/santopaolo-3-06-sm.webp",
-        "alt_it": "Bagno Santopaolo 3 con doccia, ceramica blu verticale, legno e lavabo in pietra",
-        "alt_en": "Bathroom in Santopaolo 3 with shower, vertical blue tiling, wood and stone washbasin"
+        "src": "/images/apartments/app3/06-salone.jpg",
+        "webp": "/images/apartments/app3/06-salone.webp",
+        "thumb": "/images/apartments/app3/06-salone-thumb.webp",
+        "alt": {
+          "it": "Tavolo tondo con i fiori e divano, salone di Santopaolo 3",
+          "en": "Round table with flowers and sofa, Santopaolo 3 living room"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-3/santopaolo-3-07.webp",
-        "src_sm": "/apartments/santopaolo-3/santopaolo-3-07-sm.webp",
-        "alt_it": "Bagno Santopaolo 3, seconda angolazione con doccia in vetro e pavimento in legno",
-        "alt_en": "Bathroom in Santopaolo 3, second view with glass shower and wood flooring"
+        "src": "/images/apartments/app3/07-salone.jpg",
+        "webp": "/images/apartments/app3/07-salone.webp",
+        "thumb": "/images/apartments/app3/07-salone-thumb.webp",
+        "alt": {
+          "it": "Zona pranzo con il quadro del tramonto, Santopaolo 3",
+          "en": "Dining area with the sunset painting, Santopaolo 3"
+        },
+        "room": "salone"
+      },
+      {
+        "src": "/images/apartments/app3/08-salone.jpg",
+        "webp": "/images/apartments/app3/08-salone.webp",
+        "thumb": "/images/apartments/app3/08-salone-thumb.webp",
+        "alt": {
+          "it": "Tavolo da pranzo con i fiori davanti alla finestra, Santopaolo 3",
+          "en": "Dining table with flowers by the window, Santopaolo 3"
+        },
+        "room": "salone"
+      },
+      {
+        "src": "/images/apartments/app3/09-salone.jpg",
+        "webp": "/images/apartments/app3/09-salone.webp",
+        "thumb": "/images/apartments/app3/09-salone-thumb.webp",
+        "alt": {
+          "it": "Zona pranzo di Santopaolo 3 verso il corridoio",
+          "en": "Santopaolo 3 dining area looking towards the corridor"
+        },
+        "room": "salone"
+      },
+      {
+        "src": "/images/apartments/app3/10-cucina.jpg",
+        "webp": "/images/apartments/app3/10-cucina.webp",
+        "thumb": "/images/apartments/app3/10-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina grigia con schienale in legno e angolo divano, Santopaolo 3",
+          "en": "Grey kitchen with timber splashback and sofa corner, Santopaolo 3"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app3/11-cucina.jpg",
+        "webp": "/images/apartments/app3/11-cucina.webp",
+        "thumb": "/images/apartments/app3/11-cucina-thumb.webp",
+        "alt": {
+          "it": "Lavastoviglie aperta e mobili della cucina di Santopaolo 3",
+          "en": "Open dishwasher and units in the Santopaolo 3 kitchen"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app3/12-cucina.jpg",
+        "webp": "/images/apartments/app3/12-cucina.webp",
+        "thumb": "/images/apartments/app3/12-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina di Santopaolo 3, forno, piano cottura e bicchieri",
+          "en": "Santopaolo 3 kitchen, oven, hob and glasses"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app3/13-cucina.jpg",
+        "webp": "/images/apartments/app3/13-cucina.webp",
+        "thumb": "/images/apartments/app3/13-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina lineare di Santopaolo 3 con la porta sul balcone",
+          "en": "Santopaolo 3 galley kitchen with the door to the balcony"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app3/14-cucina.jpg",
+        "webp": "/images/apartments/app3/14-cucina.webp",
+        "thumb": "/images/apartments/app3/14-cucina-thumb.webp",
+        "alt": {
+          "it": "La cucina di Santopaolo 3, vista frontale",
+          "en": "The Santopaolo 3 kitchen, front view"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app3/15-camera.jpg",
+        "webp": "/images/apartments/app3/15-camera.webp",
+        "thumb": "/images/apartments/app3/15-camera-thumb.webp",
+        "alt": {
+          "it": "Camera di Santopaolo 3, letto con testata blu e quadro in bianco e nero",
+          "en": "Santopaolo 3 bedroom, bed with blue headboard and black and white artwork"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app3/16-camera.jpg",
+        "webp": "/images/apartments/app3/16-camera.webp",
+        "thumb": "/images/apartments/app3/16-camera-thumb.webp",
+        "alt": {
+          "it": "Letto matrimoniale e parquet, camera di Santopaolo 3",
+          "en": "Double bed and parquet, Santopaolo 3 bedroom"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app3/17-camera.jpg",
+        "webp": "/images/apartments/app3/17-camera.webp",
+        "thumb": "/images/apartments/app3/17-camera-thumb.webp",
+        "alt": {
+          "it": "Armadio blu con TV incassata, camera di Santopaolo 3",
+          "en": "Blue wardrobe with built-in TV, Santopaolo 3 bedroom"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app3/18-camera.jpg",
+        "webp": "/images/apartments/app3/18-camera.webp",
+        "thumb": "/images/apartments/app3/18-camera-thumb.webp",
+        "alt": {
+          "it": "Camera di Santopaolo 3, letto, finestra e armadio blu",
+          "en": "Santopaolo 3 bedroom, bed, window and blue wardrobe"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app3/19-camera.jpg",
+        "webp": "/images/apartments/app3/19-camera.webp",
+        "thumb": "/images/apartments/app3/19-camera-thumb.webp",
+        "alt": {
+          "it": "Dalla camera al salone, Santopaolo 3",
+          "en": "From the bedroom to the living room, Santopaolo 3"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app3/20-bagno.jpg",
+        "webp": "/images/apartments/app3/20-bagno.webp",
+        "thumb": "/images/apartments/app3/20-bagno-thumb.webp",
+        "alt": {
+          "it": "Bagno di Santopaolo 3, piastrelle blu, lavabo in pietra e rubinetti neri",
+          "en": "Santopaolo 3 bathroom, blue tiles, stone basin and black taps"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app3/21-ingresso.jpg",
+        "webp": "/images/apartments/app3/21-ingresso.webp",
+        "thumb": "/images/apartments/app3/21-ingresso-thumb.webp",
+        "alt": {
+          "it": "Corridoio d'ingresso di Santopaolo 3 con i quadri",
+          "en": "Santopaolo 3 entrance corridor with artworks"
+        },
+        "room": "ingresso"
+      },
+      {
+        "src": "/images/apartments/app3/22-balcone-terrazzo.jpg",
+        "webp": "/images/apartments/app3/22-balcone-terrazzo.webp",
+        "thumb": "/images/apartments/app3/22-balcone-terrazzo-thumb.webp",
+        "alt": {
+          "it": "Balcone di Santopaolo 3 con le piante",
+          "en": "Santopaolo 3 balcony with plants"
+        },
+        "room": "balcone-terrazzo"
+      },
+      {
+        "src": "/images/apartments/app3/23-dettaglio.jpg",
+        "webp": "/images/apartments/app3/23-dettaglio.webp",
+        "thumb": "/images/apartments/app3/23-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Lavello con bottiglia e calici, cucina di Santopaolo 3",
+          "en": "Sink with bottle and glasses, Santopaolo 3 kitchen"
+        },
+        "room": "dettaglio"
       }
     ]
   },
@@ -183,37 +810,266 @@
     "smoobuPropertyId": "TBD",
     "description_it": "Sessanta metri quadri, camera matrimoniale e divano letto, bagno con doccia. È la soluzione più compatta tra quelle che dormono in quattro: arredi puliti, finiture di pregio, nulla di superfluo. Per chi vuole vivere fuori e usare la casa come base.",
     "description_en": "Sixty square meters, double bedroom and sofa bed, shower bathroom. The most compact of the four-guest options, with clean furnishings, fine finishes, nothing extra. For travellers who plan to spend the day out and treat the apartment as a base.",
-    "hero_image": "/apartments/santopaolo-4/santopaolo-4-01.webp",
     "gallery": [
       {
-        "src": "/apartments/santopaolo-4/santopaolo-4-01.webp",
-        "src_sm": "/apartments/santopaolo-4/santopaolo-4-01-sm.webp",
-        "alt_it": "Soggiorno Santopaolo 4 con divano letto, cucina a vista e accesso al patio privato, appartamento 60 mq a Chiaia",
-        "alt_en": "Living room in Santopaolo 4 with sofa bed, open kitchen and private patio access, 60 sqm apartment in Chiaia"
+        "src": "/images/apartments/app4/01-salone.jpg",
+        "webp": "/images/apartments/app4/01-salone.webp",
+        "thumb": "/images/apartments/app4/01-salone-thumb.webp",
+        "alt": {
+          "it": "Salone di Santopaolo 4, divano blu, TV e porta finestra sul balcone",
+          "en": "Santopaolo 4 living room, blue sofa, TV and French door to the balcony"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-4/santopaolo-4-02.webp",
-        "src_sm": "/apartments/santopaolo-4/santopaolo-4-02-sm.webp",
-        "alt_it": "Zona living Santopaolo 4 con cucina antracite, smart TV e porta finestra sul patio",
-        "alt_en": "Living space in Santopaolo 4 with anthracite kitchen, smart TV and French doors to the patio"
+        "src": "/images/apartments/app4/02-salone.jpg",
+        "webp": "/images/apartments/app4/02-salone.webp",
+        "thumb": "/images/apartments/app4/02-salone-thumb.webp",
+        "alt": {
+          "it": "Divano blu, tavolini e cucina, salone di Santopaolo 4",
+          "en": "Blue sofa, coffee tables and kitchen, Santopaolo 4 living room"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-4/santopaolo-4-03.webp",
-        "src_sm": "/apartments/santopaolo-4/santopaolo-4-03-sm.webp",
-        "alt_it": "Camera matrimoniale Santopaolo 4 con scrivania, smart TV e armadiatura blu",
-        "alt_en": "Double bedroom in Santopaolo 4 with work desk, smart TV and blue wardrobe"
+        "src": "/images/apartments/app4/03-salone.jpg",
+        "webp": "/images/apartments/app4/03-salone.webp",
+        "thumb": "/images/apartments/app4/03-salone-thumb.webp",
+        "alt": {
+          "it": "Salone di Santopaolo 4 con divano blu, pianta e quadro",
+          "en": "Santopaolo 4 living room with blue sofa, plant and painting"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-4/santopaolo-4-04.webp",
-        "src_sm": "/apartments/santopaolo-4/santopaolo-4-04-sm.webp",
-        "alt_it": "Camera Santopaolo 4 con cabina armadio in vetro fumé e postazione di lavoro",
-        "alt_en": "Bedroom in Santopaolo 4 with smoked glass walk-in wardrobe and work station"
+        "src": "/images/apartments/app4/04-salone.jpg",
+        "webp": "/images/apartments/app4/04-salone.webp",
+        "thumb": "/images/apartments/app4/04-salone-thumb.webp",
+        "alt": {
+          "it": "Il divano blu con i cuscini e il quadro, Santopaolo 4",
+          "en": "The blue sofa with cushions and the painting, Santopaolo 4"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-4/santopaolo-4-05.webp",
-        "src_sm": "/apartments/santopaolo-4/santopaolo-4-05-sm.webp",
-        "alt_it": "Bagno Santopaolo 4 con doccia walk-in, ceramica blu e lavabo in pietra",
-        "alt_en": "Bathroom in Santopaolo 4 with walk-in shower, blue tiling and stone washbasin"
+        "src": "/images/apartments/app4/05-salone.jpg",
+        "webp": "/images/apartments/app4/05-salone.webp",
+        "thumb": "/images/apartments/app4/05-salone-thumb.webp",
+        "alt": {
+          "it": "Tavolo da pranzo con sedie blu, Santopaolo 4",
+          "en": "Dining table with blue chairs, Santopaolo 4"
+        },
+        "room": "salone"
+      },
+      {
+        "src": "/images/apartments/app4/06-salone.jpg",
+        "webp": "/images/apartments/app4/06-salone.webp",
+        "thumb": "/images/apartments/app4/06-salone-thumb.webp",
+        "alt": {
+          "it": "Zona pranzo e pianta, salone di Santopaolo 4",
+          "en": "Dining area and plant, Santopaolo 4 living room"
+        },
+        "room": "salone"
+      },
+      {
+        "src": "/images/apartments/app4/07-salone.jpg",
+        "webp": "/images/apartments/app4/07-salone.webp",
+        "thumb": "/images/apartments/app4/07-salone-thumb.webp",
+        "alt": {
+          "it": "Divano blu e cucina, Santopaolo 4",
+          "en": "Blue sofa and kitchen, Santopaolo 4"
+        },
+        "room": "salone"
+      },
+      {
+        "src": "/images/apartments/app4/08-cucina.jpg",
+        "webp": "/images/apartments/app4/08-cucina.webp",
+        "thumb": "/images/apartments/app4/08-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina di Santopaolo 4 con finestra e divano",
+          "en": "Santopaolo 4 kitchen with window and sofa"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app4/09-cucina.jpg",
+        "webp": "/images/apartments/app4/09-cucina.webp",
+        "thumb": "/images/apartments/app4/09-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina di Santopaolo 4, forno, lavello e bicchieri",
+          "en": "Santopaolo 4 kitchen, oven, sink and glasses"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app4/10-cucina.jpg",
+        "webp": "/images/apartments/app4/10-cucina.webp",
+        "thumb": "/images/apartments/app4/10-cucina-thumb.webp",
+        "alt": {
+          "it": "Lavatrice e lavastoviglie sotto la finestra, cucina di Santopaolo 4",
+          "en": "Washing machine and dishwasher under the window, Santopaolo 4 kitchen"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app4/11-camera.jpg",
+        "webp": "/images/apartments/app4/11-camera.webp",
+        "thumb": "/images/apartments/app4/11-camera-thumb.webp",
+        "alt": {
+          "it": "Camera di Santopaolo 4, letto matrimoniale, scrivania e sedia",
+          "en": "Santopaolo 4 bedroom, double bed, desk and chair"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app4/12-camera.jpg",
+        "webp": "/images/apartments/app4/12-camera.webp",
+        "thumb": "/images/apartments/app4/12-camera-thumb.webp",
+        "alt": {
+          "it": "Letto matrimoniale con copriletto grigio, Santopaolo 4",
+          "en": "Double bed with grey quilt, Santopaolo 4"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app4/13-camera.jpg",
+        "webp": "/images/apartments/app4/13-camera.webp",
+        "thumb": "/images/apartments/app4/13-camera-thumb.webp",
+        "alt": {
+          "it": "Camera di Santopaolo 4, TV, scrivania e parete blu",
+          "en": "Santopaolo 4 bedroom, TV, desk and blue wall"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app4/14-camera.jpg",
+        "webp": "/images/apartments/app4/14-camera.webp",
+        "thumb": "/images/apartments/app4/14-camera-thumb.webp",
+        "alt": {
+          "it": "Passaggio con cabina armadio verso il bagno, camera di Santopaolo 4",
+          "en": "Walk-through wardrobe towards the bathroom, Santopaolo 4 bedroom"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app4/15-bagno.jpg",
+        "webp": "/images/apartments/app4/15-bagno.webp",
+        "thumb": "/images/apartments/app4/15-bagno-thumb.webp",
+        "alt": {
+          "it": "Bagno di Santopaolo 4 con piastrelle blu, lavabo in pietra e sanitari",
+          "en": "Santopaolo 4 bathroom with blue tiles, stone basin and sanitaryware"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app4/16-bagno.jpg",
+        "webp": "/images/apartments/app4/16-bagno.webp",
+        "thumb": "/images/apartments/app4/16-bagno-thumb.webp",
+        "alt": {
+          "it": "Lavabo, specchio e vetrata sulla camera, bagno di Santopaolo 4",
+          "en": "Basin, mirror and glass onto the bedroom, Santopaolo 4 bathroom"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app4/17-bagno.jpg",
+        "webp": "/images/apartments/app4/17-bagno.webp",
+        "thumb": "/images/apartments/app4/17-bagno-thumb.webp",
+        "alt": {
+          "it": "Dal bagno alla camera, Santopaolo 4",
+          "en": "From the bathroom to the bedroom, Santopaolo 4"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app4/18-cabina-armadio.jpg",
+        "webp": "/images/apartments/app4/18-cabina-armadio.webp",
+        "thumb": "/images/apartments/app4/18-cabina-armadio-thumb.webp",
+        "alt": {
+          "it": "Cabina armadio con ripiani e asciugamani, Santopaolo 4",
+          "en": "Walk-in wardrobe with shelves and towels, Santopaolo 4"
+        },
+        "room": "cabina-armadio"
+      },
+      {
+        "src": "/images/apartments/app4/19-dettaglio.jpg",
+        "webp": "/images/apartments/app4/19-dettaglio.webp",
+        "thumb": "/images/apartments/app4/19-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Rubinetteria del lavabo in pietra, Santopaolo 4",
+          "en": "Stone basin taps, Santopaolo 4"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app4/20-dettaglio.jpg",
+        "webp": "/images/apartments/app4/20-dettaglio.webp",
+        "thumb": "/images/apartments/app4/20-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Libri e pianta sulla scrivania, Santopaolo 4",
+          "en": "Books and plant on the desk, Santopaolo 4"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app4/21-dettaglio.jpg",
+        "webp": "/images/apartments/app4/21-dettaglio.webp",
+        "thumb": "/images/apartments/app4/21-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Cassettiera in legno accanto al letto, Santopaolo 4",
+          "en": "Wooden bedside drawers, Santopaolo 4"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app4/22-dettaglio.jpg",
+        "webp": "/images/apartments/app4/22-dettaglio.webp",
+        "thumb": "/images/apartments/app4/22-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Quadro, vaso e pianta sulla credenza, Santopaolo 4",
+          "en": "Painting, vase and plant on the sideboard, Santopaolo 4"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app4/23-dettaglio.jpg",
+        "webp": "/images/apartments/app4/23-dettaglio.webp",
+        "thumb": "/images/apartments/app4/23-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Bottiglia e calici sul tagliere, cucina di Santopaolo 4",
+          "en": "Bottle and glasses on the board, Santopaolo 4 kitchen"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app4/24-dettaglio.jpg",
+        "webp": "/images/apartments/app4/24-dettaglio.webp",
+        "thumb": "/images/apartments/app4/24-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Tavolino in legno con la pianta, Santopaolo 4",
+          "en": "Wooden side table with plant, Santopaolo 4"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app4/25-dettaglio.jpg",
+        "webp": "/images/apartments/app4/25-dettaglio.webp",
+        "thumb": "/images/apartments/app4/25-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Bollitore e tostapane, cucina di Santopaolo 4",
+          "en": "Kettle and toaster, Santopaolo 4 kitchen"
+        },
+        "room": "dettaglio"
+      },
+      {
+        "src": "/images/apartments/app4/26-dettaglio.jpg",
+        "webp": "/images/apartments/app4/26-dettaglio.webp",
+        "thumb": "/images/apartments/app4/26-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Rubinetto nero, bottiglia e calice, cucina di Santopaolo 4",
+          "en": "Black tap, bottle and glass, Santopaolo 4 kitchen"
+        },
+        "room": "dettaglio"
       }
     ]
   },
@@ -231,43 +1087,156 @@
     "smoobuPropertyId": "TBD",
     "description_it": "Monolocale di quarantacinque metri quadri. Letto matrimoniale, bagno con doccia, angolo cottura completo. Pulito, essenziale, riservato. Pensato per la coppia in fuga breve o per chi viaggia da solo e vuole un indirizzo elegante a Chiaia, non un albergo.",
     "description_en": "A forty-five square meter studio. Double bed, shower bathroom, full kitchenette. Clean, essential, private. Built for couples on a short escape or solo travellers who want an elegant address in Chiaia, not a hotel.",
-    "hero_image": "/apartments/santopaolo-5/santopaolo-5-01.webp",
     "gallery": [
       {
-        "src": "/apartments/santopaolo-5/santopaolo-5-01.webp",
-        "src_sm": "/apartments/santopaolo-5/santopaolo-5-01-sm.webp",
-        "alt_it": "Monolocale Santopaolo 5 con zona pranzo, divano e separatore in doghe di noce, 45 mq a Chiaia Napoli",
-        "alt_en": "Studio Santopaolo 5 with dining area, sofa and walnut slatted partition, 45 sqm in Chiaia Naples"
+        "src": "/images/apartments/app5/01-salone.jpg",
+        "webp": "/images/apartments/app5/01-salone.webp",
+        "thumb": "/images/apartments/app5/01-salone-thumb.webp",
+        "alt": {
+          "it": "Santopaolo 5, zona giorno con divano, cucina e parete a doghe di legno",
+          "en": "Santopaolo 5 living area with sofa, kitchen and timber slat screen"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-5/santopaolo-5-02.webp",
-        "src_sm": "/apartments/santopaolo-5/santopaolo-5-02-sm.webp",
-        "alt_it": "Cucina Santopaolo 5 con ante blu, schienale in noce, forno e piano a induzione",
-        "alt_en": "Kitchen in Santopaolo 5 with blue cabinetry, walnut splashback, oven and induction hob"
+        "src": "/images/apartments/app5/02-salone.jpg",
+        "webp": "/images/apartments/app5/02-salone.webp",
+        "thumb": "/images/apartments/app5/02-salone-thumb.webp",
+        "alt": {
+          "it": "Cucina e tavolo da pranzo nella zona giorno di Santopaolo 5",
+          "en": "Kitchen and dining table in the Santopaolo 5 living area"
+        },
+        "room": "salone"
       },
       {
-        "src": "/apartments/santopaolo-5/santopaolo-5-03.webp",
-        "src_sm": "/apartments/santopaolo-5/santopaolo-5-03-sm.webp",
-        "alt_it": "Cucina Santopaolo 5, dettaglio frontale con lavabo, piano cottura e mensola in legno",
-        "alt_en": "Kitchen detail in Santopaolo 5 with sink, hob and wooden shelf"
+        "src": "/images/apartments/app5/03-cucina.jpg",
+        "webp": "/images/apartments/app5/03-cucina.webp",
+        "thumb": "/images/apartments/app5/03-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina di Santopaolo 5 con schienale in legno e mensola",
+          "en": "Santopaolo 5 kitchen with timber splashback and shelf"
+        },
+        "room": "cucina"
       },
       {
-        "src": "/apartments/santopaolo-5/santopaolo-5-04.webp",
-        "src_sm": "/apartments/santopaolo-5/santopaolo-5-04-sm.webp",
-        "alt_it": "Zona notte Santopaolo 5 con letto matrimoniale, armadiatura bianca e smart TV",
-        "alt_en": "Sleeping area in Santopaolo 5 with double bed, white wardrobe and smart TV"
+        "src": "/images/apartments/app5/04-cucina.jpg",
+        "webp": "/images/apartments/app5/04-cucina.webp",
+        "thumb": "/images/apartments/app5/04-cucina-thumb.webp",
+        "alt": {
+          "it": "Mobile TV e cucina, Santopaolo 5",
+          "en": "TV cabinet and kitchen, Santopaolo 5"
+        },
+        "room": "cucina"
       },
       {
-        "src": "/apartments/santopaolo-5/santopaolo-5-05.webp",
-        "src_sm": "/apartments/santopaolo-5/santopaolo-5-05-sm.webp",
-        "alt_it": "Bagno Santopaolo 5 con lavabo in pietra, ceramica verde smeraldo e specchio a tutta parete",
-        "alt_en": "Bathroom in Santopaolo 5 with stone washbasin, emerald green tiling and full wall mirror"
+        "src": "/images/apartments/app5/05-cucina.jpg",
+        "webp": "/images/apartments/app5/05-cucina.webp",
+        "thumb": "/images/apartments/app5/05-cucina-thumb.webp",
+        "alt": {
+          "it": "Cucina di Santopaolo 5 verso l'ingresso",
+          "en": "Santopaolo 5 kitchen towards the entrance"
+        },
+        "room": "cucina"
       },
       {
-        "src": "/apartments/santopaolo-5/santopaolo-5-06.webp",
-        "src_sm": "/apartments/santopaolo-5/santopaolo-5-06-sm.webp",
-        "alt_it": "Doccia Santopaolo 5 con ceramica verde, porta in vetro e sanitari sospesi",
-        "alt_en": "Shower in Santopaolo 5 with green tiling, glass door and wall hung sanitary ware"
+        "src": "/images/apartments/app5/06-cucina.jpg",
+        "webp": "/images/apartments/app5/06-cucina.webp",
+        "thumb": "/images/apartments/app5/06-cucina-thumb.webp",
+        "alt": {
+          "it": "Lavatrice e lavastoviglie nella cucina di Santopaolo 5",
+          "en": "Washing machine and dishwasher in the Santopaolo 5 kitchen"
+        },
+        "room": "cucina"
+      },
+      {
+        "src": "/images/apartments/app5/07-camera.jpg",
+        "webp": "/images/apartments/app5/07-camera.webp",
+        "thumb": "/images/apartments/app5/07-camera-thumb.webp",
+        "alt": {
+          "it": "Zona notte di Santopaolo 5, letto dietro la parete a doghe e finestra",
+          "en": "Santopaolo 5 sleeping area, bed behind the slat screen and window"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app5/08-camera.jpg",
+        "webp": "/images/apartments/app5/08-camera.webp",
+        "thumb": "/images/apartments/app5/08-camera-thumb.webp",
+        "alt": {
+          "it": "Letto matrimoniale e le due finestre, Santopaolo 5",
+          "en": "Double bed and the two windows, Santopaolo 5"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app5/09-camera.jpg",
+        "webp": "/images/apartments/app5/09-camera.webp",
+        "thumb": "/images/apartments/app5/09-camera-thumb.webp",
+        "alt": {
+          "it": "Letto, armadio bianco e finestra, zona notte di Santopaolo 5",
+          "en": "Bed, white wardrobe and window, Santopaolo 5 sleeping area"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app5/10-camera.jpg",
+        "webp": "/images/apartments/app5/10-camera.webp",
+        "thumb": "/images/apartments/app5/10-camera-thumb.webp",
+        "alt": {
+          "it": "Zona notte di Santopaolo 5 con la tenda a pacchetto",
+          "en": "Santopaolo 5 sleeping area with roman blind"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app5/11-camera.jpg",
+        "webp": "/images/apartments/app5/11-camera.webp",
+        "thumb": "/images/apartments/app5/11-camera-thumb.webp",
+        "alt": {
+          "it": "Letto, armadio e TV, Santopaolo 5",
+          "en": "Bed, wardrobe and TV, Santopaolo 5"
+        },
+        "room": "camera"
+      },
+      {
+        "src": "/images/apartments/app5/12-bagno.jpg",
+        "webp": "/images/apartments/app5/12-bagno.webp",
+        "thumb": "/images/apartments/app5/12-bagno-thumb.webp",
+        "alt": {
+          "it": "Bagno di Santopaolo 5 con piastrelle verdi, lavabo e specchio",
+          "en": "Santopaolo 5 bathroom with green tiles, basin and mirror"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app5/13-bagno.jpg",
+        "webp": "/images/apartments/app5/13-bagno.webp",
+        "thumb": "/images/apartments/app5/13-bagno-thumb.webp",
+        "alt": {
+          "it": "Bagno di Santopaolo 5, sanitari, lavabo e doccia",
+          "en": "Santopaolo 5 bathroom, sanitaryware, basin and shower"
+        },
+        "room": "bagno"
+      },
+      {
+        "src": "/images/apartments/app5/14-ingresso.jpg",
+        "webp": "/images/apartments/app5/14-ingresso.webp",
+        "thumb": "/images/apartments/app5/14-ingresso-thumb.webp",
+        "alt": {
+          "it": "Ingresso di Santopaolo 5 con i quadri e vista sulla zona pranzo",
+          "en": "Santopaolo 5 entrance with artworks and view of the dining area"
+        },
+        "room": "ingresso"
+      },
+      {
+        "src": "/images/apartments/app5/15-dettaglio.jpg",
+        "webp": "/images/apartments/app5/15-dettaglio.webp",
+        "thumb": "/images/apartments/app5/15-dettaglio-thumb.webp",
+        "alt": {
+          "it": "Bottiglia e calici sul piano in legno, Santopaolo 5",
+          "en": "Bottle and glasses on the timber top, Santopaolo 5"
+        },
+        "room": "dettaglio"
       }
     ]
   }
