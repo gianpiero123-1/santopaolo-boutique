@@ -1,6 +1,7 @@
 const it = {
   nav: {
     apartments: 'Appartamenti',
+    transitional: 'Affitti transitori',
     wellness: 'Wellness',
     concierge: 'Concierge',
     contact: 'Contatti',
@@ -19,6 +20,12 @@ const it = {
       label: 'Appartamenti',
       title: 'Dove soggiornare',
       viewAll: 'Tutti gli appartamenti →',
+    },
+    transitional: {
+      label: 'Affitti transitori',
+      title: 'Una casa a Chiaia da 1 a 18 mesi',
+      body: 'Cinque appartamenti arredati con servizi alberghieri, canoni mensili tutto incluso da €3.750 a €7.000, trattativa diretta con la proprietà.',
+      cta: 'Scopri gli affitti transitori',
     },
     concierge: {
       eyebrow: 'Concierge',
@@ -154,6 +161,7 @@ const it = {
     guideAll: 'Tutte le domande',
     links: {
       apartments: 'Appartamenti',
+      transitional: 'Affitti transitori',
       concierge: 'Concierge',
       contact: 'Contatti',
       book: 'Prenota',

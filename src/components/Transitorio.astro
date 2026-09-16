@@ -1,0 +1,511 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import type { Lang } from '../i18n/index';
+import { getLocalePath, getTransitionalPath } from '../i18n/index';
+import {
+  TRANSITORIO,
+  TRANSITORIO_CAPACITY,
+  TRANSITORIO_COPY,
+  buildTransitionalOffers,
+  formatRent,
+  personsLabel,
+  rentFor,
+  sqmLabel,
+} from '../lib/transitorio';
+
+/**
+ * Transitional rentals page, shared by /affitti-transitori and
+ * /en/mid-term-rentals. Copy comes from lib/transitorio.ts, units, rents,
+ * services and FAQ from data/transitorio.json. The enquiry form posts to the
+ * same endpoint as the tourist quote form, flagged as a transitional stay.
+ */
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const c = TRANSITORIO_COPY[lang];
+const d = TRANSITORIO;
+const faq = d.faq[lang];
+const alternate = getTransitionalPath(lang === 'it' ? 'en' : 'it');
+
+const wrap = 'max-w-7xl mx-auto px-6 lg:px-8';
+const mono = 'font-mono text-xs tracking-[0.06em] text-brand-muted';
+const h2 = 'font-display font-light text-[clamp(30px,3.6vw,44px)] leading-[1.1] tracking-[-0.01em] text-brand-text mt-3 mb-11 max-w-[22ch]';
+const intro = 'text-brand-text2 text-[17px] max-w-[60ch] -mt-6 mb-11';
+const ghostBtn =
+  'inline-block border border-brand-muted hover:border-brand-text text-brand-text px-8 py-3 text-xs font-medium uppercase tracking-[0.05em] transition-colors';
+
+// Colour is applied per header so the 18 month column never competes with the
+// muted default in the cascade.
+const thBase = 'font-mono text-xs tracking-[0.06em] text-left font-normal px-4 pb-3.5 border-b border-brand-muted';
+const th = `${thBase} text-brand-muted`;
+const td = 'px-4 py-5 border-b border-brand-border align-top text-[15px] text-brand-text';
+const price = `${td} font-display font-light text-[21px] whitespace-nowrap`;
+const hideOnMobile = 'hidden md:table-cell';
+
+const inputClass =
+  'w-full bg-brand-bg border border-brand-border text-brand-text px-3.5 py-3 text-[15px] focus:outline-none focus:border-brand-muted transition-colors';
+const labelClass = 'grid gap-2 text-[13px] text-brand-text2';
+const errorClass = 'block text-sm text-[#D9A0A0]';
+
+// The extras box repeats the mockup verbatim: the extra services joined in one paragraph.
+const extrasText = d.extra.map(item => item.text[lang]).join(' ');
+
+const maxPersons = Math.max(...d.units.map(u => u.persons));
+
+const clientConfig = {
+  lang,
+  capacities: TRANSITORIO_CAPACITY,
+  sending: c.request.sending,
+  submit: c.request.submit,
+  errors: c.request.errors,
+};
+---
+
+<BaseLayout
+  title={c.seo.title}
+  description={c.seo.description}
+  lang={lang}
+  alternatePath={`${alternate}/`}
+  langSwitchHref={alternate}
+  faq={faq.map(item => ({ question: item.q, answer: item.a }))}
+  offers={buildTransitionalOffers(lang)}
+>
+  <!-- Hero -->
+  <header class="border-b border-brand-border pb-16 lg:pb-20">
+    <div class={`${wrap} grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] gap-10 lg:gap-16 items-end`}>
+      <div>
+        <p class={mono}>{c.hero.eyebrow}</p>
+        <h1 class="font-display font-light text-[clamp(40px,5.4vw,68px)] leading-[1.1] tracking-[-0.01em] text-brand-text mt-4 mb-7">
+          {c.hero.title}
+        </h1>
+        <p class="text-lg text-brand-text2 max-w-[58ch]">{c.hero.lead}</p>
+        <div class="flex flex-wrap gap-3.5 mt-9">
+          <a href={`#${c.anchors.request}`} class="btn-solid">{c.hero.ctaPrimary}</a>
+          <a href={`#${c.anchors.units}`} class={ghostBtn}>{c.hero.ctaSecondary}</a>
+        </div>
+      </div>
+      <div class="bg-brand-bg2 p-8 border-l-2 border-brand-accent">
+        <p class="text-[15px] text-brand-text mb-3.5">{c.hero.answer[0]}</p>
+        <p class="text-[15px] text-brand-text2">{c.hero.answer[1]}</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- Who it is for -->
+  <section class="py-16 lg:py-22 border-b border-brand-border">
+    <div class={wrap}>
+      <p class={mono}>{c.who.eyebrow}</p>
+      <h2 class={h2}>{c.who.title}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-px bg-brand-border">
+        {c.who.items.map(item => (
+          <div class="bg-brand-bg p-6 lg:p-7">
+            <h3 class="font-display font-light text-[22px] leading-tight text-brand-text mb-2.5">{item.title}</h3>
+            <p class="text-brand-text2 text-[15px]">{item.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Units and rents -->
+  <section id={c.anchors.units} class="py-16 lg:py-22 border-b border-brand-border scroll-mt-32 lg:scroll-mt-44">
+    <div class={wrap}>
+      <p class={mono}>{c.units.eyebrow}</p>
+      <h2 class={h2}>{c.units.title}</h2>
+      <p class={intro}>{c.units.intro}</p>
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse">
+          <thead>
+            <tr>
+              <th class={th}>{c.units.columns.unit}</th>
+              <th class={`${th} ${hideOnMobile}`}>{c.units.columns.sqm}</th>
+              <th class={`${th} ${hideOnMobile}`}>{c.units.columns.composition}</th>
+              {d.rateMonths.map((months, index) => (
+                <th
+                  class:list={[
+                    thBase,
+                    index === d.rateMonths.length - 1 ? 'text-brand-accent-hover' : 'text-brand-muted',
+                    { [hideOnMobile]: index === 1 || index === 2 },
+                  ]}
+                >
+                  {months} {c.units.columns.months}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {d.units.map(unit => (
+              <tr class="hover:bg-brand-bg2 transition-colors">
+                <td class={`${td} font-display font-light text-[22px] leading-tight`}>
+                  {unit.name[lang]}
+                  <small class="block font-sans text-sm text-brand-text2 mt-1">
+                    {sqmLabel(unit, lang)}, {personsLabel(unit, lang)}
+                  </small>
+                </td>
+                <td class={`${td} ${hideOnMobile}`}>{unit.sqm} {lang === 'it' ? 'mq' : 'sqm'}</td>
+                <td class={`${td} ${hideOnMobile}`}>{unit.composition[lang]}</td>
+                {d.rateMonths.map((months, index) => (
+                  <td class:list={[price, { [hideOnMobile]: index === 1 || index === 2 }]}>
+                    {formatRent(rentFor(unit, months), lang)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-brand-muted text-[13px] mt-4.5 max-w-[70ch]">{c.units.note}</p>
+    </div>
+  </section>
+
+  <!-- Organisation: included and extra services -->
+  <section class="py-16 lg:py-22 border-b border-brand-border">
+    <div class={`${wrap} grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16`}>
+      <div>
+        <p class={mono}>{c.organisation.eyebrow}</p>
+        <h2 class={h2}>{c.organisation.title}</h2>
+        <p class={intro}>{c.organisation.intro}</p>
+      </div>
+      <div class="grid gap-px bg-brand-border">
+        {d.included.map(item => (
+          <div class="bg-brand-bg2 px-8 py-7">
+            <h3 class="font-display font-light text-[21px] leading-tight text-brand-text mb-2">{item.title[lang]}</h3>
+            <p class="text-brand-text2 text-[15px]">{item.text[lang]}</p>
+          </div>
+        ))}
+        <div class="bg-brand-bg2 px-8 py-7">
+          <h3 class="font-display font-light text-[21px] leading-tight text-brand-text mb-2">{c.organisation.extrasTitle}</h3>
+          <p class="text-brand-text2 text-[15px]">{extrasText}</p>
+        </div>
+        <div class="bg-brand-bg2 px-8 py-7">
+          <h3 class="font-display font-light text-[21px] leading-tight text-brand-text mb-2">{c.organisation.direct.title}</h3>
+          <p class="text-brand-text2 text-[15px]">{c.organisation.direct.text}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Equipment -->
+  <section class="py-16 lg:py-22 border-b border-brand-border">
+    <div class={`${wrap} grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16`}>
+      <div>
+        <p class={mono}>{c.equipment.eyebrow}</p>
+        <h2 class={`${h2} mb-0`}>{c.equipment.title}</h2>
+      </div>
+      <ul class="md:columns-2 md:gap-10">
+        {c.equipment.items.map(item => (
+          <li class="py-3 border-b border-brand-border text-[15px] text-brand-text break-inside-avoid">
+            {item.title}
+            <span class="block text-sm text-brand-text2">{item.text}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section class="py-16 lg:py-22 border-b border-brand-border">
+    <div class={wrap}>
+      <p class={mono}>{c.location.eyebrow}</p>
+      <h2 class={h2}>{c.location.title}</h2>
+      <p class={`${intro} mb-0`}>{c.location.text}</p>
+    </div>
+  </section>
+
+  <!-- Lease -->
+  <section class="py-16 lg:py-22 border-b border-brand-border">
+    <div class={wrap}>
+      <p class={mono}>{c.lease.eyebrow}</p>
+      <h2 class={h2}>{c.lease.title}</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-px bg-brand-border">
+        {c.lease.items.map(item => (
+          <div class="bg-brand-bg2 p-8">
+            <p class={mono}>{item.label}</p>
+            <h3 class="font-display font-light text-[20px] leading-tight text-brand-text mt-2.5 mb-3">{item.title}</h3>
+            <p class="text-brand-text2 text-[15px]">{item.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16 lg:py-22 border-b border-brand-border">
+    <div class={`${wrap} grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16`}>
+      <div>
+        <p class={mono}>{c.faq.eyebrow}</p>
+        <h2 class={`${h2} mb-0`}>{c.faq.title}</h2>
+      </div>
+      <div>
+        {faq.map((item, index) => (
+          <details class="group border-b border-brand-border" open={index === 0}>
+            <summary class="cursor-pointer list-none py-5 flex justify-between items-start gap-6 font-display font-light text-[21px] leading-snug text-brand-text [&::-webkit-details-marker]:hidden">
+              <span>{item.q}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 mt-1.5 text-brand-muted transition-transform duration-200 group-open:rotate-45">
+                <path d="M5 12h14" />
+                <path d="M12 5v14" />
+              </svg>
+            </summary>
+            <p class="text-brand-text2 text-[15px] pb-6 max-w-[68ch]">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Enquiry -->
+  <section id={c.anchors.request} class="py-16 lg:py-22 scroll-mt-32 lg:scroll-mt-44">
+    <div class={`${wrap} grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start`}>
+      <aside>
+        <p class={mono}>{c.request.eyebrow}</p>
+        <h2 class={`${h2} mb-6`}>{c.request.title}</h2>
+        <p class="text-brand-text2 text-[15px] max-w-[46ch] mb-6">{c.request.text}</p>
+        <div class="space-y-3 text-[15px]">
+          <a href={`mailto:${d.address.email}`} class="inline-flex items-center gap-3 text-brand-text">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 text-brand-muted">
+              <rect width="20" height="16" x="2" y="4" rx="2" />
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </svg>
+            <span class="border-b border-brand-muted hover:border-brand-text transition-colors break-all">{d.address.email}</span>
+          </a>
+          <br />
+          <a href={d.address.whatsapp} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 text-brand-text">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="shrink-0 text-brand-muted">
+              <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+            </svg>
+            <span class="border-b border-brand-muted hover:border-brand-text transition-colors">{c.request.whatsappLabel}</span>
+          </a>
+        </div>
+      </aside>
+
+      <div id="transitorio-root">
+        <form id="transitorio-form" class="bg-brand-bg2 p-7 lg:p-10 grid grid-cols-1 sm:grid-cols-2 gap-5" novalidate>
+          <div id="transitorio-error" hidden role="alert" class="sm:col-span-2 border border-[#8A2A2A] px-4 py-3 text-sm text-[#D9A0A0]"></div>
+
+          <label class={labelClass}>
+            {c.request.fields.arrival}
+            <input type="date" name="check_in" class={inputClass} required />
+            <span data-error-for="check_in" hidden class={errorClass} role="alert"></span>
+          </label>
+          <label class={labelClass}>
+            {c.request.fields.duration}
+            <select name="duration" class={inputClass}>
+              {d.form.durations.map(option => (
+                <option value={option.key}>{option.label[lang]}</option>
+              ))}
+            </select>
+          </label>
+
+          <label class={labelClass}>
+            {c.request.fields.unit}
+            <select name="app_number" class={inputClass} required>
+              <option value="">{c.request.fields.unitPlaceholder}</option>
+              {d.units.map(unit => (
+                <option value={unit.id}>{unit.name[lang]}, {sqmLabel(unit, lang)}, {personsLabel(unit, lang)}</option>
+              ))}
+            </select>
+            <span data-error-for="app_number" hidden class={errorClass} role="alert"></span>
+          </label>
+          <label class={labelClass}>
+            {c.request.fields.persons}
+            <select name="adults" class={inputClass}>
+              {Array.from({ length: maxPersons }, (_, i) => i + 1).map(n => (
+                <option value={n}>{n}</option>
+              ))}
+            </select>
+            <span data-error-for="adults" hidden class={errorClass} role="alert"></span>
+          </label>
+
+          <label class={`${labelClass} sm:col-span-2`}>
+            {c.request.fields.reason}
+            <select name="reason" class={inputClass}>
+              {d.form.reasons.map(option => (
+                <option value={option.key}>{option.label[lang]}</option>
+              ))}
+            </select>
+          </label>
+
+          <label class={labelClass}>
+            {c.request.fields.name}
+            <input type="text" name="guest_name" autocomplete="name" maxlength="200" class={inputClass} required />
+            <span data-error-for="guest_name" hidden class={errorClass} role="alert"></span>
+          </label>
+          <label class={labelClass}>
+            {c.request.fields.email}
+            <input type="email" name="guest_email" autocomplete="email" maxlength="200" class={inputClass} required />
+            <span data-error-for="guest_email" hidden class={errorClass} role="alert"></span>
+          </label>
+
+          <label class={`${labelClass} sm:col-span-2`}>
+            {c.request.fields.notes}
+            <textarea name="notes" rows="4" maxlength="2000" placeholder={c.request.fields.notesPlaceholder} class={`${inputClass} resize-y min-h-[110px]`}></textarea>
+          </label>
+
+          <button type="submit" id="transitorio-submit" class="btn-solid sm:col-span-2 justify-self-start py-3.5">
+            {c.request.submit}
+          </button>
+        </form>
+
+        <div id="transitorio-success" hidden class="border border-brand-border bg-brand-bg2 p-8 lg:p-10 text-center space-y-5">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#6B1F1F" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" class="mx-auto">
+            <circle cx="12" cy="12" r="10" />
+            <path d="m9 12 2 2 4-4" />
+          </svg>
+          <p class="font-display font-light text-3xl text-brand-text tracking-tight">{c.request.success.title}</p>
+          <div>
+            <p class={mono}>{c.request.success.codeLabel}</p>
+            <p id="transitorio-code" class="font-display text-2xl text-brand-text mt-1"></p>
+          </div>
+          <p class="text-brand-text2 text-sm leading-relaxed max-w-md mx-auto">{c.request.success.body}</p>
+          <a href={getLocalePath(lang, '/')} class={ghostBtn}>{c.request.success.backHome}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ CFG: clientConfig }}>
+  (function () {
+    const form = document.getElementById('transitorio-form');
+    const formError = document.getElementById('transitorio-error');
+    const successBox = document.getElementById('transitorio-success');
+    const submitBtn = document.getElementById('transitorio-submit');
+    if (!form || !formError || !successBox || !submitBtn) return;
+
+    const pad = n => String(n).padStart(2, '0');
+    const todayISO = () => {
+      const d = new Date();
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    };
+
+    form.elements.check_in.min = todayISO();
+
+    function showFieldError(name, message) {
+      const p = form.querySelector(`[data-error-for="${name}"]`);
+      if (!p) return;
+      p.textContent = message;
+      p.hidden = false;
+    }
+
+    function clearErrors() {
+      form.querySelectorAll('[data-error-for]').forEach(p => {
+        p.hidden = true;
+        p.textContent = '';
+      });
+      formError.hidden = true;
+    }
+
+    form.querySelectorAll('input, select').forEach(el => {
+      el.addEventListener('change', () => {
+        const p = form.querySelector(`[data-error-for="${el.name}"]`);
+        if (p) {
+          p.hidden = true;
+          p.textContent = '';
+        }
+      });
+    });
+
+    function validate() {
+      clearErrors();
+      let firstInvalid = null;
+      const invalid = el => {
+        if (!firstInvalid) firstInvalid = el;
+      };
+
+      const checkIn = form.elements.check_in.value;
+      if (!checkIn) {
+        showFieldError('check_in', CFG.errors.arrival);
+        invalid(form.elements.check_in);
+      } else if (checkIn < todayISO()) {
+        showFieldError('check_in', CFG.errors.arrivalPast);
+        invalid(form.elements.check_in);
+      }
+
+      const app = Number(form.elements.app_number.value);
+      const cap = CFG.capacities[app];
+      if (!cap) {
+        showFieldError('app_number', CFG.errors.unit);
+        invalid(form.elements.app_number);
+      } else if (Number(form.elements.adults.value) > cap) {
+        showFieldError('adults', CFG.errors.capacity.replace('{max}', String(cap)));
+        invalid(form.elements.adults);
+      }
+
+      if (!form.elements.guest_name.value.trim()) {
+        showFieldError('guest_name', CFG.errors.name);
+        invalid(form.elements.guest_name);
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.elements.guest_email.value.trim())) {
+        showFieldError('guest_email', CFG.errors.email);
+        invalid(form.elements.guest_email);
+      }
+
+      return firstInvalid;
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const firstInvalid = validate();
+      if (firstInvalid) {
+        firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        firstInvalid.focus({ preventScroll: true });
+        return;
+      }
+
+      // Same endpoint as the tourist quote form; stay_type marks the request as
+      // a monthly lease and the server derives the end date from the duration.
+      const payload = {
+        stay_type: 'transitorio',
+        guest_name: form.elements.guest_name.value.trim(),
+        guest_email: form.elements.guest_email.value.trim(),
+        notes: form.elements.notes.value.trim(),
+        lang: CFG.lang,
+        duration: form.elements.duration.value,
+        reason: form.elements.reason.value,
+        units: [
+          {
+            app_number: Number(form.elements.app_number.value),
+            check_in: form.elements.check_in.value,
+            adults: Number(form.elements.adults.value),
+            children: 0,
+          },
+        ],
+      };
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = CFG.sending;
+
+      try {
+        const res = await fetch('/api/booking-request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json().catch(() => null);
+
+        if (res.ok && data && data.ok) {
+          document.getElementById('transitorio-code').textContent = data.request_code;
+          form.hidden = true;
+          successBox.hidden = false;
+          successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+
+        formError.textContent = res.status === 429 ? CFG.errors.rateLimited : (data && data.error) || CFG.errors.generic;
+        formError.hidden = false;
+        formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch {
+        formError.textContent = CFG.errors.generic;
+        formError.hidden = false;
+        formError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = CFG.submit;
+      }
+    });
+  })();
+</script>

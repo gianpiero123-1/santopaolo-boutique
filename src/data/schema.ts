@@ -11,7 +11,13 @@ import apartmentsData from './apartments.json';
  * are per-URL, and therefore per-language.
  */
 
-export const SITE = 'https://www.santopaoloapartments.com';
+/**
+ * Origin of every `@id`, `url` and breadcrumb item. Astro exposes the `site`
+ * value of astro.config.mjs as import.meta.env.SITE, so the graph follows the
+ * canonical host automatically; the trailing slash is stripped because every
+ * path below starts with one.
+ */
+export const SITE = import.meta.env.SITE.replace(/\/$/, '');
 
 export const ORGANIZATION_ID = `${SITE}/#organization`;
 export const WEBSITE_ID = `${SITE}/#website`;
@@ -316,8 +322,12 @@ export function buildWebSite(): JsonLdNode {
   };
 }
 
-export function buildLodgingBusiness(lang: Lang): JsonLdNode {
-  return {
+/**
+ * `offers` attaches Offer nodes as makesOffer: the transitional rentals page
+ * passes its five monthly rents, every other page leaves it out.
+ */
+export function buildLodgingBusiness(lang: Lang, offers?: JsonLdValue[]): JsonLdNode {
+  const node: JsonLdNode = {
     '@type': 'LodgingBusiness',
     '@id': LODGING_ID,
     name: NAME,
@@ -338,6 +348,8 @@ export function buildLodgingBusiness(lang: Lang): JsonLdNode {
     amenityFeature: COMMON_AMENITY_KEYS.map(key => amenity(key, lang)),
     containsPlace: apartmentsData.map(unit => ref(accommodationId(unit.slug))),
   };
+  if (offers?.length) node.makesOffer = offers;
+  return node;
 }
 
 /**
@@ -422,6 +434,9 @@ const SEGMENT_LABELS: Record<string, Record<Lang, string>> = {
   // The B2B production base page. The name stays identical in both languages,
   // matching the navbar label.
   production: { it: 'Production Base', en: 'Production Base' },
+  // Transitional rentals, asymmetric slugs like the guide.
+  'affitti-transitori': { it: 'Affitti transitori', en: 'Mid-term rentals' },
+  'mid-term-rentals': { it: 'Affitti transitori', en: 'Mid-term rentals' },
 };
 
 const HOME_LABEL: Record<Lang, string> = { it: 'Home', en: 'Home' };
@@ -493,6 +508,12 @@ export interface GuideArticleGraphOptions {
   mentions?: string[];
 }
 
+/** One question and its answer, as shown on the page. */
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 export interface PageGraphOptions {
   lang: Lang;
   pathname: string;
@@ -505,6 +526,10 @@ export interface PageGraphOptions {
   /** Names the final breadcrumb segment when it is a dynamic slug. */
   breadcrumbLeafLabel?: string;
   guideArticle?: GuideArticleGraphOptions;
+  /** Every FAQ shown on the page, emitted as one FAQPage node. */
+  faq?: FaqItem[];
+  /** Offer nodes attached to the LodgingBusiness as makesOffer. */
+  offers?: JsonLdValue[];
 }
 
 function buildWebPage(opts: PageGraphOptions, breadcrumbId: string | null): JsonLdNode {
@@ -564,6 +589,21 @@ function buildGuideFaq(opts: PageGraphOptions, article: GuideArticleGraphOptions
   };
 }
 
+/** FAQPage listing every question visible on the page, in page language. */
+function buildFaqPage(opts: PageGraphOptions, items: FaqItem[]): JsonLdNode {
+  const url = absoluteUrl(opts.pathname);
+  return {
+    '@type': 'FAQPage',
+    '@id': `${url}#faq`,
+    inLanguage: opts.lang,
+    mainEntity: items.map(item => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
+  };
+}
+
 /**
  * Collapses nodes sharing an `@id`, keeping the richer definition. Guards
  * against the same entity being emitted twice with different depth.
@@ -601,7 +641,7 @@ export function buildPageGraph(opts: PageGraphOptions): JsonLdGraph {
   const nodes: JsonLdNode[] = [
     buildOrganization(),
     buildWebSite(),
-    buildLodgingBusiness(opts.lang),
+    buildLodgingBusiness(opts.lang, opts.offers),
     ...apartmentsData.map(unit =>
       unit.slug === opts.apartmentSlug
         ? buildAccommodation(unit, opts.lang)
@@ -614,6 +654,8 @@ export function buildPageGraph(opts: PageGraphOptions): JsonLdGraph {
     nodes.push(buildGuideArticle(opts, opts.guideArticle));
     nodes.push(buildGuideFaq(opts, opts.guideArticle));
   }
+
+  if (opts.faq?.length) nodes.push(buildFaqPage(opts, opts.faq));
 
   if (breadcrumb) nodes.push(breadcrumb);
 

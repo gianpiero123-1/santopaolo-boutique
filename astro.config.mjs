@@ -9,6 +9,10 @@ import vercel from '@astrojs/vercel';
 // /404 and the whole authenticated admin area (AdminLayout sets noindex,nofollow).
 const NOINDEX_ROUTES = [/^\/404\/?$/, /^\/admin(\/|$)/];
 
+// The sitemap i18n pairing below matches IT and EN pages by identical path, so
+// the transitional rentals pair, whose slugs differ, gets its alternates here.
+const TRANSITIONAL_PAIR = { it: '/affitti-transitori/', en: '/en/mid-term-rentals/' };
+
 export default defineConfig({
   // Must match the host the site is actually served on (www), otherwise every
   // absolute URL we generate (canonical, og:url, hreflang, sitemap) points at a
@@ -64,6 +68,16 @@ export default defineConfig({
       filter: page => {
         const { pathname } = new URL(page);
         return !NOINDEX_ROUTES.some(route => route.test(pathname));
+      },
+      serialize: item => {
+        const { origin, pathname } = new URL(item.url);
+        if (pathname === TRANSITIONAL_PAIR.it || pathname === TRANSITIONAL_PAIR.en) {
+          item.links = [
+            { url: `${origin}${TRANSITIONAL_PAIR.it}`, lang: 'it' },
+            { url: `${origin}${TRANSITIONAL_PAIR.en}`, lang: 'en' },
+          ];
+        }
+        return item;
       },
     }),
   ],

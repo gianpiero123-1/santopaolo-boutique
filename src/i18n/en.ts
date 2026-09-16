@@ -3,6 +3,7 @@ import type { Translations } from './it';
 const en: Translations = {
   nav: {
     apartments: 'Apartments',
+    transitional: 'Mid-term rentals',
     wellness: 'Wellness',
     concierge: 'Concierge',
     contact: 'Contact',
@@ -21,6 +22,12 @@ const en: Translations = {
       label: 'Apartments',
       title: 'Where to stay',
       viewAll: 'All apartments →',
+    },
+    transitional: {
+      label: 'Mid-term rentals',
+      title: 'A home in Chiaia for 1 to 18 months',
+      body: 'Five furnished apartments with hotel services, all inclusive monthly rents from €3,750 to €7,000, direct dealing with the owner.',
+      cta: 'Explore mid-term rentals',
     },
     concierge: {
       eyebrow: 'Concierge',
@@ -156,6 +163,7 @@ const en: Translations = {
     guideAll: 'All questions',
     links: {
       apartments: 'Apartments',
+      transitional: 'Mid-term rentals',
       concierge: 'Concierge',
       contact: 'Contact',
       book: 'Book',

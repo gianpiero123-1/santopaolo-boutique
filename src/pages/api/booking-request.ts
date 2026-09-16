@@ -12,8 +12,26 @@ import {
   MAX_UNITS,
   type RequestUnitInput,
 } from '../../lib/booking-request';
+import {
+  TRANSITORIO_CAPACITY,
+  TRANSITORIO_PREFIX,
+  addMonths,
+  findDuration,
+  findReason,
+  findUnit,
+  type DurationOption,
+  type ReasonOption,
+} from '../../lib/transitorio';
 
 type Lang = 'it' | 'en';
+
+/** Tourist quote from /richiesta, or monthly lease from /affitti-transitori. */
+type StayType = 'tourist' | 'transitorio';
+
+interface TransitionalDetails {
+  duration: DurationOption;
+  reason: ReasonOption;
+}
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -36,6 +54,8 @@ const MESSAGES = {
     checkinPast: 'La data di check-in non può essere nel passato.',
     checkoutOrder: 'Il check-out deve essere successivo al check-in.',
     badGuests: 'Numero di ospiti non valido.',
+    badDuration: 'Durata non valida.',
+    badReason: 'Motivo del soggiorno non valido.',
     capacity: (label: string, max: number) => `${label} ospita al massimo ${max} persone.`,
     rateLimited: 'Troppe richieste. Attendi qualche minuto e riprova.',
     serverError: 'Non siamo riusciti a registrare la richiesta. Riprova tra poco.',
@@ -51,6 +71,8 @@ const MESSAGES = {
     checkinPast: 'The check-in date cannot be in the past.',
     checkoutOrder: 'Check-out must be after check-in.',
     badGuests: 'Invalid number of guests.',
+    badDuration: 'Invalid length of stay.',
+    badReason: 'Invalid reason for the stay.',
     capacity: (label: string, max: number) => `${label} sleeps a maximum of ${max} guests.`,
     rateLimited: 'Too many requests. Please wait a few minutes and try again.',
     serverError: 'We could not record your request. Please try again shortly.',
@@ -97,6 +119,9 @@ interface ValidPayload {
   guest_country: string | null;
   notes: string | null;
   lang: Lang;
+  stay_type: StayType;
+  /** Set on transitional requests only. */
+  transitional?: TransitionalDetails;
   units: ValidUnit[];
 }
 
@@ -119,6 +144,19 @@ function validate(body: unknown, lang: Lang): { payload?: ValidPayload; error?: 
   if (!Array.isArray(b.units) || b.units.length === 0) return { error: m.noUnits };
   if (b.units.length > MAX_UNITS) return { error: m.tooManyUnits };
 
+  // Transitional requests come from /affitti-transitori: same guest and unit
+  // checks, plus a lease length and a reason, both from the fixed option lists
+  // in transitorio.json.
+  const stay_type: StayType = b.stay_type === 'transitorio' ? 'transitorio' : 'tourist';
+  let transitional: TransitionalDetails | undefined;
+  if (stay_type === 'transitorio') {
+    const duration = findDuration(str(b.duration, 20));
+    if (!duration) return { error: m.badDuration };
+    const reason = findReason(str(b.reason, 40));
+    if (!reason) return { error: m.badReason };
+    transitional = { duration, reason };
+  }
+
   const todayDate = today();
   const units: ValidUnit[] = [];
 
@@ -132,12 +170,20 @@ function validate(body: unknown, lang: Lang): { payload?: ValidPayload; error?: 
     }
 
     const check_in = str(u.check_in, 10);
-    const check_out = str(u.check_out, 10);
-    if (!DATE_RE.test(check_in) || !DATE_RE.test(check_out)) return { error: m.badDates };
+    if (!DATE_RE.test(check_in)) return { error: m.badDates };
     const ci = dateOnly(check_in);
-    const co = dateOnly(check_out);
     // Round-trip catches impossible dates such as 2026-02-31.
-    if (toISODate(ci) !== check_in || toISODate(co) !== check_out) return { error: m.badDates };
+    if (toISODate(ci) !== check_in) return { error: m.badDates };
+
+    // A transitional stay is measured in months, so its end date derives from
+    // the arrival date and the chosen length ("to be defined" counts as one
+    // month, the minimum). The tourist form sends check_out itself.
+    const check_out = transitional
+      ? toISODate(addMonths(ci, transitional.duration.months ?? 1))
+      : str(u.check_out, 10);
+    if (!DATE_RE.test(check_out)) return { error: m.badDates };
+    const co = dateOnly(check_out);
+    if (toISODate(co) !== check_out) return { error: m.badDates };
     if (ci < todayDate) return { error: m.checkinPast };
     if (co <= ci) return { error: m.checkoutOrder };
 
@@ -145,9 +191,14 @@ function validate(body: unknown, lang: Lang): { payload?: ValidPayload; error?: 
     const children = Number(u.children);
     if (!Number.isInteger(adults) || adults < 1) return { error: m.badGuests };
     if (!Number.isInteger(children) || children < 0) return { error: m.badGuests };
-    const cap = APP_CAPACITY[app_number];
+    // A monthly lease sleeps the unit's transitional capacity, which differs
+    // from the tourist one on two units.
+    const cap = transitional ? TRANSITORIO_CAPACITY[app_number] : APP_CAPACITY[app_number];
     if (adults + children > cap) {
-      return { error: m.capacity(APP_LABELS[app_number], cap) };
+      const label = transitional
+        ? findUnit(app_number)?.name[lang] ?? APP_LABELS[app_number]
+        : APP_LABELS[app_number];
+      return { error: m.capacity(label, cap) };
     }
 
     units.push({ app_number, check_in, check_out, adults, children, nights: daysBetween(ci, co) });
@@ -161,9 +212,27 @@ function validate(body: unknown, lang: Lang): { payload?: ValidPayload; error?: 
       guest_country: str(b.guest_country, 100) || null,
       notes: str(b.notes, 2000) || null,
       lang,
+      stay_type,
+      transitional,
       units,
     },
   };
+}
+
+/**
+ * booking_requests has no columns for lease length or reason, so on a
+ * transitional request both ride along in notes under a fixed prefix, ahead of
+ * whatever the guest wrote. Italian labels: the admin reads them.
+ */
+function dbNotes(p: ValidPayload): string | null {
+  if (!p.transitional) return p.notes;
+  const lines = [
+    TRANSITORIO_PREFIX,
+    `Durata, ${p.transitional.duration.label.it}`,
+    `Motivo, ${p.transitional.reason.label.it}`,
+  ];
+  if (p.notes) lines.push('', p.notes);
+  return lines.join('\n');
 }
 
 /* -------------------------------------------------------------- telegram */
@@ -178,10 +247,19 @@ function guestsLabel(adults: number, children: number): string {
   return parts.join(', ');
 }
 
-/** Plain text, comma separators, one fact per line, per the Cockpit conventions. */
+function peopleLabel(count: number): string {
+  return count === 1 ? '1 persona' : `${count} persone`;
+}
+
+/**
+ * Plain text, comma separators, one fact per line, per the Cockpit conventions.
+ * A transitional request opens with TRANSITORIO so it stands apart from the
+ * tourist quotes arriving in the same chat.
+ */
 function buildTelegramText(code: string, p: ValidPayload): string {
+  const t = p.transitional;
   const lines = [
-    `Nuova richiesta preventivo, ${code}`,
+    t ? `${TRANSITORIO_PREFIX}, nuova richiesta, ${code}` : `Nuova richiesta preventivo, ${code}`,
     '',
     p.guest_name,
     p.guest_email,
@@ -190,11 +268,19 @@ function buildTelegramText(code: string, p: ValidPayload): string {
   if (p.guest_country) lines.push(p.guest_country);
   lines.push('');
   for (const u of p.units) {
-    lines.push(
-      `App ${u.app_number}, ${toDDMMYYYY(dateOnly(u.check_in))}, ${toDDMMYYYY(dateOnly(u.check_out))}, ` +
-      `${u.nights} ${u.nights === 1 ? 'notte' : 'notti'}, ${guestsLabel(u.adults, u.children)}`,
-    );
+    if (t) {
+      lines.push(
+        `App ${u.app_number}, arrivo ${toDDMMYYYY(dateOnly(u.check_in))}, ${t.duration.label.it}, ` +
+        `${peopleLabel(u.adults + u.children)}`,
+      );
+    } else {
+      lines.push(
+        `App ${u.app_number}, ${toDDMMYYYY(dateOnly(u.check_in))}, ${toDDMMYYYY(dateOnly(u.check_out))}, ` +
+        `${u.nights} ${u.nights === 1 ? 'notte' : 'notti'}, ${guestsLabel(u.adults, u.children)}`,
+      );
+    }
   }
+  if (t) lines.push(`Motivo, ${t.reason.label.it}`);
   if (p.notes) lines.push('', `Note, ${p.notes}`);
   return escapeHtml(lines.join('\n'));
 }
@@ -216,6 +302,13 @@ const EMAIL_COPY = {
     children: 'bambini',
     promise: 'Rispondiamo entro 2 ore, dalle 9 alle 22.',
     address: 'Vico Santa Maria a Cappella Vecchia 8b, Chiaia, Napoli',
+    // Transitional variants.
+    introTransitional: 'Abbiamo ricevuto la tua richiesta per un affitto transitorio.',
+    summaryTransitional: 'Riepilogo della richiesta',
+    arrival: 'arrivo',
+    person: 'persona',
+    people: 'persone',
+    promiseTransitional: 'Rispondiamo entro 24 ore con disponibilità, canone e proposta di contratto.',
   },
   en: {
     subject: (code: string) => `Request received, ${code}`,
@@ -231,13 +324,36 @@ const EMAIL_COPY = {
     children: 'children',
     promise: 'We reply within 2 hours, 9am to 10pm.',
     address: 'Vico Santa Maria a Cappella Vecchia 8b, Chiaia, Naples',
+    // Transitional variants.
+    introTransitional: 'We have received your mid-term rental enquiry.',
+    summaryTransitional: 'Enquiry summary',
+    arrival: 'arrival',
+    person: 'person',
+    people: 'people',
+    promiseTransitional: 'We reply within 24 hours with availability, rent and a draft lease.',
   },
 } as const;
 
 function buildReceiptHtml(code: string, p: ValidPayload): string {
   const c = EMAIL_COPY[p.lang];
+  const t = p.transitional;
   const unitRows = p.units
     .map(u => {
+      if (t) {
+        // Monthly lease: arrival, length, people and reason instead of nights.
+        const people = u.adults + u.children;
+        const name = findUnit(u.app_number)?.name[p.lang] ?? APP_LABELS[u.app_number];
+        return `
+        <tr>
+          <td style="padding:14px 0;border-bottom:1px solid #2A2A2A;">
+            <p style="margin:0 0 4px;color:#F5F2EC;font-size:15px;">${escapeHtml(name)}</p>
+            <p style="margin:0;color:#8A8580;font-size:13px;">
+              ${c.arrival} ${toDDMMYYYY(dateOnly(u.check_in))}, ${escapeHtml(t.duration.label[p.lang])},
+              ${people} ${people === 1 ? c.person : c.people}, ${escapeHtml(t.reason.label[p.lang])}
+            </p>
+          </td>
+        </tr>`;
+      }
       const guests = [
         `${u.adults} ${u.adults === 1 ? c.adult : c.adults}`,
         u.children > 0 ? `${u.children} ${u.children === 1 ? c.child : c.children}` : '',
@@ -271,16 +387,16 @@ function buildReceiptHtml(code: string, p: ValidPayload): string {
                 ${c.title}
               </h1>
               <p style="margin:0 0 20px;color:#F5F2EC;font-size:15px;line-height:1.6;">
-                ${c.intro}
+                ${t ? c.introTransitional : c.intro}
               </p>
               <p style="margin:0 0 4px;color:#8A8580;font-size:11px;letter-spacing:2px;text-transform:uppercase;">${c.codeLabel}</p>
               <p style="margin:0 0 24px;font-family:Georgia,'Times New Roman',serif;color:#F5F2EC;font-size:22px;">${code}</p>
-              <p style="margin:0 0 8px;color:#8A8580;font-size:11px;letter-spacing:2px;text-transform:uppercase;">${c.summary}</p>
+              <p style="margin:0 0 8px;color:#8A8580;font-size:11px;letter-spacing:2px;text-transform:uppercase;">${t ? c.summaryTransitional : c.summary}</p>
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #2A2A2A;">
                 ${unitRows}
               </table>
               <p style="margin:24px 0 0;color:#F5F2EC;font-size:15px;line-height:1.6;">
-                ${c.promise}
+                ${t ? c.promiseTransitional : c.promise}
               </p>
             </td>
           </tr>
@@ -363,7 +479,7 @@ export const POST: APIRoute = async ctx => {
       guest_email: payload.guest_email,
       guest_phone: payload.guest_phone,
       guest_country: payload.guest_country,
-      notes: payload.notes,
+      notes: dbNotes(payload),
       lang: payload.lang,
     })
     .select('id, request_code')

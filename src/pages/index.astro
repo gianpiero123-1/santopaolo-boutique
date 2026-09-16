@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ApartmentCard from '../components/ApartmentCard.astro';
 import Hero from '../components/Hero.astro';
-import { useTranslations, getLocalePath, getRequestPath } from '../i18n/index';
+import { useTranslations, getLocalePath, getRequestPath, getTransitionalPath } from '../i18n/index';
 import apartmentsData from '../data/apartments.json';
 import '../styles/concierge-hero.css';
 
@@ -118,6 +118,18 @@ const mobileHeroCards = [
           {t.home.featured.viewAll}
         </a>
       </div>
+    </div>
+  </section>
+
+  <!-- Transitional rentals, three lines and a link -->
+  <section class="bg-brand-bg border-t border-brand-border">
+    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-10 lg:py-12 space-y-2">
+      <p class="nav-link text-brand-accent">{t.home.transitional.label}</p>
+      <p class="font-display font-light text-2xl lg:text-3xl text-brand-text tracking-tight">{t.home.transitional.title}</p>
+      <p class="text-brand-muted text-sm lg:text-base max-w-3xl">
+        {t.home.transitional.body}
+        <a href={getTransitionalPath(lang)} class="text-brand-text border-b border-brand-muted hover:border-brand-text transition-colors ml-1">{t.home.transitional.cta}</a>
+      </p>
     </div>
   </section>
 

@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/index';
-import { useTranslations, getLocalePath, getRequestPath, getGuidePath } from '../i18n/index';
+import { useTranslations, getLocalePath, getRequestPath, getGuidePath, getTransitionalPath } from '../i18n/index';
 import { FOOTER_GUIDE_LINKS, guideArticlePath } from '../lib/guida';
 
 interface Props {
@@ -50,6 +50,7 @@ const copy = t.footer.copy.replace('{year}', String(year));
         <p class="nav-link text-brand-text mb-4 text-xs">{t.footer.navTitle}</p>
         <ul class="space-y-2.5">
           <li><a href={getLocalePath(lang, '/apartments')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.apartments}</a></li>
+          <li><a href={getTransitionalPath(lang)} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.transitional}</a></li>
           <li><a href={getLocalePath(lang, '/concierge')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.concierge}</a></li>
           <li><a href={getLocalePath(lang, '/contact')} class="text-brand-muted text-sm hover:text-brand-text transition-colors">{t.footer.links.contact}</a></li>
           <li><a href={getRequestPath(lang)} class="text-brand-accent text-sm hover:opacity-80 transition-opacity">{t.footer.links.book}</a></li>

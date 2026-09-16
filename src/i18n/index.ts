@@ -51,6 +51,11 @@ export function getGuidePath(lang: Lang): string {
   return lang === 'en' ? '/en/guide' : '/guida';
 }
 
+/** Transitional rentals, asymmetric as well (/affitti-transitori vs /en/mid-term-rentals). */
+export function getTransitionalPath(lang: Lang): string {
+  return lang === 'en' ? '/en/mid-term-rentals' : '/affitti-transitori';
+}
+
 export function getAlternatePath(currentLang: Lang, currentPath: string): string {
   if (currentLang === 'en') {
     return currentPath.replace(/^\/en/, '') || '/';

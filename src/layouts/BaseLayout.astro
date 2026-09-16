@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import WhatsAppFloat from '../components/WhatsAppFloat.astro';
 import JsonLd from '../components/JsonLd.astro';
 import type { Lang } from '../i18n/index';
-import { buildPageGraph, type GuideArticleGraphOptions } from '../data/schema';
+import { buildPageGraph, type GuideArticleGraphOptions, type FaqItem, type JsonLdValue } from '../data/schema';
 import VercelAnalytics from '@vercel/analytics/astro';
 import Analytics from '../components/Analytics.astro';
 
@@ -42,6 +42,10 @@ interface Props {
   breadcrumbLeafLabel?: string;
   /** Adds Article + FAQPage nodes to the graph on guide article pages. */
   guideArticle?: GuideArticleGraphOptions;
+  /** Every FAQ shown on the page, emitted as one FAQPage node. */
+  faq?: FaqItem[];
+  /** Offer nodes attached to the LodgingBusiness (the transitional rentals page). */
+  offers?: JsonLdValue[];
 }
 
 const {
@@ -60,6 +64,8 @@ const {
   ogType = 'website',
   breadcrumbLeafLabel,
   guideArticle,
+  faq,
+  offers,
 } = Astro.props;
 
 const siteName = 'Santopaolo Boutique Apartments';
@@ -93,6 +99,8 @@ const jsonLd = noindex
       pageType,
       breadcrumbLeafLabel,
       guideArticle,
+      faq,
+      offers,
     });
 ---
 

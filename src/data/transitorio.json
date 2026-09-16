@@ -1,0 +1,231 @@
+{
+  "address": {
+    "street": "Vico Santa Maria a Cappella Vecchia 8b",
+    "postalCode": "80121",
+    "city": "Napoli",
+    "district": "Chiaia",
+    "telephone": "+39 331 322 5577",
+    "telephoneE164": "+393313225577",
+    "whatsapp": "https://wa.me/393313225577",
+    "email": "gianpiero@santopaoloboutiqueapartments.com"
+  },
+  "minMonths": 1,
+  "maxMonths": 18,
+  "rateMonths": [3, 6, 12, 18],
+  "units": [
+    {
+      "id": 1,
+      "slug": "santopaolo-1",
+      "name": { "it": "Appartamento 1", "en": "Apartment 1" },
+      "sqm": 95,
+      "sqmApprox": false,
+      "persons": 6,
+      "composition": {
+        "it": "2 camere matrimoniali, 2 bagni, salone, cucina attrezzata, divano letto matrimoniale",
+        "en": "2 double bedrooms, 2 bathrooms, living room, fitted kitchen, double sofa bed"
+      },
+      "rates": { "3": 7000, "6": 6500, "12": 6000, "18": 5750 }
+    },
+    {
+      "id": 2,
+      "slug": "santopaolo-2",
+      "name": { "it": "Appartamento 2", "en": "Apartment 2" },
+      "sqm": 60,
+      "sqmApprox": true,
+      "persons": 4,
+      "composition": {
+        "it": "1 camera matrimoniale, 1 bagno, salone, cucina attrezzata, divano letto matrimoniale",
+        "en": "1 double bedroom, 1 bathroom, living room, fitted kitchen, double sofa bed"
+      },
+      "rates": { "3": 6000, "6": 5500, "12": 5000, "18": 4700 }
+    },
+    {
+      "id": 3,
+      "slug": "santopaolo-3",
+      "name": { "it": "Appartamento 3", "en": "Apartment 3" },
+      "sqm": 60,
+      "sqmApprox": true,
+      "persons": 4,
+      "composition": {
+        "it": "1 camera matrimoniale, 1 bagno, salone, cucina attrezzata, divano letto matrimoniale",
+        "en": "1 double bedroom, 1 bathroom, living room, fitted kitchen, double sofa bed"
+      },
+      "rates": { "3": 6000, "6": 5500, "12": 5000, "18": 4700 }
+    },
+    {
+      "id": 4,
+      "slug": "santopaolo-4",
+      "name": { "it": "Appartamento 4", "en": "Apartment 4" },
+      "sqm": 60,
+      "sqmApprox": true,
+      "persons": 4,
+      "composition": {
+        "it": "1 camera matrimoniale, 1 bagno, salone, cucina attrezzata, divano letto matrimoniale",
+        "en": "1 double bedroom, 1 bathroom, living room, fitted kitchen, double sofa bed"
+      },
+      "rates": { "3": 6000, "6": 5500, "12": 5000, "18": 4700 }
+    },
+    {
+      "id": 5,
+      "slug": "santopaolo-5",
+      "name": { "it": "Appartamento 5", "en": "Apartment 5" },
+      "sqm": 40,
+      "sqmApprox": false,
+      "persons": 2,
+      "composition": {
+        "it": "Letto matrimoniale, 1 bagno, cucina attrezzata, zona salone, tavolo da pranzo",
+        "en": "Double bed, 1 bathroom, fitted kitchen, living area, dining table"
+      },
+      "rates": { "3": 5000, "6": 4500, "12": 4000, "18": 3750 }
+    }
+  ],
+  "included": [
+    {
+      "id": "pulizie",
+      "title": { "it": "Due pulizie complete a settimana", "en": "Two full cleans a week" },
+      "text": {
+        "it": "Riassetto, cambio biancheria da letto settimanale, asciugamani su richiesta, ripristino delle dotazioni. Personale dedicato ai servizi.",
+        "en": "Tidying, weekly change of bed linen, towels on request, restocking of supplies. Dedicated service staff."
+      }
+    },
+    {
+      "id": "wellness",
+      "title": { "it": "Palestra e bagno turco sullo stesso piano", "en": "Gym and steam room on the same floor" },
+      "text": {
+        "it": "Riservati esclusivamente agli ospiti dei cinque appartamenti. Palestra 24 ore su 24, bagno turco con docce cromoterapia, utilizzo illimitato incluso nel canone.",
+        "en": "Reserved exclusively for guests of the five apartments. Gym open 24 hours, steam room with chromotherapy showers, unlimited use included in the rent."
+      }
+    },
+    {
+      "id": "utenze",
+      "title": { "it": "Tutte le utenze incluse", "en": "All utilities included" },
+      "text": {
+        "it": "Luce, acqua, gas, Wi-Fi. Nessun contratto di utenza da intestare, nessun costo di avviamento.",
+        "en": "Electricity, water, gas, Wi-Fi. No utility contracts to take over, no set-up costs."
+      }
+    },
+    {
+      "id": "allestimento",
+      "title": { "it": "Allestimento su misura", "en": "Set-up to order" },
+      "text": {
+        "it": "Postazione di lavoro completa o attrezzature per soggiorni professionali vengono predisposte prima dell'ingresso, su richiesta.",
+        "en": "A complete workstation or equipment for professional stays can be put in place before you arrive, on request."
+      }
+    }
+  ],
+  "extra": [
+    {
+      "id": "lavanderia",
+      "title": { "it": "Lavanderia", "en": "Laundry" },
+      "text": {
+        "it": "Lavanderia gestita dal personale, con ritiro e riconsegna degli indumenti.",
+        "en": "Laundry handled by our staff, with collection and return of your clothes."
+      }
+    },
+    {
+      "id": "posto-auto",
+      "title": { "it": "Posto auto e posto moto", "en": "Car and motorcycle parking" },
+      "text": {
+        "it": "Posto auto e posto moto nell'autorimessa dello stesso stabile, accesso 24 ore, videosorveglianza, ricarica elettrica.",
+        "en": "Car and motorcycle parking in the garage of the same building, 24 hour access, video surveillance, EV charging."
+      }
+    }
+  ],
+  "form": {
+    "durations": [
+      { "key": "1", "months": 1, "label": { "it": "1 mese", "en": "1 month" } },
+      { "key": "2", "months": 2, "label": { "it": "2 mesi", "en": "2 months" } },
+      { "key": "3", "months": 3, "label": { "it": "3 mesi", "en": "3 months" } },
+      { "key": "6", "months": 6, "label": { "it": "6 mesi", "en": "6 months" } },
+      { "key": "12", "months": 12, "label": { "it": "12 mesi", "en": "12 months" } },
+      { "key": "18", "months": 18, "label": { "it": "18 mesi", "en": "18 months" } },
+      { "key": "tbd", "months": null, "label": { "it": "Da definire", "en": "To be defined" } }
+    ],
+    "reasons": [
+      { "key": "lavoro", "label": { "it": "Lavoro", "en": "Work" } },
+      { "key": "team", "label": { "it": "Team building o sede temporanea", "en": "Team building or temporary office" } },
+      { "key": "relocation", "label": { "it": "Relocation", "en": "Relocation" } },
+      { "key": "ristrutturazione", "label": { "it": "Ristrutturazione casa", "en": "Home renovation" } },
+      { "key": "produzione", "label": { "it": "Produzione", "en": "Production" } },
+      { "key": "altro", "label": { "it": "Altro", "en": "Other" } }
+    ]
+  },
+  "faq": {
+    "it": [
+      {
+        "q": "Quanto costa un affitto transitorio a Chiaia, Napoli?",
+        "a": "Da €3.750 a €7.000 al mese, tutto incluso. Il monolocale di 40 mq va da €5.000 su 3 mesi a €3.750 su 18 mesi. Le unità da 60 mq da €6.000 a €4.700. L'appartamento di 95 mq per 6 persone da €7.000 a €5.750."
+      },
+      {
+        "q": "Qual è la durata minima?",
+        "a": "Un mese, massimo 18. Per soggiorni da 1 a 3 mesi il canone è su richiesta, in base a unità e periodo. Sotto i 30 giorni proponiamo la formula turistica."
+      },
+      {
+        "q": "Cosa significa servizi alberghieri?",
+        "a": "Due pulizie complete a settimana, cambio biancheria da letto settimanale, asciugamani su richiesta, ripristino delle dotazioni. Tutto svolto dal nostro personale dedicato, un solo interlocutore per tutta la durata."
+      },
+      {
+        "q": "Serve la residenza a Napoli?",
+        "a": "No. Il contratto transitorio è pensato per chi ha la residenza altrove e resta in città per lavoro, un incarico o una ristrutturazione."
+      },
+      {
+        "q": "Può firmare la mia azienda?",
+        "a": "Sì. Intestiamo il contratto alla società e fatturiamo mensilmente. Servono visura camerale e documento del legale rappresentante."
+      },
+      {
+        "q": "Posso avere un posto auto?",
+        "a": "Sì, come servizio extra. Posto auto e posto moto nell'autorimessa dello stesso stabile, coperta, accesso 24 ore, videosorveglianza e ricarica elettrica. Tariffa mensile riservata ai locatari, disponibilità soggetta a conferma."
+      },
+      {
+        "q": "C'è il servizio lavanderia?",
+        "a": "Sì, a pagamento. Ritiro e riconsegna degli indumenti gestiti direttamente dal personale."
+      },
+      {
+        "q": "Posso avere una postazione di lavoro?",
+        "a": "Sì. Postazione completa o attrezzature per soggiorni professionali vengono predisposte prima dell'ingresso, su richiesta."
+      },
+      {
+        "q": "Come funziona la visita?",
+        "a": "Su appuntamento, anche il sabato, di persona o in videochiamata. Trattativa diretta con la proprietà, nessuna intermediazione."
+      }
+    ],
+    "en": [
+      {
+        "q": "How much does a mid-term rental in Chiaia, Naples cost?",
+        "a": "From €3,750 to €7,000 a month, all inclusive. The 40 sqm studio goes from €5,000 on a 3 month lease to €3,750 on 18 months. The 60 sqm units from €6,000 to €4,700. The 95 sqm apartment for 6 people from €7,000 to €5,750."
+      },
+      {
+        "q": "What is the minimum stay?",
+        "a": "One month, up to a maximum of 18. For stays of 1 to 3 months the rent is quoted on request, depending on the unit and the period. Under 30 days we offer the short-stay formula."
+      },
+      {
+        "q": "What do hotel services mean?",
+        "a": "Two full cleans a week, weekly change of bed linen, towels on request, restocking of supplies. All carried out by our own staff, with a single point of contact for the whole stay."
+      },
+      {
+        "q": "Do I need to be resident in Naples?",
+        "a": "No. The transitional lease is designed for people whose residence is elsewhere and who are in the city for work, an assignment or a renovation."
+      },
+      {
+        "q": "Can my company sign the lease?",
+        "a": "Yes. We put the lease in the company's name and invoice monthly. We need a company registration extract and the legal representative's ID."
+      },
+      {
+        "q": "Can I have a parking space?",
+        "a": "Yes, as an extra service. Car and motorcycle parking in the garage of the same building, covered, 24 hour access, video surveillance and EV charging. Monthly rate reserved for tenants, availability subject to confirmation."
+      },
+      {
+        "q": "Is there a laundry service?",
+        "a": "Yes, charged separately. Collection and return of your clothes handled directly by our staff."
+      },
+      {
+        "q": "Can I have a workstation?",
+        "a": "Yes. A complete workstation or equipment for professional stays can be put in place before you arrive, on request."
+      },
+      {
+        "q": "How does the viewing work?",
+        "a": "By appointment, Saturdays included, in person or by video call. Direct dealing with the owner, no intermediaries."
+      }
+    ]
+  }
+}

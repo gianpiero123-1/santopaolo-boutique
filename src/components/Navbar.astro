@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/index';
-import { useTranslations, getLocalePath, getRequestPath } from '../i18n/index';
+import { useTranslations, getLocalePath, getRequestPath, getTransitionalPath } from '../i18n/index';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
 interface Props {
@@ -15,6 +15,7 @@ const currentPath = Astro.url.pathname;
 
 const navLinks = [
   { href: getLocalePath(lang, '/apartments'), label: t.nav.apartments },
+  { href: getTransitionalPath(lang), label: t.nav.transitional },
   { href: getLocalePath(lang, '/wellness'), label: t.nav.wellness },
   { href: getLocalePath(lang, '/concierge'), label: t.nav.concierge },
   { href: getLocalePath(lang, '/production'), label: t.nav.production },
