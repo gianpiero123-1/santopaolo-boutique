@@ -148,6 +148,7 @@ interface TransitorioCopy {
     intro: string;
     columns: { unit: string; sqm: string; composition: string; months: string };
     note: string;
+    cta: { note: string; label: string };
   };
   organisation: {
     eyebrow: string;
@@ -255,6 +256,7 @@ export const TRANSITORIO_COPY: Record<Lang, TransitorioCopy> = {
       columns: { unit: 'Unità', sqm: 'Superficie', composition: 'Composizione', months: 'mesi' },
       note:
         'Canoni mensili per soggiorni da 3 a 18 mesi, tutto incluso: utenze, Wi-Fi e tutti i servizi della formula. La disponibilità degli appartamenti e dei servizi extra è soggetta a conferma. Visite su appuntamento, anche il sabato.',
+      cta: { note: 'Foto e planimetrie di tutte e 5 le unità', label: 'Vedi le unità' },
     },
     organisation: {
       eyebrow: 'Organizzazione',
@@ -410,6 +412,7 @@ export const TRANSITORIO_COPY: Record<Lang, TransitorioCopy> = {
       columns: { unit: 'Unit', sqm: 'Floor area', composition: 'Layout', months: 'months' },
       note:
         'Monthly rents for stays of 3 to 18 months, all inclusive: utilities, Wi-Fi and every service in the package. Availability of apartments and extra services is subject to confirmation. Viewings by appointment, Saturdays included.',
+      cta: { note: 'Photos and layouts of all 5 units', label: 'View the units' },
     },
     organisation: {
       eyebrow: 'How it runs',
