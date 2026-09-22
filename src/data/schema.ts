@@ -506,6 +506,8 @@ export interface GuideArticleGraphOptions {
   dateModified?: string;
   /** `@id`s of entity-graph nodes the article is about (lodging, places). */
   mentions?: string[];
+  /** Extra Q&A pairs from frontmatter, emitted after the title question. */
+  faq?: { q: string; a: string }[];
 }
 
 /** One question and its answer, as shown on the page. */
@@ -572,19 +574,24 @@ function buildGuideArticle(opts: PageGraphOptions, article: GuideArticleGraphOpt
   return node;
 }
 
-/** One Question per guide page: the title asks, the answer block answers. */
+/**
+ * FAQPage for a guide page: the title asks and the answer block answers, then
+ * any extra `faq` pairs from frontmatter follow in order.
+ */
 function buildGuideFaq(opts: PageGraphOptions, article: GuideArticleGraphOptions): JsonLdNode {
   const url = absoluteUrl(opts.pathname);
+  const question = (name: string, text: string): JsonLdValue => ({
+    '@type': 'Question',
+    name,
+    acceptedAnswer: { '@type': 'Answer', text },
+  });
   return {
     '@type': 'FAQPage',
     '@id': `${url}#faq`,
     inLanguage: opts.lang,
     mainEntity: [
-      {
-        '@type': 'Question',
-        name: article.headline,
-        acceptedAnswer: { '@type': 'Answer', text: article.answer },
-      },
+      question(article.headline, article.answer),
+      ...(article.faq ?? []).map(item => question(item.q, item.a)),
     ],
   };
 }

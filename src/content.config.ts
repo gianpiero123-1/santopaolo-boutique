@@ -55,6 +55,8 @@ const guida = defineCollection({
     mentions: z.array(z.string()).optional(),
     /** Slug of the same article in the other language, for the hreflang pair. */
     translationSlug: z.string().optional(),
+    /** Extra Q&A pairs appended to the FAQPage node, after the title question. */
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
   }),
 });
 

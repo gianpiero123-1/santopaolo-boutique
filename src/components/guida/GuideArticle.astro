@@ -58,6 +58,7 @@ const isoDate = (d: Date) => d.toISOString().split('T')[0];
     datePublished: isoDate(data.publishDate),
     dateModified: data.updatedDate ? isoDate(data.updatedDate) : undefined,
     mentions: data.mentions,
+    faq: data.faq,
   }}
 >
   <article class="px-6 py-12 lg:py-16">
