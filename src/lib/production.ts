@@ -111,7 +111,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     seo: {
       title: 'Base per produzioni a Napoli, ricettività e rimessaggio a un solo indirizzo',
       description:
-        'Fino a 18 ospiti in cinque unità e oltre 1.000 metri quadri coperti nello stesso stabile a Chiaia, Napoli. Accesso 24/7.',
+        'Fino a 18 ospiti in cinque unità e 3.000 mq coperti, di cui oltre 1.000 liberi, nello stesso stabile a Chiaia, Napoli. Accesso 24/7.',
     },
     hero: {
       eyebrow: 'SANTOPAOLO BOUTIQUE APARTMENTS',
@@ -120,7 +120,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     },
     summary: {
       label: 'SINTESI DEL SERVIZIO',
-      text: 'Tre funzioni normalmente distribuite su sedi diverse, accorpate in un solo indirizzo: ricettività per maestranze e cast, spazio coperto libero configurabile per la lavorazione, autorimessa per movimentazione mezzi e merci con presidio 24 ore.',
+      text: 'Tre funzioni normalmente distribuite su sedi diverse, accorpate in un solo indirizzo: ricettività per troupe e cast, spazio coperto libero configurabile per la lavorazione, autorimessa per movimentazione mezzi e merci con presidio 24 ore.',
       closing: 'Un solo interlocutore, un solo accesso, nessuno spostamento tra basi durante la lavorazione.',
     },
     functions: [
@@ -147,7 +147,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
       spine: ['Alloggi', 'Spazio', 'Autorimessa'],
       alloggi: {
         titleLines: ['Cinque appartamenti', 'sullo stesso piano'],
-        lead: 'Ricettività per maestranze e cast nello stesso edificio della base operativa. Il piano si occupa per intero o in parte, per la durata della lavorazione, con una sola presa in carico e un solo referente. Ogni unità ha cucina, lavatrice e pulizia interna quotidiana.',
+        lead: 'Ricettività per troupe e cast nello stesso edificio della base operativa. Il piano si occupa per intero o in parte, per la durata della lavorazione, con una sola presa in carico e un solo referente. Ogni unità ha cucina, lavatrice e pulizia interna quotidiana.',
         leadClosing: 'Chi lavora e chi dorme sta allo stesso indirizzo, nessuno spostamento tra basi.',
         rail: ['Cinque unità', 'Da 45 a 90 mq', 'Fino a 18 ospiti', 'Wellness floor'],
         units: [
@@ -281,7 +281,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     seo: {
       title: 'Production base in Naples, crew accommodation and vehicle storage at one address',
       description:
-        'Sleeps up to 18 across five units, with over 1,000 covered square metres in one building in Chiaia, Naples. 24 hour access, 365 days.',
+        'Sleeps up to 18 across five units, with 3,000 covered square metres, over 1,000 of them open floor, in one building in Chiaia, Naples. 24 hour access, 365 days.',
     },
     hero: {
       eyebrow: 'SANTOPAOLO BOUTIQUE APARTMENTS',

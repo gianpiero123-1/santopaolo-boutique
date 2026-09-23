@@ -93,8 +93,8 @@ const AMENITY_LABELS = {
   gym: { it: 'Palestra attrezzata', en: 'Fully equipped gym' },
   steamRoom: { it: 'Bagno turco', en: 'Steam room' },
   garage: {
-    it: 'Garage coperto custodito oltre 1.000 mq, accesso 24 ore',
-    en: 'Covered guarded garage, over 1,000 sqm, 24 hour access',
+    it: 'Garage coperto custodito di 3.000 mq, 100 posti, accesso 24 ore',
+    en: 'Covered guarded garage, 3,000 sqm, 100 spaces, 24 hour access',
   },
   evCharging: { it: 'Ricarica veicoli elettrici', en: 'Electric vehicle charging' },
   washingMachine: { it: 'Lavatrice in ogni appartamento', en: 'Washing machine in every unit' },
