@@ -111,7 +111,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     seo: {
       title: 'Base per produzioni a Napoli, ricettività e rimessaggio a un solo indirizzo',
       description:
-        'Fino a 18 ospiti in cinque unità e 3.000 mq coperti, di cui oltre 1.000 liberi, nello stesso stabile a Chiaia, Napoli. Accesso 24/7.',
+        'Fino a 20 ospiti in cinque unità e 3.000 mq coperti, di cui oltre 1.000 liberi, nello stesso stabile a Chiaia, Napoli. Accesso 24/7.',
     },
     hero: {
       eyebrow: 'SANTOPAOLO BOUTIQUE APARTMENTS',
@@ -126,7 +126,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     functions: [
       {
         title: 'Alloggi',
-        text: "Cinque appartamenti sullo stesso piano, da 45 a 90 mq, fino a 18 ospiti. Occupazione parziale o esclusiva dell'intero piano per l'intera durata della lavorazione. Wellness floor con palestra e bagno turco a servizio del piano.",
+        text: "Cinque appartamenti sullo stesso piano, da 45 a 90 mq, fino a 20 ospiti. Occupazione parziale o esclusiva dell'intero piano per l'intera durata della lavorazione. Wellness floor con palestra e bagno turco a servizio del piano.",
         linkLabel: 'Vedi la sezione',
         linkHref: '#alloggi',
       },
@@ -149,10 +149,10 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         titleLines: ['Cinque appartamenti', 'sullo stesso piano'],
         lead: 'Ricettività per troupe e cast nello stesso edificio della base operativa. Il piano si occupa per intero o in parte, per la durata della lavorazione, con una sola presa in carico e un solo referente. Ogni unità ha cucina, lavatrice e pulizia interna quotidiana.',
         leadClosing: 'Chi lavora e chi dorme sta allo stesso indirizzo, nessuno spostamento tra basi.',
-        rail: ['Cinque unità', 'Da 45 a 90 mq', 'Fino a 18 ospiti', 'Wellness floor'],
+        rail: ['Cinque unità', 'Da 45 a 90 mq', 'Fino a 20 ospiti', 'Wellness floor'],
         units: [
           { name: 'Appartamento 1', note: 'Due camere, due bagni, vasca e doccia', area: '90 mq', guests: '6 ospiti', href: '/apartments/santopaolo-1' },
-          { name: 'Appartamento 2', note: 'Camera con bagno en suite e vasca', area: '60 mq', guests: '2 ospiti', href: '/apartments/santopaolo-2' },
+          { name: 'Appartamento 2', note: 'Camera con bagno en suite e vasca, divano letto matrimoniale', area: '60 mq', guests: '4 ospiti', href: '/apartments/santopaolo-2' },
           { name: 'Appartamento 3', note: 'Camera e divano letto, doccia', area: '70 mq', guests: '4 ospiti', href: '/apartments/santopaolo-3' },
           { name: 'Appartamento 4', note: 'Camera e divano letto, doccia', area: '60 mq', guests: '4 ospiti', href: '/apartments/santopaolo-4' },
           { name: 'Appartamento 5', note: 'Monolocale, doccia', area: '45 mq', guests: '2 ospiti', href: '/apartments/santopaolo-5' },
@@ -281,7 +281,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     seo: {
       title: 'Production base in Naples, crew accommodation and vehicle storage at one address',
       description:
-        'Sleeps up to 18 across five units, with 3,000 covered square metres, over 1,000 of them open floor, in one building in Chiaia, Naples. 24 hour access, 365 days.',
+        'Sleeps up to 20 across five units, with 3,000 covered square metres, over 1,000 of them open floor, in one building in Chiaia, Naples. 24 hour access, 365 days.',
     },
     hero: {
       eyebrow: 'SANTOPAOLO BOUTIQUE APARTMENTS',
@@ -296,7 +296,7 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
     functions: [
       {
         title: 'Accommodation',
-        text: 'Five apartments on one floor, 45 to 90 sqm, sleeps up to 18. Take part of the floor or all of it for the length of the production. Wellness floor with gym and steam room serving the apartments.',
+        text: 'Five apartments on one floor, 45 to 90 sqm, sleeps up to 20. Take part of the floor or all of it for the length of the production. Wellness floor with gym and steam room serving the apartments.',
         linkLabel: 'See the section',
         linkHref: '#alloggi',
       },
@@ -319,10 +319,10 @@ export const PRODUCTION_COPY: Record<Lang, ProductionCopy> = {
         titleLines: ['Five apartments', 'on one floor'],
         lead: 'Accommodation for crew and cast in the same building as the operating base. Take the whole floor or part of it for the length of the production, handled by one contact. Every unit has a kitchen, a washing machine and daily cleaning.',
         leadClosing: 'The people working and the people sleeping are at one address, with no moving between bases.',
-        rail: ['Five units', '45 to 90 sqm', 'Sleeps up to 18', 'Wellness floor'],
+        rail: ['Five units', '45 to 90 sqm', 'Sleeps up to 20', 'Wellness floor'],
         units: [
           { name: 'Apartment 1', note: 'Two bedrooms, two bathrooms, bath and shower', area: '90 sqm', guests: 'Sleeps 6', href: '/en/apartments/santopaolo-1' },
-          { name: 'Apartment 2', note: 'Bedroom with en suite bathroom and bath', area: '60 sqm', guests: 'Sleeps 2', href: '/en/apartments/santopaolo-2' },
+          { name: 'Apartment 2', note: 'Bedroom with en suite bathroom and bathtub, double sofa bed', area: '60 sqm', guests: 'Sleeps 4', href: '/en/apartments/santopaolo-2' },
           { name: 'Apartment 3', note: 'Bedroom and sofa bed, shower', area: '70 sqm', guests: 'Sleeps 4', href: '/en/apartments/santopaolo-3' },
           { name: 'Apartment 4', note: 'Bedroom and sofa bed, shower', area: '60 sqm', guests: 'Sleeps 4', href: '/en/apartments/santopaolo-4' },
           { name: 'Apartment 5', note: 'Studio, shower', area: '45 sqm', guests: 'Sleeps 2', href: '/en/apartments/santopaolo-5' },

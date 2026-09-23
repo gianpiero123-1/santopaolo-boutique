@@ -362,12 +362,12 @@
     "size_sqm": 60,
     "bedrooms": 1,
     "bathrooms": 1,
-    "max_guests": 2,
+    "max_guests": 4,
     "cin": "IT063049B4BB83RVVO",
     "cir": "15063049LOBFTTR",
     "smoobuPropertyId": "TBD",
-    "description_it": "Sessanta metri quadri pensati per chi viaggia in due. Camera matrimoniale con bagno en-suite e vasca, zona giorno separata. Il taglio è da suite d'hotel, ma con la calma di una casa privata nel pieno di Chiaia.",
-    "description_en": "Sixty square meters built around two guests. Double bedroom with en-suite bathroom and bathtub, separate living area. Hotel-suite layout with the quiet of a private home, right in the heart of Chiaia.",
+    "description_it": "Sessanta metri quadri con camera matrimoniale e bagno en suite con vasca, zona giorno separata con divano letto matrimoniale. Fino a quattro persone, con il taglio di una suite d'hotel e la calma di una casa privata nel pieno di Chiaia.",
+    "description_en": "Sixty square metres with a double bedroom and en suite bathroom with bathtub, plus a separate living area with a double sofa bed. Sleeps up to four, laid out like a hotel suite with the quiet of a private home in the heart of Chiaia.",
     "gallery": [
       {
         "src": "/images/apartments/app2/01-salone.jpg",

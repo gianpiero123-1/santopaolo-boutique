@@ -12,7 +12,7 @@ export const APP_TO_KALISI: Record<number, number> = {
 /** Public unit number (1-5) -> maximum guests (adults + children). */
 export const APP_CAPACITY: Record<number, number> = {
   1: 6,
-  2: 2,
+  2: 4,
   3: 4,
   4: 4,
   5: 2,
